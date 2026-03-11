@@ -1,0 +1,17 @@
+{
+  "name": "attention-daily-scripts",
+  "version": "1.0.0",
+  "description": "AttentionVC.ai Daily Report Automation Scripts",
+  "main": "main.js",
+  "scripts": {
+    "daily": "node main.js",
+    "fetch": "node browser-automation.js",
+    "generate": "node report-generator.js"
+  },
+  "keywords": ["attentionvc", "daily", "report", "automation"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "playwright": "^1.40.0"
+  }
+}

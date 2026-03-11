@@ -133,15 +133,63 @@ Per post:
 ### Required MCP Tools
 - `playwright` - For browser automation
 
+### Scripts Location
+All automation scripts are located in `scripts/` directory:
+
+```
+scripts/
+├── package.json          # Dependencies
+├── config.js             # Configuration
+├── main.js               # Entry point
+├── browser-automation.js # Browser automation
+├── data-extractor.js     # Data extraction
+└── report-generator.js   # Report generation
+```
+
 ### Execution Steps
 
-1. Navigate to https://www.attentionvc.ai/article?category={category}
-2. Wait for table to load
-3. Extract article data from rows
-4. Repeat for AI, Crypto, Tech
-5. Process and format data
-6. Generate report
-7. Create 5 post variations
+1. Navigate to https://www.attentionvc.ai/article
+2. Check if page shows "Loading..." - if yes, wait for content to load; if no, proceed immediately
+3. Click on time range button "24h" to select current day's content
+4. Click on category button "AI" to filter AI articles
+5. Wait for table to load (if loading)
+6. Extract article data from rows
+7. Repeat steps 4-6 for "Crypto" and "Tech" categories
+8. Process and format data
+9. Generate report
+10. Create 5 post variations
+
+### Running the Scripts
+
+```bash
+# Install dependencies
+cd scripts && npm install
+
+# Run full workflow
+npm run daily
+# or
+node main.js
+```
+
+### Browser Automation Flow
+
+```javascript
+// Use the scripts directly from skill directory
+const BrowserAutomation = require('./scripts/browser-automation');
+const ReportGenerator = require('./scripts/report-generator');
+
+async function generateDaily() {
+  const browser = new BrowserAutomation();
+  const generator = new ReportGenerator();
+  
+  await browser.init();
+  const data = await browser.fetchAllData();
+  const report = generator.generateReport(data);
+  
+  console.log(report);
+  await browser.close();
+}
+```
 
 ### Data Schema
 
@@ -317,6 +365,28 @@ If data fetch fails:
 1. Try alternative URL endpoints
 2. Use cached data from previous run
 3. Notify user with partial data
+
+## Cross-Device Usage
+
+To use this skill on a new device:
+
+1. Copy the entire `attention-daily/` directory to the new device
+2. Navigate to `scripts/` directory
+3. Run `npm install` to install Playwright dependencies
+4. The skill will auto-download Chromium on first run
+5. Execute `node main.js` or `npm run daily`
+
+### Required Dependencies
+- Node.js >= 14
+- Playwright >= 1.40.0 (auto-installed via npm)
+- Chromium/Chrome (auto-downloaded by Playwright)
+
+### Configuration
+Edit `scripts/config.js` to customize:
+- Time range (24h/7d/14d/All)
+- Categories to track
+- Browser settings
+- Output format
 
 ## Notes
 
