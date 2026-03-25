@@ -421,26 +421,11 @@ agent-skills/
 - 11项全面的安全检查
 - 生成详细的安全审查报告
 
-**translate-polisher** 🌐
+**translate-polisher(复制别人的 挺好用就保留到我项目了)** 🌐
 - 四步精翻工作流
 - 支持中日英三语互译
 
 ---
-
-## 贡献指南
-
-欢迎贡献新的 Skill 或改进现有 Skill！
-
-### 添加新 Skill 的步骤
-
-1. 创建新的目录 `your-skill-name/`
-2. 编写 `SKILL.md` 文档，包含：
-   - Skill 名称和描述
-   - 使用方法
-   - 配置说明
-   - 示例输出
-3. 如有代码，放入 `scripts/` 目录
-4. 更新本 README 的 Skill 目录
 
 ### Skill 文档规范
 
@@ -451,22 +436,3 @@ agent-skills/
 - **references/** - 参考资料（可选）
 
 ---
-
-## 许可证
-
-本项目采用 MIT 许可证 - 详见 [LICENSE](LICENSE) 文件
-
----
-
-## 相关链接
-
-- [Claude Code 文档](https://docs.anthropic.com/en/docs/claude-code/overview)
-- [Claude 官方文档](https://docs.anthropic.com/)
-- [Claude Code 社区](https://github.com/anthropics/claude-code)
-
----
-
-<p align="center">
-  Built with ❤️ for Claude Code<br>
-  <sub>Last updated: 2026-03-25</sub>
-</p>
