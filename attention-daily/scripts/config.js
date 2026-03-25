@@ -1,5 +1,5 @@
 /**
- * Attention Daily - Configuration
+ * Attention Daily - Configuration (Enhanced)
  * 
  * 配置文件：包含所有可调整的参数
  */
@@ -7,44 +7,55 @@
 module.exports = {
   // 数据源配置
   source: {
-    url: 'https://www.attentionvc.ai/article',
-    timeRange: '24h', // 可选: '24h', '7d', '14d', 'All'
-    categories: ['AI', 'Crypto', 'Tech'],
-    languages: 'en,zh', // English & Chinese
+    // AttentionVC.ai 配置
+    attentionvc: {
+      url: 'https://www.attentionvc.ai/article',
+      categories: ['tech', 'ai'], // 文章分类
+      window: '1d', // 时间窗口: '1d', '7d', '14d', 'all'
+      languages: 'en,zh',
+      maxArticlesPerCategory: 10,
+    },
+    // GitHub Trending 配置
+    github: {
+      url: 'https://github.attentionvc.ai/trending/repos',
+      maxRepos: 10,
+    }
   },
 
   // 浏览器配置
   browser: {
-    headless: false, // true = 无头模式，false = 可见浏览器
+    headless: true, // true = 无头模式，false = 可见浏览器
     timeout: 30000, // 页面加载超时时间 (ms)
-    waitTime: 2000, // 点击后等待时间 (ms)
+    waitTime: 3000, // 点击后等待时间 (ms)
     checkLoading: true, // 是否检查 Loading 状态
   },
 
   // 数据提取配置
   extraction: {
-    maxArticlesPerCategory: 5, // 每个类别提取的文章数
+    maxArticlesPerCategory: 10, // 每个类别提取的文章数
     selectors: {
       tableRows: 'table tbody tr',
       titleCell: 'td:nth-child(2)',
       authorCell: 'td:nth-child(3)',
       impressionsCell: 'td:nth-child(4)',
-      categoryButtons: '[role="button"]', 
-      timeRangeButtons: {
-        '24h': 'button:has-text("24h")',
-        '7d': 'button:has-text("7d")',
-        '14d': 'button:has-text("14d")',
-        'All': 'button:has-text("All")',
-      }
     }
+  },
+
+  // 文章分析配置
+  analysis: {
+    enabled: true,
+    perspectives: ['tech', 'business', 'user', 'trend'], // 分析视角
+    generateSummary: true,
+    extractKeywords: true,
   },
 
   // 输出配置
   output: {
-    format: 'markdown', // 可选: 'markdown', 'json', 'html'
+    format: 'markdown',
+    includeGitHub: true,
+    includeArticles: true,
+    includeAnalysis: true,
     includeTrends: true,
-    includePostOptions: true,
-    postOptionsCount: 5,
   },
 
   // 缓存配置

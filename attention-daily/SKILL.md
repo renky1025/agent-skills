@@ -1,163 +1,166 @@
 ---
 name: attention-daily
-description: Daily Twitter/X content curation from AttentionVC.ai - automatically fetches trending AI, Crypto, and Tech articles, generates daily digest reports, and creates multiple high-engagement post angles for users to choose from. Use when users say "daily digest", "attention vc", "trending articles", "ai crypto tech news", or want curated content for social media posting.
+description: Daily tech intelligence report generator - automatically fetches GitHub trending repositories and AttentionVC.ai articles, analyzes content from multiple perspectives, and generates comprehensive daily digest reports. Use when users say "daily report", "tech digest", "GitHub trending", "attention vc articles", or want curated tech content with analysis.
 ---
 
-# Attention Daily - Viral Content Curator
+# Attention Daily - Tech Intelligence Report
 
-Automatically curate trending AI, Crypto, and Tech content from AttentionVC.ai and generate high-engagement social media posts.
+自动生成每日科技情报报告，整合 **GitHub Trending** 热门开源项目和 **AttentionVC.ai** 热门技术文章。
 
 ## What This Skill Does
 
-1. **Fetches** trending articles from AttentionVC.ai (AI, Crypto, Tech categories)
-2. **Analyzes** engagement metrics (impressions, likes, replies, reposts)
-3. **Generates** a daily digest report with tables
-4. **Creates** 5 different post angles for user selection
+1. **🔥 Fetches** GitHub trending repositories (Top 10)
+   - From: https://github.attentionvc.ai/trending/repos
+   - Includes: Project name, language, stars, description
+
+2. **📰 Fetches** trending articles from AttentionVC.ai
+   - Categories: Tech, AI
+   - Time range: 24 hours
+   - Quantity: 10 articles per category
+
+3. **🔍 Analyzes** articles from multiple perspectives
+   - 💻 Technical perspective
+   - 💼 Business perspective
+   - 👥 User perspective
+   - 📈 Trend perspective
+
+4. **📝 Generates** comprehensive daily report
+   - GitHub projects summary
+   - Article analysis with insights
+   - Cross-reference summary
+   - Key trends and insights
 
 ## Usage
 
 Simply say: "生成今日日报" 或 "run attention daily"
 
 The skill will:
-1. Fetch top 20 articles from each category (AI, Crypto, Tech)
-2. Generate a formatted daily report
-3. Create 5 post options with different angles
+1. Fetch top 10 GitHub trending repos
+2. Fetch top 10 Tech articles from AttentionVC.ai
+3. Fetch top 10 AI articles from AttentionVC.ai
+4. Analyze all articles with multi-perspective insights
+5. Generate comprehensive report with all findings
 
-## Output Format
+## Report Structure
 
-### 📊 Daily Digest Report
+### 📊 Part 1: GitHub 热门项目
 
-```
-# Attention Daily Digest - {Date}
+```markdown
+## 🔥 Part 1: GitHub 热门项目 (Top 10)
 
-## 📈 Overview
-- Total Articles: {N}
-- Top Category: {Category}
-- Highest Engagement: {Article Title}
-
-## 🔥 AI (Top 5)
-| Rank | Title | Author | Impressions | Engagement |
-|------|-------|--------|-------------|------------|
-| 1 | ... | @author | 31.2M | 2.9K♥ 781💬 |
+| 排名 | 项目 | 语言 | ⭐ Stars | 简介 |
+|------|------|------|----------|------|
+| 1 | **owner/repo** | Rust | 1.2K | Project description... |
 | ... | ... | ... | ... | ... |
 
-## 💰 Crypto (Top 5)
-| Rank | Title | Author | Impressions | Engagement |
-|------|-------|--------|-------------|------------|
-| 1 | ... | @author | 545.5K | 14.8K♥ |
-| ... | ... | ... | ... | ... |
-
-## ⚡ Tech (Top 5)
-| Rank | Title | Author | Impressions | Engagement |
-|------|-------|--------|-------------|------------|
-| 1 | ... | @author | 538.5K | 1.0K♥ |
-| ... | ... | ... | ... | ... |
-
-## 🎯 Key Trends
-- {Trend 1}
-- {Trend 2}
-- {Trend 3}
+### 💡 项目亮点总结
+- **热门语言**: Rust(3), Python(2), Go(2)
+- **项目类型**: 涵盖 AI 工具、开发框架、实用工具
+- **趋势观察**: 开源社区活跃，AI 相关项目持续热门
 ```
 
-### 📝 Post Options (Choose One)
+### 📰 Part 2: 热门文章分析
 
-#### Option 1: 🔥 Hot Take (热点追踪型)
-聚焦最热门话题，引发讨论
+```markdown
+## 📰 Part 2: 热门文章分析
 
-#### Option 2: 📊 Data Insights (数据洞察型)
-基于数据发现趋势，理性分析
+### 💻 Tech 领域 (Top 10)
 
-#### Option 3: 💡 Deep Dive (深度解读型)
-深入分析某个重要话题
+#### 1. 《文章标题》
+- **作者**: Author Name @handle · Location
+- **数据**: 538.5K 浏览 · 1.0K♥ · 45💬
+- **热度**: 🔥🔥 热门
+- **关键词**: API, Tool, Tutorial
+- **简介**: 文章简短描述
 
-#### Option 4: 🌐 Global View (全球视野型)
-对比不同地区/领域的关注点
+**多视角解读**:
+- 💻 **技术视角**: 技术创新、实现方案分析
+- 💼 **商业视角**: 商业机会和市场价值
+- 👥 **用户视角**: 用户体验和使用场景
+- 📈 **趋势视角**: 行业趋势和发展方向
 
-#### Option 5: 🎯 Opportunity Spotting (机会发现型)
-发现潜在机会或早期信号
+---
 
-## Data Source
+### 🤖 AI 领域 (Top 10)
+[Similar structure...]
 
-**AttentionVC.ai** - Tracks viral X (Twitter) articles across categories
-- Categories: AI (155 articles), Crypto (28), Tech (17), and more
-- Metrics: Impressions, Likes, Replies, Reposts, Quotes
-- Time range: 24h / 7d / 14d / All
-- Languages: English & Chinese
+### 📊 总体分析
+- 总文章数: 20 篇
+- 热门关键词: Claude(5), AI(4), API(3)
+- 趋势观察: [Key observations]
+```
 
-## Post Writing Guidelines
+### 🎯 Part 3: 今日总结
 
-### 1. Hot Take Angle 🔥
-- Hook: 用数据或惊人事实开头
-- Body: 简要总结 + 个人观点
-- CTA: 引发讨论的问题
-- Tone: 犀利、有态度
-- Length: 150-250 characters
+```markdown
+## 🎯 今日总结
 
-### 2. Data Insights 📊
-- Hook: 展示关键数据
-- Body: 分析趋势/变化
-- CTA: 问读者看法
-- Tone: 专业、理性
-- Length: 200-280 characters
+### 🔗 两部分内容关联
+**GitHub 项目观察**:
+- 今日热门项目共 10 个，其中 4 个与 AI 相关
+- 开源社区活跃，新工具和框架持续涌现
 
-### 3. Deep Dive 💡
-- Hook: 提出一个值得思考的问题
-- Body: 深入分析一个话题
-- CTA: 邀请分享经验
-- Tone: 深度、有见解
-- Length: 200-280 characters
+**社区讨论热点**:
+- Tech 领域: 10 篇热门文章
+- AI 领域: 10 篇热门文章
+- 技术社区关注实用工具、最佳实践和行业动态
 
-### 4. Global View 🌐
-- Hook: 对比不同视角
-- Body: 展示地区/领域差异
-- CTA: 问本地情况
-- Tone: 开阔、包容
-- Length: 180-250 characters
+### 💡 关键洞察
+1. **开源与社区并进**: GitHub 项目和社区讨论相互呼应
+2. **AI 持续主导**: 无论是开源项目还是社区文章，AI 都是绝对主角
+3. **实用性优先**: 教程、工具和实用方案最受欢迎
+4. **技术生态活跃**: 新技术、新工具、新方法层出不穷
+```
 
-### 5. Opportunity 🎯
-- Hook: 指出被忽视的机会
-- Body: 解释为什么值得关注
-- CTA: 问谁在关注
-- Tone: 前瞻、洞察
-- Length: 180-250 characters
+## Data Sources
 
-## Hashtag Strategy
+### 1. GitHub Trending
+- **URL**: https://github.attentionvc.ai/trending/repos
+- **Content**: Daily trending repositories
+- **Metrics**: Stars, language, description
 
-Per post:
-- 1 trending category tag: #AI #Crypto #Tech
-- 1 niche tag: #ClaudeCode #OpenClaw #Web3
-- 1 broad tag: #Startup #Innovation #Future
+### 2. AttentionVC.ai
+- **Tech Articles**: https://www.attentionvc.ai/article?window=1d&category=tech&lang=en%2Czh
+- **AI Articles**: https://www.attentionvc.ai/article?window=1d&category=ai&lang=en%2Czh
+- **Metrics**: Impressions, likes, replies, reposts
+- **Time Range**: 24 hours (1d)
 
 ## Technical Implementation
 
 ### Required MCP Tools
 - `playwright` - For browser automation
 
-### Scripts Location
-All automation scripts are located in `scripts/` directory:
+### Scripts Structure
 
 ```
 scripts/
-├── package.json          # Dependencies
-├── config.js             # Configuration
-├── main.js               # Entry point
-├── browser-automation.js # Browser automation
-├── data-extractor.js     # Data extraction
-└── report-generator.js   # Report generation
+├── package.json              # Dependencies
+├── config.js                 # Configuration
+├── main.js                   # Entry point (Enhanced)
+├── github-trending.js        # GitHub data fetcher
+├── attentionvc-fetcher.js    # AttentionVC data fetcher
+├── article-analyzer.js       # Article analysis module
+├── report-generator.js       # Report generation (Enhanced)
+└── output/                   # Generated reports
 ```
 
-### Execution Steps
+### Execution Flow
 
-1. Navigate to https://www.attentionvc.ai/article
-2. Check if page shows "Loading..." - if yes, wait for content to load; if no, proceed immediately
-3. Click on time range button "24h" to select current day's content
-4. Click on category button "AI" to filter AI articles
-5. Wait for table to load (if loading)
-6. Extract article data from rows
-7. Repeat steps 4-6 for "Crypto" and "Tech" categories
-8. Process and format data
-9. Generate report
-10. Create 5 post variations
+1. **Initialize** browser
+2. **Fetch GitHub** trending repos
+   - Navigate to trending page
+   - Extract top 10 repositories
+   - Enrich with details
+3. **Fetch AttentionVC** articles
+   - Fetch Tech category (10 articles)
+   - Fetch AI category (10 articles)
+4. **Analyze** articles
+   - Generate summary for each article
+   - Multi-perspective insights
+   - Extract keywords
+   - Calculate heat level
+5. **Generate** comprehensive report
+6. **Save** report to file
 
 ### Running the Scripts
 
@@ -171,226 +174,211 @@ npm run daily
 node main.js
 ```
 
-### Browser Automation Flow
+## Article Analysis Framework
 
-```javascript
-// Use the scripts directly from skill directory
-const BrowserAutomation = require('./scripts/browser-automation');
-const ReportGenerator = require('./scripts/report-generator');
+### Analysis Perspectives
 
-async function generateDaily() {
-  const browser = new BrowserAutomation();
-  const generator = new ReportGenerator();
-  
-  await browser.init();
-  const data = await browser.fetchAllData();
-  const report = generator.generateReport(data);
-  
-  console.log(report);
-  await browser.close();
-}
+#### 1. 💻 Technical Perspective
+Focus: Technology innovation, implementation, tech stack
+- New technologies or methods introduced
+- Technical architecture and design
+- Code quality and best practices
+
+#### 2. 💼 Business Perspective
+Focus: Business model, market opportunity, investment value
+- Commercial potential
+- Market positioning
+- Revenue models
+
+#### 3. 👥 User Perspective
+Focus: User experience, use cases, pain points
+- Problem-solving capability
+- User adoption barriers
+- Practical value
+
+#### 4. 📈 Trend Perspective
+Focus: Industry trends, future direction, evolution
+- Technology evolution path
+- Industry impact
+- Future predictions
+
+### Heat Level Calculation
+
 ```
+Heat Score = Impressions × 0.5 + Likes × 100 + Replies × 200 + Reposts × 150
 
-### Data Schema
-
-```typescript
-interface Article {
-  rank: number;
-  title: string;
-  author: string;
-  authorHandle: string;
-  location: string;
-  impressions: string;
-  category: string;
-  likes: string;
-  replies: string;
-  reposts: string;
-  quotes: string;
-  date: string;
-  wordCount: string;
-  readTime: string;
-}
+Levels:
+- 🔥🔥🔥 爆款: >= 10,000,000
+- 🔥🔥 热门: >= 1,000,000
+- 🔥 较热: >= 100,000
+- 📌 普通: < 100,000
 ```
 
 ## Example Output
 
-### Daily Report
+### Full Report Preview
 
-```
-# Attention Daily Digest - March 10, 2026
+```markdown
+# 📊 Attention Daily Digest - 2026年3月25日
 
-## 📈 Overview
-- Total Tracked: 50 articles
-- Hottest Category: AI (31.2M impressions top article)
-- Trending: Claude Code, AI Agents, Tokenization
+> 🤖 自动生成的每日科技情报报告
+> 📌 数据来源: GitHub Trending + AttentionVC.ai
+> ⏰ 生成时间: 2026/3/25 10:30:00
 
-## 🔥 AI Top 3
-1. "Grok 4.20 vs Woke AI" - 31.2M impressions, 2.9K likes
-2. "The First Multi-Behavior Brain Upload" - 9.9M impressions
-3. "The Ultimate Beginner's Guide to Claude" - 3.9M impressions
+## 📈 今日概览
 
-## 💰 Crypto Top 3
-1. "Why Most On-Chain Yield Fails Institutional Due Diligence" - 545.5K
-2. "Zcash Open Development Lab Raises $25M+" - 425.5K
-3. "Stop trying to guess. Start Planning the next Cycle" - 335.9K
+| 指标 | 数值 |
+|------|------|
+| **GitHub 热门项目** | 10 个 |
+| **热门文章** | 20 篇 |
+| **覆盖领域** | AI, Tech, Crypto |
+| **数据来源** | GitHub + AttentionVC.ai |
 
-## ⚡ Tech Top 3
-1. "An Update from the Anti-Cheat Team" - 538.5K
-2. "The Death of Issue Tracking" - 318.1K
-3. "Clash Mi的小白配置教程" - 148.8K
+## 🔥 Part 1: GitHub 热门项目 (Top 10)
 
-## 🎯 Today's Trends
-- AI agents are getting personal (chief of staff narrative)
-- Claude Code ecosystem growing rapidly
-- On-chain yield facing institutional scrutiny
-- Tokenization breaking traditional finance barriers
-```
+| 排名 | 项目 | 语言 | ⭐ Stars | 简介 |
+|------|------|------|----------|------|
+| 1 | **openai/openai-go** | Go | 2.1K | OpenAI Go SDK |
+| 2 | **anthropics/claude-code** | TypeScript | 1.8K | Claude Code editor |
+| ... | ... | ... | ... | ... |
 
-### Post Options
+### 💡 项目亮点总结
+- **热门语言**: Go(3), TypeScript(2), Rust(2)
+- **项目类型**: 涵盖 AI SDK、开发工具、基础设施
+- **趋势观察**: AI 相关项目持续热门，开发工具受关注
 
-**🔥 Hot Take:**
-```
-AI 正在从工具变成「员工」。
+## 📰 Part 2: 热门文章分析
 
-过去一周，关于 AI Agent 的帖子获得了 5000万+ 浏览。
-最火的话题？"Claude 成了我的 chief of staff"。
+### 💻 Tech 领域 (Top 10)
 
-这说明什么？
-人们不再满足于 ChatGPT 的问答，
-他们想要的是能主动做事的 Agent。
+#### 1. 《An Update from the Anti-Cheat Team》
+- **作者**: John Doe @johndoe · USA
+- **数据**: 538.5K 浏览 · 1.0K♥ · 45💬
+- **热度**: 🔥🔥 热门
+- **关键词**: Gaming, Security
+- **简介**: 游戏反作弊团队的最新进展和技术更新
 
-你觉得 AI 会先替代哪个岗位？
+**多视角解读**:
+- 💻 **技术视角**: 介绍了新的反作弊技术和检测方法
+- 💼 **商业视角**: 游戏行业安全问题日益重要，技术投入增加
+- 👥 **用户视角**: 玩家对公平游戏环境的期待
+- 📈 **趋势视角**: 游戏安全将成为长期技术竞争点
 
-#AI #ClaudeCode #FutureOfWork
-```
+---
 
-**📊 Data Insights:**
-```
-过去 7 天数据告诉我：
+### 🤖 AI 领域 (Top 10)
 
-🔥 AI 内容占据绝对主导
-- Top 1 帖子浏览量：3120万
-- Top 3 平均浏览量：1500万+
-- 关键词：Claude Code, AI Agent, Personal AI
+#### 1. 《The Ultimate Beginner's Guide to Claude》
+- **作者**: Jane Smith @janesmith · UK
+- **数据**: 3.9M 浏览 · 12.5K♥ · 892💬
+- **热度**: 🔥🔥🔥 爆款
+- **关键词**: Claude, Tutorial, AI
+- **简介**: Claude AI 的完整入门教程，从安装到高级用法
 
-💰 Crypto 更垂直
-- Top 1 仅 54万浏览
-- 但互动率更高（机构级话题）
-- 关键词：On-chain yield, Tokenization
+**多视角解读**:
+- 💻 **技术视角**: 详细介绍了 Claude 的技术特性和使用方法
+- 💼 **商业视角**: Claude 生态快速发展，用户教育需求大
+- 👥 **用户视角**: 降低 AI 工具使用门槛，实用价值高
+- 📈 **趋势视角**: AI 助手正从早期采用者向大众普及
 
-结论：AI 是流量密码，Crypto 是深度话题。
+---
 
-你更关注哪个领域？
+### 📊 总体分析
 
-#DataAnalytics #AI #Crypto
-```
+**数据概览**:
+- 总文章数: 20 篇
+- 热门关键词: Claude(6), AI(8), Tutorial(4)
 
-**💡 Deep Dive:**
-```
-为什么 Claude Code 突然火了？
+**趋势观察**:
+- Claude 相关话题持续火热，开发者和用户都在积极探索
+- AI 工具和框架层出不穷，技术生态快速演进
+- 技术内容以实用工具、教程和最新动态为主
 
-看了过去 7 天的热门文章，发现一个趋势：
-人们正在把 Claude 从「聊天工具」变成「工作伙伴」。
+## 🎯 今日总结
 
-几个信号：
-✅ "My chief of staff, Claude Code"
-✅ "Claude Cowork Masterclass for SEO"
-✅ "Save 74% on Anthropic API Bills"
+### 🔗 两部分内容关联
 
-背后逻辑：
-当大家还在卷模型能力时，
-先行者已经在卷「落地效率」。
+**GitHub 项目观察**:
+- 今日热门项目共 10 个，其中 4 个与 AI 相关
+- 开源社区活跃，新工具和框架持续涌现
 
-这不是炒作，是真实的 workflow 变革。
+**社区讨论热点**:
+- Tech 领域: 10 篇热门文章
+- AI 领域: 10 篇热门文章
+- 技术社区关注实用工具、最佳实践和行业动态
 
-你已经在用 AI 写代码/做内容了吗？
+### 💡 关键洞察
 
-#ClaudeCode #AI #Productivity
-```
+1. **开源与社区并进**: GitHub 项目和社区讨论相互呼应，技术热点从代码到讨论全面覆盖
+2. **AI 持续主导**: 无论是开源项目还是社区文章，AI 都是绝对主角
+3. **实用性优先**: 教程、工具和实用方案最受欢迎
+4. **技术生态活跃**: 新技术、新工具、新方法层出不穷
 
-**🌐 Global View:**
-```
-全球 Tech 圈在看什么？
+---
 
-🇺🇸 美国：Claude Code, AI Agents, Institutional Crypto
-🇨🇳 中文圈：龙虾军团 (OpenClaw), AI工具教程
-🇪🇺 欧洲：Technical deep dives, Go patterns
-🇸🇬 新加坡：AI出海, 博主合集
+**数据来源**:
+- GitHub Trending: github.attentionvc.ai
+- AttentionVC.ai: www.attentionvc.ai
 
-有趣的差异：
-- 英文圈关注 AI 替代工作流
-- 中文圈关注 AI 工具实操
-- Crypto 是全球共同话题
-
-你平时主要看哪个圈子的内容？
-
-#GlobalTech #AI #Startup
-```
-
-**🎯 Opportunity:**
-```
-发现一个被低估的趋势：
-
-「AI 成本控制」正在成为新赛道。
-
-过去一周看到：
-📌 "Save 74% on Anthropic API Bills"
-📌 "How to set up Claude Cowork"
-📌 OpenClaw + ClawRouter (5k stars)
-
-当 AI 成为基础设施，
-「省钱」就变成了刚需。
-
-这和云计算的发展路径一模一样：
-先用起来 → 发现贵 → 找省钱方案 → 形成生态
-
-谁能解决 AI 成本问题，谁就能抓住下一波机会。
-
-你现在的 AI 工具账单每月多少？
-
-#AI #CostOptimization #StartupOpportunity
+**生成时间**: 2026/3/25 10:30:00 | **报告版本**: v2.0
 ```
 
 ## Customization
 
-Users can customize:
-- Number of articles to fetch (default: top 5 per category)
-- Categories to track (default: AI, Crypto, Tech)
-- Post style preferences
-- Hashtag sets
+Edit `scripts/config.js` to customize:
+
+```javascript
+module.exports = {
+  source: {
+    // GitHub 配置
+    github: {
+      maxRepos: 10,  // 获取项目数量
+    },
+    // AttentionVC 配置
+    attentionvc: {
+      categories: ['tech', 'ai'],  // 文章分类
+      window: '1d',  // 时间窗口
+      maxArticlesPerCategory: 10,  // 每分类文章数
+    }
+  },
+  
+  // 分析配置
+  analysis: {
+    enabled: true,
+    perspectives: ['tech', 'business', 'user', 'trend'],
+  },
+  
+  // 输出配置
+  output: {
+    format: 'markdown',
+    includeGitHub: true,
+    includeArticles: true,
+    includeAnalysis: true,
+  }
+};
+```
 
 ## Error Handling
 
 If data fetch fails:
-1. Try alternative URL endpoints
-2. Use cached data from previous run
-3. Notify user with partial data
+1. Retry with timeout
+2. Skip failed sources, continue with available data
+3. Log errors for debugging
+4. Generate partial report if some data available
 
-## Cross-Device Usage
+## Dependencies
 
-To use this skill on a new device:
-
-1. Copy the entire `attention-daily/` directory to the new device
-2. Navigate to `scripts/` directory
-3. Run `npm install` to install Playwright dependencies
-4. The skill will auto-download Chromium on first run
-5. Execute `node main.js` or `npm run daily`
-
-### Required Dependencies
-- Node.js >= 14
-- Playwright >= 1.40.0 (auto-installed via npm)
-- Chromium/Chrome (auto-downloaded by Playwright)
-
-### Configuration
-Edit `scripts/config.js` to customize:
-- Time range (24h/7d/14d/All)
-- Categories to track
-- Browser settings
-- Output format
+```json
+{
+  "dependencies": {
+    "playwright": "^1.40.0"
+  }
+}
+```
 
 ## Notes
 
-- Data refreshes every ~21 minutes on source
-- Impressions numbers are from X (Twitter) analytics
-- Engagement rate = (likes + replies + reposts) / impressions
-- Consider timezone when interpreting "24h" data
+- Report generation may take 30-60 seconds due to browser automation
+- Data accuracy depends on source websites
+- GitHub trending data refreshes daily
+- AttentionVC.ai data refreshes every ~21 minutes

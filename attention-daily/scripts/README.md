@@ -1,16 +1,54 @@
-# Attention Daily Scripts
+# Attention Daily Scripts (v2.0)
 
-自动化抓取 AttentionVC.ai 数据并生成日报的脚本集合。
+自动化抓取 **GitHub Trending** 和 **AttentionVC.ai** 数据，生成增强版科技情报日报。
 
-## 安装
+## ✨ 新功能 (v2.0)
+
+### 🔥 Part 1: GitHub 热门项目
+- 自动获取 github.attentionvc.ai/trending/repos 的 Top 10 项目
+- 包含项目名、语言、Stars、简介
+- 项目亮点总结和趋势分析
+
+### 📰 Part 2: 热门文章深度分析
+- 从 AttentionVC.ai 获取 Tech 和 AI 分类的文章（各10篇）
+- **多视角点评**: 技术、商业、用户、趋势四个视角
+- **智能分析**: 关键词提取、热度计算、内容总结
+- 每篇文章配有详细解读
+
+### 🎯 智能总结
+- GitHub 项目与社区讨论的关联分析
+- 关键趋势和洞察自动生成
+- 热门关键词统计
+
+## 📋 报告结构
+
+```
+📊 Attention Daily Digest - {Date}
+├── 📈 今日概览
+├── 🔥 Part 1: GitHub 热门项目 (Top 10)
+│   ├── 项目列表表格
+│   └── 项目亮点总结
+├── 📰 Part 2: 热门文章分析
+│   ├── 💻 Tech 领域 (Top 10)
+│   │   └── 每篇文章详情 + 多视角解读
+│   ├── 🤖 AI 领域 (Top 10)
+│   │   └── 每篇文章详情 + 多视角解读
+│   └── 📊 总体分析
+└── 🎯 今日总结
+    ├── 两部分内容关联
+    └── 关键洞察
+```
+
+## 🚀 使用方法
+
+### 1. 安装依赖
 
 ```bash
+cd scripts
 npm install
 ```
 
-## 使用
-
-### 1. 运行完整流程（推荐）
+### 2. 运行日报生成
 
 ```bash
 npm run daily
@@ -18,70 +56,143 @@ npm run daily
 node main.js
 ```
 
-### 2. 单独运行模块
+### 3. 查看报告
 
-```bash
-# 仅抓取数据
-npm run fetch
+报告将保存到 `scripts/output/daily-report-{date}.md`
 
-# 仅生成报告
-npm run generate
-```
-
-## 文件结构
+## 📊 数据流程
 
 ```
-scripts/
-├── package.json          # 依赖配置
-├── config.js             # 全局配置
-├── main.js               # 入口文件
-├── browser-automation.js # 浏览器自动化
-├── data-extractor.js     # 数据提取
-├── report-generator.js   # 报告生成
-└── output/               # 输出目录
-    ├── daily-data-*.json # 原始数据
-    └── daily-report-*.md # 生成的日报
+GitHub Trending (10 repos)    AttentionVC.ai (Tech + AI articles)
+         │                              │
+         ▼                              ▼
+  github-trending.js           attentionvc-fetcher.js
+         │                              │
+         ▼                              ▼
+  项目数据 (名称/语言/Stars)     文章数据 (标题/作者/浏览量)
+         │                              │
+         │                     article-analyzer.js
+         │                              │
+         │                     多视角分析/总结/关键词
+         │                              │
+         └───────────┬──────────────────┘
+                     ▼
+         ┌──────────────────────┐
+         │   report-generator.js │
+         │   整合生成完整报告    │
+         └──────────┬───────────┘
+                    ▼
+         ┌──────────────────────┐
+         │ output/daily-report-*.md │
+         └──────────────────────┘
 ```
 
-## 配置
+## 🔍 文章分析视角
 
-编辑 `config.js` 调整参数：
+每个热门文章都会从四个视角进行分析：
+
+| 视角 | Emoji | 关注点 |
+|------|-------|--------|
+| **技术视角** | 💻 | 技术创新、实现方案、技术栈 |
+| **商业视角** | 💼 | 商业模式、市场机会、投资价值 |
+| **用户视角** | 👥 | 用户体验、使用场景、痛点解决 |
+| **趋势视角** | 📈 | 行业趋势、未来方向、技术演进 |
+
+## ⚙️ 配置
+
+编辑 `config.js`:
 
 ```javascript
 module.exports = {
-  // 时间范围: '24h', '7d', '14d', 'All'
   source: {
-    timeRange: '24h',
-    categories: ['AI', 'Crypto', 'Tech'],
+    github: {
+      url: 'https://github.attentionvc.ai/trending/repos',
+      maxRepos: 10,
+    },
+    attentionvc: {
+      url: 'https://www.attentionvc.ai/article',
+      categories: ['tech', 'ai'],
+      window: '1d',  // '1d', '7d', '14d', 'all'
+      maxArticlesPerCategory: 10,
+    }
   },
   
-  // 浏览器设置
   browser: {
-    headless: false,  // false = 显示浏览器窗口
-    waitTime: 2000,   // 点击后等待时间
+    headless: true,  // true = 无头模式
+    timeout: 30000,
+    waitTime: 3000,
   },
   
-  // 提取设置
-  extraction: {
-    maxArticlesPerCategory: 5, // 每类提取文章数
+  analysis: {
+    enabled: true,
+    perspectives: ['tech', 'business', 'user', 'trend'],
+  },
+  
+  output: {
+    format: 'markdown',
+    includeGitHub: true,
+    includeArticles: true,
+    includeAnalysis: true,
   }
 };
 ```
 
-## 跨设备使用
+## 📁 文件结构
 
-1. 复制整个 `attention-daily` 目录到新设备
-2. 运行 `npm install` 安装依赖
-3. 确保已安装 Chromium/Chrome
-4. 运行 `npm run daily`
+```
+attention-daily/
+├── SKILL.md                     # Skill 文档
+├── scripts/
+│   ├── package.json             # 依赖配置
+│   ├── config.js                # 配置文件 (已更新)
+│   ├── main.js                  # 主程序入口 (已更新)
+│   ├── github-trending.js       # GitHub 数据获取 (新增)
+│   ├── attentionvc-fetcher.js   # AttentionVC 数据获取 (新增)
+│   ├── article-analyzer.js      # 文章分析模块 (新增)
+│   ├── report-generator.js      # 报告生成器 (已更新)
+│   ├── browser-automation.js    # 旧版浏览器自动化 (保留)
+│   ├── data-extractor.js        # 旧版数据提取 (保留)
+│   └── output/                  # 输出目录
+└── references/
+```
 
-## 输出示例
+## 🔧 技术栈
 
-运行后会生成：
-- `output/daily-data-*.json` - 原始抓取数据
-- `output/daily-report-*.md` - Markdown 格式日报
+- **Node.js** - 运行时环境
+- **Playwright** - 浏览器自动化
+- **Markdown** - 报告格式
 
-## 依赖
+## 📝 更新日志
 
-- Node.js >= 14
-- Playwright >= 1.40.0
+### v2.0 (2026-03-25)
+- ✨ 新增 GitHub Trending 项目获取
+- ✨ 新增文章多视角分析功能
+- ✨ 新增智能总结和洞察生成
+- ✨ 增强报告格式和内容
+- ✨ 支持 Tech 和 AI 分类文章
+- ✨ 热度计算和关键词提取
+
+### v1.0
+- 基础版本：AttentionVC.ai 数据获取
+- 支持 AI, Crypto, Tech 三个分类
+
+## 🐛 故障排除
+
+### 浏览器启动失败
+```bash
+# 安装 Playwright 浏览器
+npx playwright install chromium
+```
+
+### 数据获取超时
+- 检查网络连接
+- 增加 config.js 中的 timeout 值
+- 尝试使用 headless: false 查看浏览器行为
+
+### 报告生成失败
+- 检查 output 目录是否存在
+- 检查磁盘空间
+
+## 📄 License
+
+MIT
