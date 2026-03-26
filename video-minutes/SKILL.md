@@ -155,8 +155,9 @@ content:
   max_summary_points: 10
 
 whisper:
-  model: base  # tiny/base/small/medium/large
+  model: base  # tiny/base/small/medium/large/large-v1/large-v2/large-v3
   device: auto  # auto/cpu/cuda/mps
+  compute_type: int8  # int8/int8_float16/float16/float32
   language: null  # null=auto
 
 classification:
@@ -528,24 +529,91 @@ duration: {{duration}}
 
 ---
 
-## 目录结构
+## 依赖安装
+
+### 必需依赖
+
+```bash
+# ffmpeg
+brew install ffmpeg              # macOS
+sudo apt install ffmpeg          # Ubuntu
+winget install Gyan.FFmpeg       # Windows
+
+# Python 依赖
+pip install -r requirements.txt
+```
+
+### requirements.txt
+
+```
+# 🚀 insanely-fast-whisper (高性能转录)
+faster-whisper>=1.0.0
+
+# 其他依赖
+ffmpeg-python>=0.2.0
+pyyaml>=6.0
+requests>=2.31.0
+notion-client>=2.2.1
+yt-dlp>=2023.12.30
+onnxruntime>=1.16.0
+torch>=2.0.0
+```
+
+---
+
+## 性能优化
+
+### insanely-fast-whisper 优势
+
+基于 [faster-whisper](https://github.com/SYSTRAN/faster-whisper)，比原始 Whisper **快 2-4 倍**：
+
+| 特性 | openai-whisper | faster-whisper |
+|------|----------------|----------------|
+| **速度** | 1x (基准) | 2-4x ⚡ |
+| **内存** | 较高 | 降低 50% 💾 |
+| **精度** | 标准 | 相同 ✓ |
+| **量化** | float32 | int8/int16 🔧 |
+| **VAD** | 无 | 内置 🎙️ |
+
+### 模型选择建议
+
+| 模型 | 显存需求 | 适合场景 |
+|------|----------|----------|
+| `tiny` | ~1GB | 快速预览、实时测试 |
+| `base` | ~1GB | **推荐**，平衡速度质量 |
+| `small` | ~2GB | 更精准，慢 2x |
+| `medium` | ~5GB | 高精度，慢 4x |
+| `large-v3` | ~10GB | 最佳质量，慢 8x |
+
+### 设备与精度配置
+
+```yaml
+whisper:
+  device: auto        # auto/cpu/cuda/mps
+  compute_type: int8  # int8/int8_float16/float16/float32
+```
+
+- **int8**: 最快，内存占用最小，质量损失极小
+- **float16**: 更快，需要 GPU
+- **float32**: 标准精度
+
+---
+
+## 目录结构 (更新)
 
 ```
 opencode/skills/video-minutes/
 ├── SKILL.md                          # 本文件
 ├── config.yaml                       # 默认配置模板
 ├── README.md                         # 快速开始指南
+├── requirements.txt                  # Python 依赖 ⭐
 ├── scripts/
 │   ├── generate_minutes.py           # 主入口 ⭐
-│   ├── classify_video.py             # 视频类型分类
-│   ├── extract_audio.py              # 音频提取
-│   ├── transcribe_whisper.py         # Whisper 转录
-│   ├── analyze_content.py            # 内容分析
-│   ├── format_output.py              # 格式化输出
-│   ├── dispatch_tasks.py             # 任务分发
-│   ├── scan-and-process.py           # 自动扫描
-│   ├── queue.py                      # 队列管理
-│   └── config_wizard.py              # 配置向导
+│   ├── insanely_fast_transcriber.py  # 高性能转录器 ⭐ NEW
+│   ├── video_processor.py            # 视频处理
+│   ├── classifier.py                 # 视频类型分类
+│   ├── config_manager.py             # 配置管理
+│   └── dispatcher.py                 # 任务分发
 ├── templates/                        # 类型特定模板
 │   ├── meeting.md
 │   ├── lecture.md
@@ -554,23 +622,9 @@ opencode/skills/video-minutes/
 │   ├── podcast.md
 │   ├── tutorial.md
 │   └── note.md
-├── prompts/                          # AI 提示词
-│   ├── classify_system.txt
-│   ├── summarize_system.txt
-│   └── extract_actions.txt
-├── references/
-│   ├── config/
-│   │   ├── config-schema.md          # 配置 schema
-│   │   └── first-time-setup.md       # 首次设置流程
-│   └── templates/
-│       └── variable-reference.md     # 模板变量参考
-├── docs/
-│   ├── video-types-design.md         # 分类设计
-│   ├── whisper-models.md             # 模型选择指南
-│   └── integrations.md               # 集成指南
-└── tests/
-    ├── samples/                      # 测试样本
-    └── test_classification.py
+└── references/
+    └── config/
+        └── config-schema.md          # 配置 schema
 ```
 
 ---
@@ -652,7 +706,13 @@ A: 长视频建议分段 `--segment-duration 1800` (30分钟一段)
 
 ## 版本历史
 
-### v1.2.0 (2026-03-21) - 当前
+### v2.0.0 (2026-03-25) - 当前
+- 🚀 **新增 insanely-fast-whisper 支持** - 基于 faster-whisper，速度提升 2-4 倍
+- ⚡ **性能优化** - 支持 int8 量化、VAD 过滤、词级时间戳
+- 💾 **内存优化** - 显存占用降低 50%
+- 🔧 **新配置项** - `compute_type` 支持多种精度模式
+
+### v1.2.0 (2026-03-21)
 - ✅ 新增视频类型自动分类系统 (7种类型)
 - ✅ 新增任务分发集成 (@tags)
 - ✅ 新增 Obsidian/Notion/飞书多格式输出

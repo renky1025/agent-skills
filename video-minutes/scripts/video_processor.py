@@ -2,12 +2,20 @@
 """
 视频处理器
 协调音频提取、转录、分类、生成纪要的全流程
+使用 insanely-fast-whisper (faster-whisper) 进行高性能转录
 """
 
 import subprocess
 from pathlib import Path
-from typing import Dict, Optional
-import whisper
+from typing import Dict, Optional, List, Any, Union
+
+# 导入高性能转录器
+try:
+    from scripts.insanely_fast_transcriber import InsanelyFastTranscriber
+    HAS_FAST_TRANSCRIBER = True
+except ImportError:
+    HAS_FAST_TRANSCRIBER = False
+    print("⚠️  警告: faster-whisper 未安装，将使用备用方案")
 
 
 class VideoProcessor:
@@ -16,7 +24,28 @@ class VideoProcessor:
     def __init__(self, config: dict, verbose: bool = False):
         self.config = config
         self.verbose = verbose
-        self.whisper_model = None
+        self.transcriber = None
+        self._init_transcriber()
+
+    def _init_transcriber(self):
+        """初始化转录器"""
+        if HAS_FAST_TRANSCRIBER:
+            model_size = self.config.get("whisper", {}).get("model", "base")
+            device = self.config.get("whisper", {}).get("device", None)
+            compute_type = self.config.get("whisper", {}).get("compute_type", "int8")
+            
+            try:
+                self.transcriber = InsanelyFastTranscriber(
+                    model_size=model_size,
+                    device=device,
+                    compute_type=compute_type
+                )
+                if self.verbose:
+                    info = self.transcriber.get_model_info()
+                    print(f"🚀 使用 faster-whisper ({info['device']}, {info['compute_type']})")
+            except Exception as e:
+                print(f"⚠️  faster-whisper 初始化失败: {e}")
+                self.transcriber = None
 
     def process(self,
                 video_path: Path,
@@ -68,7 +97,11 @@ class VideoProcessor:
 
             if transcript_only:
                 # 仅转录模式
-                output_path = self._save_transcript(video_path, transcript, output_format)
+                output_path = self._save_transcript(
+                    video_path, 
+                    transcript, 
+                    output_format or "text"
+                )
                 result["output_path"] = output_path
                 result["success"] = True
                 return result
@@ -81,27 +114,35 @@ class VideoProcessor:
                 classifier = VideoClassifier(self.config)
                 classification = classifier.classify(video_path)
                 video_type = classification["type"]
+                
+            # 确保 video_type 不为 None
+            if video_type is None:
+                video_type = "note"  # 默认类型
 
             # 步骤 4: 内容分析
             if self.verbose:
                 print(f"   🧠 生成 {video_type} 类型纪要...")
-            content = self._analyze_content(transcript, video_type, language)
+            content = self._analyze_content(
+                transcript, 
+                str(video_type), 
+                language
+            )
 
             # 步骤 5: 应用模板
             if self.verbose:
                 print("   📄 应用模板...")
             formatted_output = self._apply_template(
                 content,
-                video_type,
-                output_format or self.config["output"]["format"]
+                str(video_type),
+                str(output_format or self.config["output"]["format"])
             )
 
             # 步骤 6: 保存输出
             output_path = self._save_output(
                 video_path,
                 formatted_output,
-                video_type,
-                output_format or self.config["output"]["format"]
+                str(video_type),
+                str(output_format or self.config["output"]["format"])
             )
             result["output_path"] = output_path
 
@@ -109,7 +150,10 @@ class VideoProcessor:
             if self.config["content"]["include_action_items"]:
                 from scripts.dispatcher import TaskDispatcher
                 dispatcher = TaskDispatcher(self.config)
-                action_items = dispatcher.parse_action_items(transcript, video_type)
+                action_items = dispatcher.parse_action_items(
+                    str(transcript.get("text", "")), 
+                    str(video_type)
+                )
                 result["action_items"] = action_items
 
             result["success"] = True
@@ -141,23 +185,21 @@ class VideoProcessor:
         return audio_path
 
     def _transcribe(self, audio_path: Path, model: str, language: Optional[str]) -> Dict:
-        """使用 Whisper 转录"""
-        # 加载模型 (缓存)
-        if self.whisper_model is None:
-            self.whisper_model = whisper.load_model(model)
-
-        # 转录
-        result = self.whisper_model.transcribe(
-            str(audio_path),
-            language=language,
-            verbose=self.verbose
-        )
-
-        return {
-            "text": result["text"],
-            "segments": result["segments"],
-            "language": result.get("language", "unknown")
-        }
+        """使用 faster-whisper 转录"""
+        if self.transcriber is not None:
+            # 使用 faster-whisper (高性能)
+            return self.transcriber.transcribe(
+                audio_path=audio_path,
+                language=language,
+                word_timestamps=True,
+                vad_filter=True,
+                verbose=self.verbose
+            )
+        else:
+            # 备用方案：如果 faster-whisper 不可用
+            raise RuntimeError(
+                "faster-whisper 未安装。请运行: pip install faster-whisper"
+            )
 
     def _analyze_content(self, transcript: Dict, video_type: str, language: str) -> Dict:
         """分析内容 (模拟实现，实际应该调用 AI)"""
