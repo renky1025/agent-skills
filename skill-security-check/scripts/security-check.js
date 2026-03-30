@@ -77,6 +77,49 @@ class SecurityChecker {
   }
 
   /**
+   * 判断匹配是否是文档中的示例（非实际代码）
+   * @param {string} content - 文件内容
+   * @param {number} matchIndex - 匹配位置
+   * @param {string} fileExt - 文件扩展名
+   * @returns {boolean} - 是否是文档示例
+   */
+  isDocumentationExample(content, matchIndex, fileExt) {
+    // 只对 Markdown 和纯文本文件进行检查
+    if (!['.md', '.txt'].includes(fileExt.toLowerCase())) {
+      return false;
+    }
+    
+    // 获取匹配位置前后的上下文
+    const contextStart = Math.max(0, matchIndex - 100);
+    const contextEnd = Math.min(content.length, matchIndex + 100);
+    const context = content.substring(contextStart, contextEnd);
+    
+    // 检查是否在代码块中（三个反引号之间）
+    const beforeContent = content.substring(0, matchIndex);
+    const codeBlockMatches = beforeContent.match(/```/g);
+    const isInCodeBlock = codeBlockMatches && codeBlockMatches.length % 2 === 1;
+    
+    // 检查是否是建议/警告文本（如 "不要使用 urllib"）
+    const suggestionPatterns = [
+      /不要.*使用/g,
+      /避免.*使用/g,
+      /不推荐使用/g,
+      /deprecated/gi,
+      /do not use/gi,
+      /avoid using/gi
+    ];
+    
+    const isSuggestion = suggestionPatterns.some(pattern => pattern.test(context));
+    
+    // 如果在代码块外，且是建议文本，则认为是文档示例
+    if (!isInCodeBlock && isSuggestion) {
+      return true;
+    }
+    
+    return false;
+  }
+
+  /**
    * 检查数据外泄
    */
   checkDataExfiltration() {
@@ -94,10 +137,10 @@ class SecurityChecker {
       /WebSocket/g
     ];
     
-    // Python
+    // Python - 排除文档中的示例引用（如 `urllib` 在 Markdown 代码块中）
     const pyPatterns = [
       /requests\./g,
-      /urllib/g,
+      /urllib\./g,  // 修改为需要点号，避免匹配文档中的纯文本
       /http\.client/g,
       /aiohttp/g,
       /httpx/g
@@ -148,13 +191,32 @@ class SecurityChecker {
     
     for (const file of files) {
       const content = fs.readFileSync(file, 'utf-8');
+      const ext = path.extname(file).toLowerCase();
+      
       for (const pattern of allPatterns) {
-        const matches = content.match(pattern);
-        if (matches) {
+        // 重置正则表达式的 lastIndex
+        pattern.lastIndex = 0;
+        
+        let match;
+        let matchCount = 0;
+        
+        // 使用 exec 来遍历所有匹配，以便获取位置信息
+        while ((match = pattern.exec(content)) !== null) {
+          const matchIndex = match.index;
+          
+          // 检查是否是文档中的示例（非实际代码）
+          if (this.isDocumentationExample(content, matchIndex, ext)) {
+            continue;
+          }
+          
+          matchCount++;
+        }
+        
+        if (matchCount > 0) {
           issues.push({
             file: path.relative(this.skillPath, file),
             pattern: pattern.source,
-            count: matches.length
+            count: matchCount
           });
         }
       }
@@ -849,11 +911,14 @@ class SecurityChecker {
         reasons.push(`${path.relative(this.skillPath, file)}: 过多单字母变量 (${singleLetterVars}/${totalVars})`);
       }
       
-      // 检查是否有大量编码字符串
-      const encodedStrings = content.match(/["'][^"']{50,}["']/g);
-      if (encodedStrings && encodedStrings.length > 5) {
-        obfuscated = true;
-        reasons.push(`${path.relative(this.skillPath, file)}: 包含 ${encodedStrings.length} 个长字符串`);
+      // 检查是否有大量编码字符串（排除 Markdown 文档和提示词模板文件）
+      if (!['.md', '.txt'].includes(ext)) {
+        const encodedStrings = content.match(/["'][^"']{100,}["']/g);  // 提高长度阈值到100
+        // 提高阈值，避免误判正常的提示词模板
+        if (encodedStrings && encodedStrings.length > 20) {  // 提高数量阈值到20
+          obfuscated = true;
+          reasons.push(`${path.relative(this.skillPath, file)}: 包含 ${encodedStrings.length} 个超长字符串`);
+        }
       }
       
       // 检查是否一行特别长
@@ -897,9 +962,10 @@ class SecurityChecker {
     const files = this.getCodeFiles();
     const issues = [];
     
-    // Shell命令
+    // Shell命令 - 使用更精确的模式避免误报
+    // ps 命令通常以空格或行首开始，后面跟着选项或单独使用
     const shellPatterns = [
-      /ps\s+/g,
+      /(?:^|\s)ps\s+[-a-z]/g,  // 匹配 "ps -" 或 "ps aux" 等命令用法
       /tasklist/g,
       /wmic/g,
       /\/proc\//g
@@ -913,16 +979,17 @@ class SecurityChecker {
       /os\.listdir\s*\(\s*["']\/proc["']/g
     ];
     
-    // JavaScript
+    // JavaScript - 排除 Node.js 的 process 对象常见用法
     const jsPatterns = [
       /process\.list/g,
-      /enumerateProcesses/g
+      /enumerateProcesses/g,
+      /process\.title/g  // 只有显式访问 process.title 等特定属性才可能是进程侦察
     ];
     
     // Go
     const goPatterns = [
       /exec\.Command\s*\(\s*["']ps["']/g,
-      /process\./g
+      /os\.Process/g  // Go 的进程操作通常通过 os.Process
     ];
     
     // Rust
@@ -961,9 +1028,29 @@ class SecurityChecker {
     
     for (const file of files) {
       const content = fs.readFileSync(file, 'utf-8');
+      const ext = path.extname(file).toLowerCase();
+      
       for (const pattern of allPatterns) {
-        const matches = content.match(pattern);
-        if (matches) {
+        // 重置正则表达式的 lastIndex
+        pattern.lastIndex = 0;
+        
+        let match;
+        let hasRealMatch = false;
+        
+        // 使用 exec 来遍历所有匹配，以便获取位置信息
+        while ((match = pattern.exec(content)) !== null) {
+          const matchIndex = match.index;
+          
+          // 检查是否是文档中的示例（非实际代码）
+          if (this.isDocumentationExample(content, matchIndex, ext)) {
+            continue;
+          }
+          
+          hasRealMatch = true;
+          break; // 找到一个非文档匹配即可
+        }
+        
+        if (hasRealMatch) {
           issues.push({
             file: path.relative(this.skillPath, file),
             pattern: pattern.source

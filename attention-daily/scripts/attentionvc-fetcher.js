@@ -21,7 +21,7 @@ class AttentionVCArticleFetcher {
       headless: headless,
     });
     this.page = await this.browser.newPage();
-    this.page.setDefaultTimeout(30000);
+    this.page.setDefaultTimeout(60000);
   }
 
   /**
@@ -45,10 +45,10 @@ class AttentionVCArticleFetcher {
     console.log(`📰 Fetching ${category} articles from ${url}`);
     
     try {
-      await this.page.goto(url, { waitUntil: 'networkidle' });
-      
+      await this.page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+
       // 等待内容加载
-      await this.page.waitForTimeout(3000);
+      await this.page.waitForTimeout(5000);
       
       // 检查是否需要等待加载
       const isLoading = await this.page.locator('text=Loading...').isVisible().catch(() => false);
@@ -58,36 +58,36 @@ class AttentionVCArticleFetcher {
       }
       
       // 提取文章数据
-      const articles = await this.page.evaluate((maxCount) => {
+      const articles = await this.page.evaluate(({ maxCount, categoryParam }) => {
         const rows = document.querySelectorAll('table tbody tr');
         const results = [];
-        
+
         rows.forEach((row, index) => {
           if (results.length >= maxCount) return;
-          
+
           const cells = row.querySelectorAll('td');
           if (cells.length >= 4) {
             // 提取标题
             const titleText = cells[1]?.textContent || '';
             const title = titleText.split('·')[0]?.trim() || titleText;
-            
+
             // 提取作者信息
             const authorText = cells[2]?.textContent?.trim() || '';
             const author = authorText.split('@')[0]?.trim() || authorText;
             const authorHandle = authorText.match(/@([\w_]+)/)?.[0] || '';
             const location = authorText.match(/·\s*(.+)$/)?.[1]?.trim() || '';
-            
+
             // 提取浏览量和互动数据
             const impressionsText = cells[3]?.textContent?.trim() || '';
             const impressions = impressionsText.split(' ')[0] || '';
             const likes = impressionsText.match(/(\d+\.?\d*[KM]?)\s*♥/)?.[1] || '';
             const replies = impressionsText.match(/(\d+\.?\d*[KM]?)\s*💬/)?.[1] || '';
             const reposts = impressionsText.match(/(\d+\.?\d*[KM]?)\s*🔁/)?.[1] || '';
-            
+
             // 获取文章链接
             const linkEl = cells[1]?.querySelector('a');
             const articleUrl = linkEl?.href || '';
-            
+
             if (title && author) {
               results.push({
                 rank: results.length + 1,
@@ -100,14 +100,14 @@ class AttentionVCArticleFetcher {
                 replies,
                 reposts,
                 articleUrl,
-                category: category.toUpperCase()
+                category: categoryParam.toUpperCase()
               });
             }
           }
         });
-        
+
         return results;
-      }, limit);
+      }, { maxCount: limit, categoryParam: category });
       
       console.log(`✅ Fetched ${articles.length} ${category} articles`);
       return articles;

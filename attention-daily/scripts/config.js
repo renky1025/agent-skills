@@ -11,7 +11,7 @@ module.exports = {
     attentionvc: {
       url: 'https://www.attentionvc.ai/article',
       categories: ['tech', 'ai'], // 文章分类
-      window: '1d', // 时间窗口: '1d', '7d', '14d', 'all'
+      window: '7d', // 时间窗口: '1d', '7d', '14d', 'all'
       languages: 'en,zh',
       maxArticlesPerCategory: 10,
     },

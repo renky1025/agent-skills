@@ -11,6 +11,7 @@ const GitHubTrendingFetcher = require('./github-trending');
 const AttentionVCArticleFetcher = require('./attentionvc-fetcher');
 const ArticleAnalyzer = require('./article-analyzer');
 const ReportGenerator = require('./report-generator');
+const config = require('./config');
 
 async function main() {
   console.log('🚀 Attention Daily Report Generator (Enhanced v2.0)');
@@ -36,11 +37,11 @@ async function main() {
     console.log('-'.repeat(50));
     
     // 获取 Tech 和 AI 分类的文章
-    const articleCategories = ['tech', 'ai'];
+    const articleCategories = config.source.attentionvc.categories;
     const attentionvcArticles = await articleFetcher.fetchMultipleCategories(
       articleCategories, 
-      '1d',  // 24小时
-      10     // 每个分类10篇
+      config.source.attentionvc.window,  // 使用配置文件中的时间窗口
+      config.source.attentionvc.maxArticlesPerCategory
     );
     
     // 分析文章
