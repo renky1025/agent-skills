@@ -1,0 +1,21 @@
+{
+  "name": "skill-security-check",
+  "version": "1.0.0",
+  "description": "一个支持多种编程语言的skill安装前安全检查工具。",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "clean": "rm -rf dist coverage"
+  },
+  "keywords": ["security", "skill", "check"],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
