@@ -1,0 +1,23 @@
+{
+  "skill_name": "image-design",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我想生成一张夜晚城市街头的人像照片，氛围感要强，像电影截图一样",
+      "expected_output": "生成的提示词应包含：主体描述（人物）、构图位置（如三分法）、光线逻辑（夜间城市光源、冷暖对比）、相机视角（如35mm或85mm镜头）、风格质感（电影感、胶片风格）",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "帮我写个提示词，要拍一个年轻女孩在咖啡馆靠窗位置，阳光洒进来那种感觉",
+      "expected_output": "提示词应包含窗户光、自然光描述、可能的主光辅光设置、50mm或85mm镜头、柔和胶片风格如Portra 400",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Generate a cyberpunk street scene with neon lights, cinematic style",
+      "expected_output": "The prompt should include: subject description, composition positioning, lighting logic (neon colors, contrast), camera angle (low-angle for epic feel), style (Blade Runner aesthetic, possibly Octane render or ray tracing)",
+      "files": []
+    }
+  ]
+}

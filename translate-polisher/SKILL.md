@@ -62,6 +62,7 @@ description: 高质量文章翻译技能，采用"分析→初译→审校→终
 3. 物化源内容：
    - **文件路径**：直接读取使用
    - **URL**：优先使用 `curl -L` 请求 `https://r.jina.ai/http://<url>` 获取正文 Markdown，保存到 `translate/{slug}.md`
+     - 如遇到代理问题，添加 `--noproxy "*"`：`curl -L --noproxy "*" "https://r.jina.ai/http://<url>"`
      - 不要优先使用 `urllib` 之类的默认 HTTP 客户端；这类实现更容易遇到 `403` 或被目标侧拦截
      - 若返回缺少正文、只拿到导航/摘要、被 paywall 截断、或请求失败，**立即停止流程**
      - 停止时明确告诉用户：当前 URL 无法稳定抓到完整正文，请用户自行下载、复制或粘贴原文后再翻译
