@@ -1,8 +1,8 @@
 ---
 name: infocard
-description: "从 URL 提取内容，生成可定制样式的信息卡片图片。智能分析内容结构，动态选择最适合的视觉呈现方式。使用方法：/infocard <URL> [--theme=slate|ocean|sunset|coral|indigo|forest|dark] [--width=1080]"
+description: "从 URL 提取内容，生成可定制样式的信息卡片图片。智能分析内容结构，动态选择最适合的视觉呈现方式。默认输出与原文同语言的单语卡片到 ~/Downloads/infocard-img/。使用方法：/infocard <URL> [--theme=slate|ocean|sunset|coral|indigo|forest|dark|purple] [--width=1080] [--lang=auto|zh|en|both]"
 user_invocable: true
-version: "5.0.0"
+version: "6.0.0"
 ---
 
 # infocard: 智能信息卡片生成器
@@ -22,9 +22,22 @@ version: "5.0.0"
 | 参数 | 说明 | 默认值 |
 |------|------|--------|
 | `URL` | 要抓取的网页链接 | 必填 |
-| `--theme` | 配色主题：`slate`(默认)、`ocean`、`sunset`、`coral`、`indigo`、`forest`、`dark` | `slate` |
+| `--theme` | 配色主题：`slate`(默认)、`ocean`、`sunset`、`coral`、`indigo`、`forest`、`dark`、`purple` | `slate` |
 | `--width` | 图片宽度 | `1080` |
 | `--output` | 输出文件名（不含扩展名） | 自动提取 |
+| `--lang` | 语言版本：`auto`(自动检测，默认)、`zh`(中文)、`en`(英文)、`both`(双语) | `auto` |
+
+### 输出规则
+
+- **默认保存目录**：`~/Downloads/infocard-img/`
+- **默认行为（`--lang=auto`）**：自动检测原文语言，仅生成与原文同语言的单语卡片
+  - 文件名：`{name}.{ext}`（不添加语言后缀）
+- **单语版本**：`--lang=zh` 或 `--lang=en` 时仅生成对应语言版本
+  - 文件名：`{name}_zh.png` 或 `{name}_en.png`
+- **双语版本**：`--lang=both` 时自动生成中英文两张卡片
+  - 中文版文件名：`{name}_zh.png`
+  - 英文版文件名：`{name}_en.png`
+- 输出目录自动创建，无需手动新建
 
 ## 核心设计理念
 
@@ -90,7 +103,7 @@ version: "5.0.0"
 | 沉思的 | slate/indigo | 哲学、认知、本质、意义、思考 |
 | 锐利的 | coral/sunset | 批判、解构、争议、对立 |
 | 温暖的 | forest | 人文、情感、生活、故事 |
-| 技术的 | ocean/dark | 架构、系统、算法、代码、工程 |
+| 技术的 | ocean/dark/purple | 架构、系统、算法、代码、工程、CLI工具 |
 | 科研的 | ocean/forest | 论文、实验、数据、研究 |
 | 创意的 | sunset/coral | 艺术、设计、创作、美学 |
 
@@ -131,9 +144,26 @@ version: "5.0.0"
 - 温暖：绿色调，圆润布局
 - 技术：蓝色调，mono 字体
 
-### 步骤 6: 生成 HTML
+### 步骤 6: 确定目标语言
 
-根据选择的布局和配色生成 HTML，使用对应主题的 CSS 变量。
+根据 `--lang` 参数确定生成语言：
+
+| `--lang` 值 | 行为 |
+|-------------|------|
+| `auto`（默认） | 自动检测原文语言，生成同语言单语卡片 |
+| `zh` | 强制生成中文版 |
+| `en` | 强制生成英文版 |
+| `both` | 生成中英文两张卡片 |
+
+**语言检测规则**：
+- 扫描提取的标题和正文内容
+- 若中文字符占比 > 50%，判定为中文内容
+- 否则判定为英文内容
+- 检测完成后记录判定结果，后续步骤使用
+
+### 步骤 7: 生成 HTML
+
+根据确定的 target language 生成对应语言的 HTML。
 
 **布局规范：**
 - **顶部（Header）**：只放核心标题、副标题、内容主题相关元素
@@ -141,10 +171,46 @@ version: "5.0.0"
 - **来源、日期**：不显示
 - Footer 样式：字号 12-13px，颜色使用 `var(--text-secondary)` 或更低透明度
 
-### 步骤 7: 截图生成
+**单语生成（`--lang=auto/zh/en`）**：
+- 若目标语言为中文：
+  - 使用 `Noto Sans SC` 字体
+  - HTML 写入 `/tmp/infocard_{name}.html`
+- 若目标语言为英文：
+  - 使用 `Inter` 字体
+  - HTML 写入 `/tmp/infocard_{name}.html`
+
+**双语生成（`--lang=both`）**：
+- 中文版：使用 `Noto Sans SC`，写入 `/tmp/infocard_{name}_zh.html`
+- 英文版：需先翻译，再使用 `Inter`，写入 `/tmp/infocard_{name}_en.html`
+
+#### 双语翻译子步骤（仅 `--lang=both` 时执行）
+
+**必须使用 `/translate-polisher` 技能翻译，不得直接翻译。**
+
+1. 将步骤 2 提取的元信息（标题、副标题、核心要点、金句等）整理为待翻译文本
+2. 调用 `/translate-polisher` 进行翻译（中文→英文 或 英文→中文）
+3. 使用翻译技能返回的终稿作为另一语言版本内容
+
+**注意**：
+- 卡片内容属于短文本，translate-polisher 会自动适配短文本处理流程
+- 术语、品牌名、产品名等专有名词保留原文不译
+- 保留原文格式标记（如加粗、链接等）
+
+### 步骤 8: 截图生成
 
 ```bash
-node ~/.claude/skills/infocard/assets/capture.js /tmp/infocard_{name}.html ~/Downloads/{name}.png 1080 800 fullpage
+mkdir -p ~/Downloads/infocard-img
+```
+
+**单语截图（`--lang=auto/zh/en`）**：
+```bash
+node ~/.claude/skills/infocard/assets/capture.js /tmp/infocard_{name}.html ~/Downloads/infocard-img/{name}.png 1080 800 fullpage
+```
+
+**双语截图（`--lang=both`）**：
+```bash
+node ~/.claude/skills/infocard/assets/capture.js /tmp/infocard_{name}_zh.html ~/Downloads/infocard-img/{name}_zh.png 1080 800 fullpage
+node ~/.claude/skills/infocard/assets/capture.js /tmp/infocard_{name}_en.html ~/Downloads/infocard-img/{name}_en.png 1080 800 fullpage
 ```
 
 ## 主题配色
@@ -160,12 +226,17 @@ node ~/.claude/skills/infocard/assets/capture.js /tmp/infocard_{name}.html ~/Dow
 ```
 
 ### ocean
-适合：技术、科研
+适合：技术、科研、现代 SaaS
 ```
---bg: #F0F9FF
---text-primary: #082F49
---accent: #0284C7
---border: #E0F2FE
+--bg: #EDF4FC
+--card-bg: #FFFFFF
+--text-primary: #0A2540
+--text-secondary: #3D6A9E
+--accent: #06B6D4
+--accent-light: #E0F9FF
+--border: #D1E8F5
+--highlight-bg: #F5FAFF
+--dark-card: #0C4A6E
 ```
 
 ### coral
@@ -213,6 +284,19 @@ node ~/.claude/skills/infocard/assets/capture.js /tmp/infocard_{name}.html ~/Dow
 --border: #1F2937
 ```
 
+### purple
+适合：开发者工具、CLI、暗色科技
+```
+--bg: #0F111A
+--text-primary: #F0F0F5
+--text-secondary: #8B8DA3
+--accent: #A78BFA
+--accent-light: #2A2C3D
+--border: #1E2030
+--highlight-bg: #181924
+--dark-card: #1A1B26
+```
+
 ## 示例：内容→判断→布局
 
 ### 示例 1：单一观点（稀 + 单点 + 沉思）
@@ -242,6 +326,9 @@ node ~/.claude/skills/infocard/assets/capture.js /tmp/infocard_{name}.html ~/Dow
 5. **代码换行** — 代码块使用 white-space: pre-wrap
 6. **要点+描述** — 每个核心要点搭配说明描述
 7. **作者信息位置** — 仅保留作者名，放在底部（Footer）不显眼位置；不显示来源和日期
+8. **默认单语输出** — 不指定 `--lang` 时，自动检测原文语言，仅生成一张同语言卡片
+9. **双语需显式指定** — 只有用户明确要求 `--lang=both` 时才生成两张卡片
+10. **翻译必须使用 /translate-polisher** — 双语模式下不得直接翻译，必须调用翻译技能确保翻译质量
 
 ## 常见错误
 
@@ -249,3 +336,5 @@ node ~/.claude/skills/infocard/assets/capture.js /tmp/infocard_{name}.html ~/Dow
 2. **密度判断错误** — 把修饰词算进去，要算核心内容
 3. **结构判断错误** — 对比内容用单点布局是大忌
 4. **情绪配错色调** — 哲学内容配粉色会很奇怪
+5. **默认生成双语** — 未确认用户意图就生成两张卡片；默认应只生成一张
+6. **直接翻译而非使用翻译技能** — 双语模式下必须通过 /translate-polisher 翻译，不得自行直译

@@ -1,0 +1,78 @@
+{
+  "skill_name": "weitoutiao-creator",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我是做职场成长类账号的，主要面向25-30岁的年轻上班族，今天想写一篇关于'如何拒绝无效加班'的内容，帮我生成一篇爆款文案。",
+      "expected_output": "按照6步工作流程执行，从第1步账号定位确认开始，逐步引导用户完成",
+      "files": [],
+      "assertions": [
+        {
+          "type": "contains",
+          "target": "output",
+          "path": "",
+          "expected": "账号定位",
+          "description": "输出应包含账号定位确认"
+        },
+        {
+          "type": "contains",
+          "target": "output",
+          "path": "",
+          "expected": "第1步",
+          "description": "应从第1步开始"
+        },
+        {
+          "type": "contains",
+          "target": "output",
+          "path": "",
+          "expected": "6步",
+          "description": "应介绍6步工作流程"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "我想写一篇微头条，关于情感类的，帮我写一个关于'异地恋如何维持'的爆款文案。",
+      "expected_output": "引导用户确认账号定位（情感类），询问目标受众，然后开始6步流程",
+      "files": [],
+      "assertions": [
+        {
+          "type": "contains",
+          "target": "output",
+          "path": "",
+          "expected": "情感",
+          "description": "应回应情感类主题"
+        },
+        {
+          "type": "contains",
+          "target": "output",
+          "path": "",
+          "expected": "目标受众",
+          "description": "应询问目标受众"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "帮我写一个爆款文案，主题是健康养生的。",
+      "expected_output": "询问具体账号标签、目标受众、创作方向，介绍6步工作流程",
+      "files": [],
+      "assertions": [
+        {
+          "type": "contains",
+          "target": "output",
+          "path": "",
+          "expected": "爆款",
+          "description": "应回应爆款文案需求"
+        },
+        {
+          "type": "contains",
+          "target": "output",
+          "path": "",
+          "expected": "账号",
+          "description": "应询问账号信息"
+        }
+      ]
+    }
+  ]
+}

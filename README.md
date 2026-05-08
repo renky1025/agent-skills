@@ -14,7 +14,6 @@ Claude Code 智能技能集合 - 自动化内容创作、社交媒体管理、�
 |-------|------|------|
 | [attention-daily](#attention-daily) | 每日科技情报报告（GitHub + AttentionVC） | ✅ v2.0 |
 | [article-deconstructor](#article-deconstructor) | 文章拆解分析器 | ✅ 可用 |
-| [video-minutes](#video-minutes) | 智能视频纪要生成器 | ✅ 可用 |
 | [infocard](#infocard) | 智能信息卡片生成器 | ✅ v5.0 |
 | [pdf2md](#pdf2md) | PDF 转 Markdown 工具 | ✅ 可用 |
 
@@ -24,17 +23,21 @@ Claude Code 智能技能集合 - 自动化内容创作、社交媒体管理、�
 |-------|------|------|
 | [wechat-autopilot](#wechat-autopilot) | 公众号自动化运营系统 | ✅ 可用 |
 | [wechat-article-writer](#wechat-article-writer) | 专业自媒体文章写作工具 | ✅ 可用 |
-| [deck-to-pptx](#deck-to-pptx) | 智能 PPT 生成工具 | ✅ 新增 |
-| [image-design](#image-design) | 高级质感 AI 图片设计 | ✅ 新增 |
-| [frontend-design](#frontend-design) | 高保真前端界面设计 | ✅ 新增 |
+| [weitoutiao-creator](#weitoutiao-creator) | 微头条爆款文案生成器 | ✅ 可用 |
+| [snowflake-novel-writer](#snowflake-novel-writer) | 雪花写作法小说创作助手 | ✅ 可用 |
+| [image-design](#image-design) | 高级质感 AI 图片设计 | ✅ 可用 |
+| [frontend-design](#frontend-design) | 高保真前端界面设计 | ✅ 可用 |
+| [twitter-one-liner](#twitter-one-liner) | Twitter/X 推文生成器 | ✅ 可用 |
+| [life-quotes](#life-quotes) | 人生感悟与金句生成 | ✅ 可用 |
+| [viral-hook](#viral-hook) | 社交媒体爆款文案生成器 | ✅ 可用 |
 
 ### 🎬 音视频处理
 
 | Skill | 描述 | 状态 |
 |-------|------|------|
 | [video-minutes](#video-minutes) | 智能视频纪要生成器 | ✅ 可用 |
-| [video-dubbing](#video-dubbing) | AI 视频配音与翻译 | ✅ 新增 |
-| [mlx-tts](#mlx-tts) | Apple Silicon 本地 TTS | ✅ 新增 |
+| [video-dubbing](#video-dubbing) | AI 视频配音与翻译 | ✅ 可用 |
+| [mlx-tts](#mlx-tts) | Apple Silicon 本地 TTS | ✅ 可用 |
 
 ### 🛡️ 工具与安全
 
@@ -42,16 +45,8 @@ Claude Code 智能技能集合 - 自动化内容创作、社交媒体管理、�
 |-------|------|------|
 | [skill-security-check](#skill-security-check) | Skill 安装前安全检查 | ✅ 可用 |
 | [translate-polisher](#translate-polisher) | 高质量文章翻译 | ✅ 可用 |
-| [simplify](#claude-simplify) | 代码简化与质量检查 | ✅ 可用 |
+| [claude-simplify](#claude-simplify) | 代码简化与质量检查 | ✅ 可用 |
 | [claude-remember](#claude-remember) | 自动记忆管理与整理 | ✅ 可用 |
-
-### 📦 已归档技能
-
-以下技能已移动或移除：
-- `videofy` → 由 `deck-to-pptx` 替代
-- `gemini-text-to-image` → 由 `image-design` 替代  
-- `moss-tts-nano` → 由 `mlx-tts` 替代
-- `gemini-flash-lite-toolkit` → 已移除
 
 ---
 
@@ -181,6 +176,81 @@ python scripts/generate_minutes.py ~/Recordings --batch
 直接输入主题或想法，例如："关于早起的好处"
 
 [查看完整文档](twitter-one-liner/SKILL.md)
+
+---
+
+### life-quotes
+
+**人生感悟与金句生成器** - 根据任意话题生成人生感悟、哲理警句或心灵鸡汤文案。
+
+**适用场景：**
+- 视频号文案
+- 朋友圈金句
+- 每日感悟
+- 情感共鸣内容创作
+
+**输出格式：**
+每次生成 3 条不同风格的警句，可选风格包括：
+- **哲思类** —— 通透、有洞察、带一点反常识
+- **治愈类** —— 温暖、安抚、给人力量
+- **诗意类** —— 优美、意象化、有文学感
+- **反讽类** —— 尖锐、自嘲、带一点黑色幽默
+- **行动类** —— 激励、推动、让人想立刻做点什么
+
+**使用方式：**
+```
+/life-quotes <话题>
+```
+
+[查看完整文档](life-quotes/SKILL.md)
+
+---
+
+### viral-hook
+
+**社交媒体爆款文案生成器** - 阅读理解图片或文本内容，生成社交媒体爆款标题、评论描述和标签。
+
+**支持平台：**
+- 小红书
+- 微博
+- Twitter/X
+- 朋友圈
+
+**标题风格：**
+- **悬念型** —— 制造好奇心，让人忍不住点开
+- **数据型** —— 用数字增强可信度
+- **对比型** —— 制造反差和冲突
+- **情绪型** —— 触发情感共鸣
+- **反常识型** —— 打破认知惯性
+
+**使用方式：**
+```bash
+/viral-hook <图片路径或文本>
+/viral-hook <文本> --platform=小红书 --style=悬念 --count=3
+```
+
+[查看完整文档](viral-hook/SKILL.md)
+
+---
+
+### novel-writing
+
+**小说创作专业助手** - 基于 LOCK 系统、三幕结构和人物弧光的系统化小说创作框架。
+
+**核心系统：**
+- **LOCK 系统** - Lead（主角）、Objective（目标）、Conflict（冲突）、Knockout（结局）
+- **三幕结构 + 两扇门** - 经典叙事结构，控制故事节奏
+- **对话与冲突设计** - 制造张力和推动情节
+- **人物弧光** - 设计角色的成长轨迹
+
+**适用场景：**
+- 规划或大纲新故事
+- 塑造主角、反派或配角
+- 构建跨幕的情节结构
+- 撰写有张力的对话
+- 诊断故事问题（扁平角色、拖沓中段、薄弱高潮）
+
+[查看完整文档](novel-writing/SKILL.md)
 
 ---
 
@@ -377,24 +447,52 @@ node scripts/security-check.js <skill-path>
 
 ---
 
-### deck-to-pptx
+### weitoutiao-creator
 
-**智能 PPT 生成工具** - 将主题、说明或本地资料目录快速生成成品感更强的 PowerPoint 演示文稿。
+**微头条爆款文案生成器** - 帮助用户生成微头条平台爆款文案，提供选题指导、风格选择、框架构建和文案优化的完整6步工作流程。
 
 **核心能力：**
-- 🎯 **多模式输入** - 支持纯主题、主题+大纲、本地资料目录三种输入方式
-- 🌐 **智能资料补全** - 自动联网补充资料，失败时退回通用结构
-- 🎨 **4套内置风格** - tech-dark、business-light、editorial、bold-gradient 自动选择
-- 📑 **自动目录页** - 智能生成目录结构
-- 📤 **直接导出 .pptx** - 原生 PowerPoint 格式，可直接编辑
+1. **选题分析** - 根据账号标签和目标受众提供选题建议
+2. **素材获取** - 支持热点查询、爆款拆解、原创思路三种路径
+3. **风格选择** - 5种写作风格（故事、悬念、数据、情感、对话）
+4. **框架构建** - 10种文案框架结构
+5. **文案生成** - 输出300字以内的爆款文案
+6. **优化迭代** - 根据反馈持续优化
 
 **使用方式：**
 ```bash
-/deck-to-pptx "AI Agent 技术趋势" --style tech-dark --max-slides 10
-/deck-to-pptx ./materials --outline "补充说明" --audience "技术人员"
+/weitoutiao-creator
 ```
 
-[查看完整文档](deck-to-pptx/SKILL.md)
+[查看完整文档](weitoutiao-creator/SKILL.md)
+
+---
+
+### snowflake-novel-writer
+
+**雪花写作法小说创作助手** - 使用雪花写作法（The Snowflake Method）引导用户创作约15000字短篇小说的专业写作助手。
+
+**核心流程（10步）：**
+1. 一句话概括
+2. 一段式概括
+3. 人物设定
+4. 一页纸大纲
+5. 人物详细背景
+6. 四页纸大纲
+7. 人物完整档案
+8. 场景清单
+9. 场景规划
+10. 初稿写作
+
+**适用题材：**
+- 职场、校园、仙侠、穿越、悬疑、言情等各类小说
+
+**使用方式：**
+```bash
+/snowflake-novel-writer
+```
+
+[查看完整文档](snowflake-novel-writer/SKILL.md)
 
 ---
 
@@ -509,40 +607,6 @@ mlx_audio.stt.generate --audio ./input.wav --output-path ./transcript.txt --lang
 
 ---
 
-### skill-security-check
-
-**Skill 安装前安全检查** - 全面的安全检查工具，支持多种编程语言。
-
-**支持语言：**
-JavaScript/TypeScript, Python, Rust, Java, Go, C/C++, Ruby, PHP, Shell, PowerShell, Perl
-
-**11项安全检查：**
-1. ✅ 数据外泄 - 检查外部服务器通信
-2. ✅ 凭证访问 - 检查环境变量访问
-3. ✅ 文件系统越界 - 检查文件操作范围
-4. ✅ 身份文件访问 - 检查敏感文件访问
-5. ✅ 动态代码执行 - 检查 eval/exec/subprocess
-6. ✅ 权限提升 - 检查 sudo/chmod/chown
-7. ✅ 持久化机制 - 检查后台驻留
-8. ✅ 运行时安装 - 检查依赖声明
-9. ✅ 代码混淆 - 检查代码可读性
-10. ✅ 进程侦察 - 检查系统扫描
-11. ✅ 浏览器会话访问 - 检查自动化配置
-
-**使用方式：**
-```bash
-node scripts/security-check.js <skill-path>
-```
-
-**报告格式：**
-- 风险等级：🟢 LOW / 🟡 MEDIUM / 🔴 HIGH
-- 最终评级：✅ SAFE / ⚠️ REVIEW_NEEDED / ❌ UNSAFE
-- 安全优势 + 注意事项 + 风险分析
-
-[查看完整文档](skill-security-check/README.md)
-
----
-
 ## 快速开始
 
 ### 环境要求
@@ -551,7 +615,7 @@ node scripts/security-check.js <skill-path>
 - 部分 Skill 需要：
   - Python 3.8+
   - Node.js 14+
-  - FFmpeg（video-minutes）
+  - FFmpeg（video-minutes、video-dubbing）
 
 ### 安装依赖
 
@@ -590,11 +654,6 @@ uv tool install --force "mlx-audio" --prerelease=allow
 **mlx-tts：**
 ```bash
 brew install ffmpeg uv && uv tool install --force "mlx-audio" --prerelease=allow
-```
-
-**deck-to-pptx：**
-```bash
-pip install python-pptx
 ```
 
 ### 配置
@@ -655,6 +714,12 @@ agent-skills/
 ├── wechat-article-writer/       # 专业自媒体文章写作
 │   └── SKILL.md
 │
+├── weitoutiao-creator/          # 微头条爆款文案生成
+│   └── SKILL.md
+│
+├── snowflake-novel-writer/      # 雪花写作法小说创作
+│   └── SKILL.md
+│
 ├── infocard/                    # 信息卡片生成器 v5.0
 │   ├── assets/
 │   ├── evals/
@@ -665,16 +730,11 @@ agent-skills/
 │   ├── pdf2md.py
 │   └── SKILL.md
 │
-├── deck-to-pptx/                # 智能 PPT 生成工具 ⭐ 新增
-│   ├── deck_to_pptx.py
-│   ├── deck_to_pptx_lib/
-│   └── SKILL.md
-│
-├── image-design/                # 高级 AI 图片设计 ⭐ 新增
+├── image-design/                # 高级 AI 图片设计
 │   ├── evals/
 │   └── SKILL.md
 │
-├── mlx-tts/                     # Apple Silicon 本地 TTS ⭐ 新增
+├── mlx-tts/                     # Apple Silicon 本地 TTS
 │   └── SKILL.md
 │
 ├── .staged-skills/              # 待发布技能
@@ -682,7 +742,16 @@ agent-skills/
 │       ├── LICENSE.txt
 │       └── SKILL.md
 │
-└── twitter-one-liner/           # Twitter 推文生成
+├── twitter-one-liner/           # Twitter 推文生成
+│   └── SKILL.md
+│
+├── life-quotes/                 # 人生感悟与金句生成
+│   └── SKILL.md
+│
+├── viral-hook/                  # 社交媒体爆款文案生成器
+│   └── SKILL.md
+│
+└── novel-writing/               # 小说创作专业助手
     └── SKILL.md
 ```
 
@@ -697,3 +766,22 @@ agent-skills/
 - **references/** - 参考资料（可选）
 
 ---
+
+## 贡献指南
+
+欢迎提交新的 Skill 或改进现有 Skill！请确保：
+
+1. 每个 Skill 都有完整的 SKILL.md 文档
+2. 遵循现有的目录结构和命名规范
+3. 在 README 的 Skill 目录和项目结构中添加新 Skill
+4. 如果是脚本型 Skill，提供安装和配置说明
+
+---
+
+## 许可证
+
+本项目采用 MIT 许可证 - 详见 [LICENSE](LICENSE) 文件。
+
+---
+
+> 💡 **提示**：每个 Skill 都是独立的模块，可以单独使用。建议先阅读各 Skill 的 SKILL.md 了解详细功能和使用方法。

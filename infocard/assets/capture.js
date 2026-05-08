@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 const path = require('path');
 
 async function main() {
@@ -9,43 +7,140 @@ async function main() {
   const width = parseInt(args[2]) || 1200;
   const height = parseInt(args[3]) || 1600;
   const fullpage = args[4] === 'fullpage';
+  const scale = parseFloat(args[5]) || 2; // DPR/scale factor for quality
 
   if (!htmlPath || !outputPath) {
-    console.error('Usage: node capture.js <html> <png> [width] [height] [fullpage]');
+    console.error('Usage: node capture.js <html> <png> [width] [height] [fullpage] [scale]');
     process.exit(1);
   }
 
   let chromium;
   try {
-    chromium = require('playwright').chromium;
+    const { createRequire } = require('module');
+    const req = createRequire(__filename);
+    chromium = req('playwright').chromium;
   } catch {
-    console.error('Playwright not found. Run: cd ~/.claude/skills/infocard-caster && npm install playwright && npx playwright install chromium');
+    console.error('Playwright not found. Run: cd ~/.claude/skills/infocard && npm install && npx playwright install chromium');
     process.exit(1);
   }
 
-  const browser = await chromium.launch();
-  const page = await browser.newPage();
-  await page.setViewportSize({ width, height: fullpage ? 800 : height });
+  const execPath = process.env.PLAYWRIGHT_BROWSERS_PATH
+    ? null
+    : '/Users/kyren/Library/Caches/ms-playwright/chromium_headless_shell-1217/chrome-headless-shell-mac-arm64/chrome-headless-shell';
 
-  const fileUrl = 'file://' + path.resolve(htmlPath);
-  await page.goto(fileUrl, { waitUntil: 'networkidle' });
-  await page.waitForTimeout(500);
+  const browser = await chromium.launch({ executablePath: execPath });
+  const page = await browser.newPage();
 
   if (fullpage) {
-    const bodyHeight = await page.evaluate(() => document.body.scrollHeight);
-    await page.setViewportSize({ width, height: bodyHeight });
+    // Step 1: load at wide viewport so content flows naturally
+    await page.setViewportSize({ width: width, height: 3000 });
+    const fileUrl = 'file://' + path.resolve(htmlPath);
+    await page.goto(fileUrl, { waitUntil: 'networkidle' });
+    await page.waitForTimeout(2000);
+
+    // Step 2: neutralize ALL centering/100vh layouts — force body to top-left flow
+    // This is the key fix: strip every style that causes vertical centering
+    await page.evaluate(() => {
+      const html = document.documentElement;
+      const body = document.body;
+
+      // Strip body inline styles and computed styles that center content
+      const bodyStyle = body.style;
+      bodyStyle.setProperty('display', 'block', 'important');
+      bodyStyle.setProperty('min-height', 'auto', 'important');
+      bodyStyle.setProperty('height', 'auto', 'important');
+      bodyStyle.setProperty('align-items', 'normal', 'important');
+      bodyStyle.setProperty('justify-content', 'normal', 'important');
+      bodyStyle.setProperty('margin-top', '0px', 'important');
+      bodyStyle.setProperty('padding-top', '0px', 'important');
+      bodyStyle.setProperty('margin', '0', 'important');
+      bodyStyle.setProperty('padding', '0', 'important');
+
+      // Strip html too
+      const htmlStyle = html.style;
+      htmlStyle.setProperty('min-height', 'auto', 'important');
+
+      // Force reflow so the card snaps to top
+      void body.offsetHeight;
+      window.scrollTo(0, 0);
+    });
     await page.waitForTimeout(300);
-    await page.screenshot({
-      path: path.resolve(outputPath),
-      type: 'png',
-      clip: { x: 0, y: 0, width, height: bodyHeight }
+
+    // Step 3: measure card at top of viewport
+    const cardInfo = await page.evaluate(() => {
+      const el = document.querySelector('.card') ||
+                 document.querySelector('.container') ||
+                 document.body.children[0];
+      if (!el) return null;
+      const rect = el.getBoundingClientRect();
+      return {
+        left: rect.left,
+        top: rect.top,
+        width: rect.width,
+        height: rect.height,
+      };
     });
+
+    if (cardInfo && cardInfo.width > 50 && cardInfo.height > 50) {
+      // Step 4: viewport = exactly card bounds — no padding, no clip, no letterboxing
+      // card.top should now be ~0, so viewport from 0 to card bottom = pure card image
+      const vpW = Math.max(1, Math.ceil(cardInfo.width));
+      const vpH = Math.max(1, Math.ceil(cardInfo.top) + Math.ceil(cardInfo.height));
+      await page.setViewportSize({ width: vpW, height: vpH, deviceScaleFactor: scale });
+      await page.waitForTimeout(200);
+
+      await page.screenshot({
+        path: path.resolve(outputPath),
+        type: 'png',
+        fullPage: false,
+      });
+    } else {
+      // fallback
+      const bounds = await page.evaluate(() => ({
+        w: Math.max(document.body.scrollWidth, document.documentElement.scrollWidth),
+        h: Math.max(document.body.scrollHeight, document.documentElement.scrollHeight),
+      }));
+      await page.setViewportSize({ width, height: bounds.h });
+      await page.screenshot({ path: path.resolve(outputPath), type: 'png', fullPage: true });
+    }
   } else {
-    await page.screenshot({
-      path: path.resolve(outputPath),
-      type: 'png',
-      clip: { x: 0, y: 0, width, height }
+    await page.setViewportSize({ width, height });
+    const fileUrl = 'file://' + path.resolve(htmlPath);
+    await page.goto(fileUrl, { waitUntil: 'networkidle' });
+    await page.waitForTimeout(2000);
+
+    await page.evaluate(() => {
+      const body = document.body;
+      const bodyStyle = body.style;
+      bodyStyle.setProperty('display', 'block', 'important');
+      bodyStyle.setProperty('min-height', 'auto', 'important');
+      bodyStyle.setProperty('height', 'auto', 'important');
+      bodyStyle.setProperty('align-items', 'normal', 'important');
+      bodyStyle.setProperty('justify-content', 'normal', 'important');
+      bodyStyle.setProperty('margin', '0', 'important');
+      bodyStyle.setProperty('padding', '0', 'important');
+      window.scrollTo(0, 0);
     });
+    await page.waitForTimeout(200);
+
+    const cardInfo = await page.evaluate(() => {
+      const el = document.querySelector('.card') ||
+                 document.querySelector('.container') ||
+                 document.body.children[0];
+      if (!el) return null;
+      const rect = el.getBoundingClientRect();
+      return { top: rect.top, left: rect.left, width: rect.width, height: rect.height };
+    });
+
+    if (cardInfo && cardInfo.width > 50 && cardInfo.height > 50) {
+      const vpW = Math.max(1, Math.ceil(cardInfo.width));
+      const vpH = Math.max(1, Math.ceil(cardInfo.top) + Math.ceil(cardInfo.height));
+      await page.setViewportSize({ width: vpW, height: vpH, deviceScaleFactor: scale });
+      await page.waitForTimeout(200);
+      await page.screenshot({ path: path.resolve(outputPath), type: 'png', fullPage: false });
+    } else {
+      await page.screenshot({ path: path.resolve(outputPath), type: 'png', fullPage: false });
+    }
   }
 
   await browser.close();
