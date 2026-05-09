@@ -21,13 +21,12 @@ Claude Code 智能技能集合 - 自动化内容创作、社交媒体管理、�
 
 | Skill | 描述 | 状态 |
 |-------|------|------|
-| [wechat-autopilot](#wechat-autopilot) | 公众号自动化运营系统 | ✅ 可用 |
 | [wechat-article-writer](#wechat-article-writer) | 专业自媒体文章写作工具 | ✅ 可用 |
 | [weitoutiao-creator](#weitoutiao-creator) | 微头条爆款文案生成器 | ✅ 可用 |
 | [snowflake-novel-writer](#snowflake-novel-writer) | 雪花写作法小说创作助手 | ✅ 可用 |
 | [image-design](#image-design) | 高级质感 AI 图片设计 | ✅ 可用 |
 | [frontend-design](#frontend-design) | 高保真前端界面设计 | ✅ 可用 |
-| [twitter-one-liner](#twitter-one-liner) | Twitter/X 推文生成器 | ✅ 可用 |
+| [de-ai-writing](#de-ai-writing) | 文本去AI味，五步法保留真实人味 | ✅ 可用 |
 | [life-quotes](#life-quotes) | 人生感悟与金句生成 | ✅ 可用 |
 | [viral-hook](#viral-hook) | 社交媒体爆款文案生成器 | ✅ 可用 |
 
@@ -44,7 +43,6 @@ Claude Code 智能技能集合 - 自动化内容创作、社交媒体管理、�
 | Skill | 描述 | 状态 |
 |-------|------|------|
 | [skill-security-check](#skill-security-check) | Skill 安装前安全检查 | ✅ 可用 |
-| [translate-polisher](#translate-polisher) | 高质量文章翻译 | ✅ 可用 |
 | [claude-simplify](#claude-simplify) | 代码简化与质量检查 | ✅ 可用 |
 | [claude-remember](#claude-remember) | 自动记忆管理与整理 | ✅ 可用 |
 
@@ -163,22 +161,6 @@ python scripts/generate_minutes.py ~/Recordings --batch
 
 ---
 
-### twitter-one-liner
-
-**一句话生成高质量 Twitter/X 推文。**
-
-**输出格式：**
-- 🎯 **直击型** - 简短有力，直接表达核心观点
-- 📖 **故事型** - 加入个人经历、情感或叙事
-- 💡 **价值型** - 提供实用建议、技巧或 insights
-
-**使用方式：**
-直接输入主题或想法，例如："关于早起的好处"
-
-[查看完整文档](twitter-one-liner/SKILL.md)
-
----
-
 ### life-quotes
 
 **人生感悟与金句生成器** - 根据任意话题生成人生感悟、哲理警句或心灵鸡汤文案。
@@ -251,170 +233,6 @@ python scripts/generate_minutes.py ~/Recordings --batch
 - 诊断故事问题（扁平角色、拖沓中段、薄弱高潮）
 
 [查看完整文档](novel-writing/SKILL.md)
-
----
-
-### wechat-autopilot
-
-**微信公众号自动化运营系统** - 全自动收集资讯、AI 生成文章、AI 配图、自动发布。
-
-**核心功能：**
-- 📰 Google News RSS 自动抓取资讯
-- ✍️ AI 整理改写，支持多种写作风格
-- 🎨 文生图 API 自动生成封面+正文配图
-- 📤 微信公众号 API 自动发文
-- ⏰ 可设置每日定时执行
-
-**使用方式：**
-```bash
-/wechat-autopilot setup    # 初始化配置
-/wechat-autopilot run      # 立即运行
-/wechat-autopilot daily    # 启动定时任务
-```
-
-**案例效果：**
-- 每篇文章成本：约 ¥1-1.5（API 费用）
-- 平均阅读量：300-500
-- 爆文记录：10w+、1.8w+
-
-[查看完整文档](wechat-autopilot/SKILL.md)
-
----
-
-### skill-security-check
-
-**Skill 安装前安全检查** - 全面的安全检查工具，支持多种编程语言。
-
-**支持语言：**
-JavaScript/TypeScript, Python, Rust, Java, Go, C/C++, Ruby, PHP, Shell, PowerShell, Perl
-
-**11项安全检查：**
-1. ✅ 数据外泄 - 检查外部服务器通信
-2. ✅ 凭证访问 - 检查环境变量访问
-3. ✅ 文件系统越界 - 检查文件操作范围
-4. ✅ 身份文件访问 - 检查敏感文件访问
-5. ✅ 动态代码执行 - 检查 eval/exec/subprocess
-6. ✅ 权限提升 - 检查 sudo/chmod/chown
-7. ✅ 持久化机制 - 检查后台驻留
-8. ✅ 运行时安装 - 检查依赖声明
-9. ✅ 代码混淆 - 检查代码可读性
-10. ✅ 进程侦察 - 检查系统扫描
-11. ✅ 浏览器会话访问 - 检查自动化配置
-
-**使用方式：**
-```bash
-node scripts/security-check.js <skill-path>
-```
-
-**报告格式：**
-- 风险等级：🟢 LOW / 🟡 MEDIUM / 🔴 HIGH
-- 最终评级：✅ SAFE / ⚠️ REVIEW_NEEDED / ❌ UNSAFE
-- 安全优势 + 注意事项 + 风险分析
-
-[查看完整文档](skill-security-check/README.md)
-
----
-
-### translate-polisher
-
-**高质量文章翻译** - 采用"分析→初译→审校→终稿"四步精翻工作流。
-
-**支持语言：**
-- 中文 ↔ 英文
-- 中文 ↔ 日文
-
-**工作流程：**
-1. **分析** - 理解原文语境和风格
-2. **初译** - 完成第一版翻译
-3. **审校** - 优化表达和术语
-4. **终稿** - 润色输出最终版本
-
-**使用方式：**
-```
-/translate-polisher <text or URL>
-```
-
-[查看完整文档](translate-polisher/SKILL.md)
-
----
-
-### claude-simplify
-
-**代码简化与质量检查** - 审查变更代码的可复用性、质量和效率，并修复发现的问题。
-
-**功能特性：**
-- 🔍 **代码复用审查** - 检查是否有现有工具/辅助函数可替代新代码
-- ✨ **代码质量审查** - 识别冗余状态、参数蔓延、重复代码、不良抽象等问题
-- ⚡ **效率审查** - 发现不必要的工作、错失的并发机会、内存泄漏等
-
-**使用方式：**
-```
-/claude-simplify [可选: 关注区域]
-```
-
-**触发短语：**
-- "simplify this"
-- "review my changes"
-- "clean up the code"
-- "check for issues"
-- "refactor"
-- "code review"
-- "optimize"
-
-[查看完整文档](claude-simplify/SKILL.md)
-
----
-
-### claude-remember
-
-**自动记忆管理与整理** - 审查自动记忆条目并提议提升到 CLAUDE.md、CLAUDE.local.md 或共享记忆中。同时检测过时、冲突和重复的记忆条目。
-
-**功能特性：**
-- 📋 **记忆分类** - 自动分类记忆条目到合适的存储位置
-- 🔍 **重复检测** - 识别跨记忆层的重复条目
-- ⚠️ **冲突识别** - 检测不同记忆层之间的冲突
-- 🧹 **清理建议** - 提议删除过时或重复的记忆
-
-**使用方式：**
-```
-/claude-remember [可选: 关注区域或特定记忆]
-```
-
-**触发短语：**
-- "review my memories"
-- "organize memories"
-- "promote to CLAUDE.md"
-- "clean up memories"
-- "memory review"
-- "check for duplicate memories"
-- "what should go in CLAUDE.md"
-
-[查看完整文档](claude-remember/SKILL.md)
-
----
-
-### pdf2md
-
-**PDF 转 Markdown 工具** - 高质量 PDF 转换器，支持复杂布局、表格、公式、图片提取。
-
-**核心能力：**
-- 📄 **高质量转换** - 基于 OpenDataLoader PDF - Benchmark #1 准确率
-- 📊 **复杂布局支持** - 处理多栏、表格、图文混排
-- 🔢 **公式识别** - 支持数学公式转换为 LaTeX/Markdown
-- 🖼️ **图片提取** - 自动提取并保存文档中的图片
-- 📑 **大文件处理** - 自动分页处理超大文档
-
-**使用方式：**
-```bash
-/pdf2md <pdf路径>
-/pdf2md <pdf路径> --output=./output
-/pdf2md <pdf路径> --mode=fast          # 快速模式
-/pdf2md <pdf路径> --mode=hybrid        # 混合模式（推荐）
-/pdf2md <pdf路径> --extract-images=true
-/pdf2md <pdf路径> --ocr-lang=chi_sim   # OCR 中文
-```
-
-[查看完整文档](pdf2md/README.md)
 
 ---
 
@@ -537,6 +355,26 @@ GPT-image2、Midjourney、Stable Diffusion、nanobanana 等
 
 ---
 
+### de-ai-writing
+
+**文本去AI味** - 用"检测→删除→声纹校准→改写→反查"五步法去除文字中的AI痕迹，保留真实人味。
+
+**五步工作流：**
+1. **检测** - 标记八大AI味特征（意义膨胀、公式化过渡、笼统空洞、情感平整等）
+2. **删除** - 砍掉空洞修辞、废话铺垫、AI创作声明
+3. **声纹校准** - 从用户过往文字中提取具体特征，校准到个人声音
+4. **改写** - 注入事实、立场、描述、温度四个方向
+5. **反查** - 用你自己的话逐句自问，确保读起来像人说的
+
+**适用场景：**
+- 自媒体文章、职场周报、个人随笔
+- 产品文案、朋友圈、小红书笔记、邮件
+- 任何需要去除机器味的文字
+
+[查看完整文档](de-ai-writing/SKILL.md)
+
+---
+
 ### video-dubbing
 
 **AI 视频配音与翻译** - 完整的视频配音流程，将视频音频翻译成其他语言并保持时间节奏。
@@ -639,11 +477,6 @@ cd skill-security-check
 # 无需额外依赖，使用 Node.js 内置功能
 ```
 
-**translate-polisher：**
-```bash
-# 直接使用，无需安装
-```
-
 **video-dubbing：**
 ```bash
 pip install openai-whisper demucs
@@ -689,10 +522,6 @@ agent-skills/
 ├── claude-remember/              # 自动记忆管理与整理
 │   └── SKILL.md
 │
-├── translate-polisher/           # 高质量翻译
-│   ├── SKILL.md
-│   └── references/
-│
 ├── article-deconstructor/        # 文章拆解分析
 │   ├── references/
 │   └── SKILL.md
@@ -704,11 +533,6 @@ agent-skills/
 │
 ├── video-dubbing/               # AI 视频配音
 │   ├── video_dubbing.py
-│   └── SKILL.md
-│
-├── wechat-autopilot/            # 公众号自动化
-│   ├── references/
-│   ├── assets/
 │   └── SKILL.md
 │
 ├── wechat-article-writer/       # 专业自媒体文章写作
@@ -734,6 +558,9 @@ agent-skills/
 │   ├── evals/
 │   └── SKILL.md
 │
+├── de-ai-writing/               # 文本去AI味
+│   └── SKILL.md
+│
 ├── mlx-tts/                     # Apple Silicon 本地 TTS
 │   └── SKILL.md
 │
@@ -741,9 +568,6 @@ agent-skills/
 │   └── frontend-design/         # 高保真前端设计
 │       ├── LICENSE.txt
 │       └── SKILL.md
-│
-├── twitter-one-liner/           # Twitter 推文生成
-│   └── SKILL.md
 │
 ├── life-quotes/                 # 人生感悟与金句生成
 │   └── SKILL.md
