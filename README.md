@@ -45,10 +45,37 @@ Claude Code 智能技能集合 - 自动化内容创作、社交媒体管理、�
 | [skill-security-check](#skill-security-check) | Skill 安装前安全检查 | ✅ 可用 |
 | [claude-simplify](#claude-simplify) | 代码简化与质量检查 | ✅ 可用 |
 | [claude-remember](#claude-remember) | 自动记忆管理与整理 | ✅ 可用 |
+| [design-md-extractor](#design-md-extractor) | URL 设计系统提取器 | ✅ 可用 |
 
 ---
 
 ## Skill 详情
+
+### design-md-extractor
+
+**URL 设计系统提取器** - 输入任意网站 URL，提取其视觉设计系统，生成符合 `@google/design.md` 规范的 DESIGN.md 文档。
+
+**核心能力：**
+- 🔗 **URL 视觉分析** - 自动抓取网页，提取颜色、字体、间距、圆角、阴影等设计 Token
+- 📝 **符合 Spec 的 DESIGN.md** - YAML front matter + 8 段 Markdown（Overview / Colors / Typography / Layout / Elevation / Shapes / Components / Do's & Don'ts）
+- 🧩 **组件状态覆盖** - 记录按钮、输入框、卡片等组件的 hover / focus / active 等所有状态
+- 🔗 **Token 引用** - 组件属性使用 `{colors.primary}` 引用语法，符合 W3C DTCG 标准
+- ✅ **内置校验** - 支持 `npx @google/design.md lint` 验证结构正确性
+
+**使用方式：**
+```
+DESIGN.md for https://example.com
+extract design tokens from https://stripe.com
+帮我分析 https://linear.app 的设计系统
+```
+
+**参考项目：**
+- [rico-skills/rico-design-md](https://github.com/ricocc/rico-skills) — 灵感来源
+- [google-labs-code/design.md](https://github.com/google-labs-code/design.md) — 输出规范
+
+[查看完整文档](design-md-extractor/SKILL.md)
+
+---
 
 ### attention-daily
 
@@ -559,6 +586,10 @@ agent-skills/
 │   └── SKILL.md
 │
 ├── de-ai-writing/               # 文本去AI味
+│   └── SKILL.md
+│
+├── design-md-extractor/         # URL 设计系统提取器
+│   ├── references/
 │   └── SKILL.md
 │
 ├── mlx-tts/                     # Apple Silicon 本地 TTS
