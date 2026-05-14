@@ -28,6 +28,7 @@ Claude Code 智能技能集合 - 自动化内容创作、社交媒体管理、�
 | [frontend-design](#frontend-design) | 高保真前端界面设计 | ✅ 可用 |
 | [de-ai-writing](#de-ai-writing) | 文本去AI味，五步法保留真实人味 | ✅ 可用 |
 | [life-quotes](#life-quotes) | 人生感悟与金句生成 | ✅ 可用 |
+| [material-to-slides](#material-to-slides) | 资料转 HTML 幻灯片 | ✅ 可用 |
 | [viral-hook](#viral-hook) | 社交媒体爆款文案生成器 | ✅ 可用 |
 
 ### 🎬 音视频处理
@@ -212,6 +213,28 @@ python scripts/generate_minutes.py ~/Recordings --batch
 ```
 
 [查看完整文档](life-quotes/SKILL.md)
+
+---
+
+### material-to-slides
+
+**资料转 HTML 幻灯片** - 将任意资料（URL / 本地文件 / 粘贴文本）阅读理解后，生成可直接播放的 HTML 幻灯片。
+
+**核心工作流（四阶段）：**
+1. **读取内容** - 支持 URL、本地文件、粘贴文本、搜索需求等多种输入
+2. **深度理解** - 逐段分析，提取核心论点、结构分析、逻辑关系
+3. **幻灯片生成** - 默认风格：贵臧编辑部纸墨印刷感，支持 5 种配色
+4. **备选色板** - Slate（石板）、Warm（暖阳）、Forest（林间）适配不同内容氛围
+
+**导航支持：** ←/→ 键翻页、Hash 同步、PPTX 友好打印
+
+**使用方式：**
+```
+/把这个做成PPT <URL>
+/generate slides from <file>
+```
+
+[查看完整文档](material-to-slides/SKILL.md)
 
 ---
 
@@ -601,6 +624,10 @@ agent-skills/
 │       └── SKILL.md
 │
 ├── life-quotes/                 # 人生感悟与金句生成
+│   └── SKILL.md
+│
+├── material-to-slides/          # 资料转 HTML 幻灯片
+│   ├── references/
 │   └── SKILL.md
 │
 ├── viral-hook/                  # 社交媒体爆款文案生成器
