@@ -26,6 +26,7 @@ Claude Code 智能技能集合 - 自动化内容创作、社交媒体管理、�
 | [snowflake-novel-writer](#snowflake-novel-writer) | 雪花写作法小说创作助手 | ✅ 可用 |
 | [image-design](#image-design) | 高级质感 AI 图片设计 | ✅ 可用 |
 | [frontend-design](#frontend-design) | 高保真前端界面设计 | ✅ 可用 |
+| [curriculum-design](#curriculum-design) | 专业课程设计与教学设计 | ✅ 可用 |
 | [de-ai-writing](#de-ai-writing) | 文本去AI味，五步法保留真实人味 | ✅ 可用 |
 | [life-quotes](#life-quotes) | 人生感悟与金句生成 | ✅ 可用 |
 | [material-to-slides](#material-to-slides) | 资料转 HTML 幻灯片 | ✅ 可用 |
@@ -425,6 +426,28 @@ GPT-image2、Midjourney、Stable Diffusion、nanobanana 等
 
 ---
 
+### curriculum-design
+
+**专业课程设计与教学设计** - 基于 OBE 成果导向与两性一度标准的课程级和课堂级设计方案输出。
+
+**核心设计理念：**
+- **成果导向（OBE）反向设计** - 人才培养目标 → 专业毕业要求 → 课程教学目标 → 教学活动 → 考核评估
+- **两性一度标准** - 高阶性（知识+能力+素质三维）、创新性（PBL/TBL/混合式/翻转课堂）、挑战度（形成性评价）
+- **布鲁姆认知六层次** - 记忆→理解→应用→分析→评价→创造，每个知识点对应可衡量行为动词
+
+**双层面输出：**
+- **课程级** - 教学大纲：需求分析、课程目标、内容组织、教学方法、考核评估
+- **课堂级** - 教案：学情分析、教学目标、教学流程（BOPPPS 等）、板书设计、课后反思
+
+**适用场景：**
+- 高校教师教学发展、一流课程建设、课程思政设计
+- 职业院校课程建设、产教融合方案
+- 企业培训课程开发、在线课程设计
+
+[查看完整文档](curriculum-design/SKILL.md)
+
+---
+
 ### video-dubbing
 
 **AI 视频配音与翻译** - 完整的视频配音流程，将视频音频翻译成其他语言并保持时间节奏。
@@ -570,6 +593,9 @@ agent-skills/
 │   └── SKILL.md
 │
 ├── claude-remember/              # 自动记忆管理与整理
+│   └── SKILL.md
+│
+├── curriculum-design/           # 专业课程设计与教学设计
 │   └── SKILL.md
 │
 ├── article-deconstructor/        # 文章拆解分析
