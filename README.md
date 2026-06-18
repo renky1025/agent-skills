@@ -16,6 +16,7 @@ Claude Code 智能技能集合 - 自动化内容创作、社交媒体管理、�
 | [article-deconstructor](#article-deconstructor) | 文章拆解分析器 | ✅ 可用 |
 | [infocard](#infocard) | 智能信息卡片生成器 | ✅ v5.0 |
 | [pdf2md](#pdf2md) | PDF 转 Markdown 工具 | ✅ 可用 |
+| [seed-article](#seed-article) | Markdown 文章导入与 CMS 发布 | ✅ 可用 |
 
 ### ✍️ 内容创作与生成
 
@@ -48,6 +49,18 @@ Claude Code 智能技能集合 - 自动化内容创作、社交媒体管理、�
 | [claude-simplify](#claude-simplify) | 代码简化与质量检查 | ✅ 可用 |
 | [claude-remember](#claude-remember) | 自动记忆管理与整理 | ✅ 可用 |
 | [design-md-extractor](#design-md-extractor) | URL 设计系统提取器 | ✅ 可用 |
+
+### 🤖 AI Agent 与自动化
+
+| Skill | 描述 | 状态 |
+|-------|------|------|
+| [hermes-setup](#hermes-setup) | Hermes Agent 全自动安装与配置 | ✅ 可用 |
+
+### 📚 研究与参考
+
+| Skill | 描述 | 状态 |
+|-------|------|------|
+| [llm-aiops](#llm-aiops) | LLM + AIOps 研究参考指南（78+ 论文） | ✅ 可用 |
 
 ---
 
@@ -518,6 +531,74 @@ mlx_audio.stt.generate --audio ./input.wav --output-path ./transcript.txt --lang
 
 ---
 
+### hermes-setup
+
+**Hermes Agent 全自动安装与配置** - 从零开始搭建一个自我进化的 AI 个人 Operator（NousResearch）。
+
+**覆盖内容（7 天路线）：**
+- 🤖 **安装部署** - 从零到一的完整安装流程
+- 🆔 **身份/SOUL.md** - 定义 Agent 人格与行事准则
+- 🧠 **模型选择** - GPT/Claude/Qwen 等多模型分层策略
+- 💾 **记忆系统** - 持久化记忆与上下文管理
+- 📡 **消息网关** - Telegram/Discord/Slack/WhatsApp 多端接入
+- ⚡ **Skills 技能系统** - 自定义技能与自动化流程
+- ⏰ **Cron 定时任务** - 定时调度与自动化执行
+- 🎯 **/goal 自主执行** - 自主目标分解与执行
+- 📊 **Dashboard/Kanban** - 可视化看板管理
+- 🔒 **安全配置** - Bitwarden、egress 权限控制、多 Profile 隔离
+
+**核心来源：**
+- 综合 @zaimiri 7日指南 + @PrajwalTomar_ 深度剖析 + Hermes 官方文档
+
+[查看完整文档](hermes-setup/skill.md)
+
+---
+
+### seed-article
+
+**Markdown 文章导入与 CMS 发布** - 从本地 Markdown 文件和可选封面图片，一键清理、翻译、总结并发布文章到 YorkTools CMS 系统。
+
+**核心能力：**
+- 📄 **本地 Markdown 读取** - 支持任意路径的本地 Markdown 文件
+- 🧹 **智能清理** - 自动清理非法字符、标签和超链接
+- 🌐 **概括提炼式翻译** - 利用 AI 原生能力进行中/英翻译与提炼
+- 🚀 **一键发布** - 通过本地脚本上传封面并创建 CMS 文章
+- 🔒 **无需外部 API** - 翻译与提炼完全在上下文中完成
+
+**使用方式：**
+```
+帮我把这个 markdown 导入到 CMS
+使用 seed-article 发布这篇文章
+```
+
+[查看完整文档](seed-article/SKILL.md)
+
+---
+
+### llm-aiops
+
+**LLM + AIOps 研究参考指南** - 基于 [awesome-LLM-AIOps](https://github.com/Jun-jie-Huang/awesome-LLM-AIOps) 论文列表（78+ 篇）提炼的 LLM 应用于 AIOps 的综合参考。
+
+**覆盖领域：**
+- 🚨 **故障管理** - 全生命周期管理、事件报告、根因分析（RCA）、缓解、事后分析、AIOps Q&A
+- 📋 **日志分析** - LLM 驱动的日志解析、日志异常检测、日志语句生成
+- ☁️ **基础设施管理** - 基准测试、基础设施即代码（IaC）、LLM 训练平台诊断
+
+**常见技术路线：**
+- **Prompting** - ICL（上下文学习）、CoT（思维链）、ToT（思维树）
+- **Fine-tuning** - 领域微调（如 OWL for IT ops）
+- **Agent-based** - 工具增强型 LLM、多智能体协作、SOP 引导
+- **RAG** - 检索增强生成用于故障解决推荐
+
+**关键系统：**
+- RCAgent、mABC、Flow-of-Action — 多智能体根因分析
+- Nissist、STRATUS — 生产级故障缓解系统
+- AIOpsLab、ITBench — AIOps Agent 评测基准
+
+[查看完整文档](llm-aiops/SKILL.md)
+
+---
+
 ## 快速开始
 
 ### 环境要求
@@ -657,6 +738,18 @@ agent-skills/
 │   └── SKILL.md
 │
 ├── viral-hook/                  # 社交媒体爆款文案生成器
+│   └── SKILL.md
+│
+├── curriculum-design/           # 专业课程设计与教学设计
+│   └── SKILL.md
+│
+├── hermes-setup/                # Hermes Agent 安装配置
+│   └── skill.md
+│
+├── llm-aiops/                   # LLM + AIOps 研究参考
+│   └── SKILL.md
+│
+├── seed-article/                # Markdown 导入与 CMS 发布
 │   └── SKILL.md
 │
 └── novel-writing/               # 小说创作专业助手
