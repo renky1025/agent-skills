@@ -7,8 +7,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@600;700;900&family=Oswald:wght@500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script type="module" src="https://esm.sh/ionicons@8.0.0/loader"></script>
   <style>
-    * {
+    *,
+    *::before,
+    *::after {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
@@ -637,7 +640,7 @@
     .timeline::before {
       content: "";
       position: absolute;
-      left: 10px;
+      left: 11.5px;
       top: 0;
       bottom: 0;
       width: 3px;
@@ -653,6 +656,7 @@
     .timeline-item::before {
       content: "";
       position: absolute;
+      box-sizing: border-box;
       left: -26px;
       top: 5px;
       width: 14px;
@@ -719,6 +723,68 @@
       left: 0;
       color: var(--accent);
       font-weight: 700;
+    }
+
+    /* ===== Ionicons 图标 ===== */
+    ion-icon {
+      font-size: inherit;
+      vertical-align: -0.125em;
+      flex-shrink: 0;
+      pointer-events: none;
+    }
+
+    .section-title ion-icon {
+      font-size: 18px;
+      margin-right: 6px;
+    }
+
+    .feature-icon {
+      display: block;
+      font-size: 28px;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .card-icon {
+      font-size: 22px;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    /* 带图标的列表项：图标替换默认圆点 */
+    .bullet-list li:has(ion-icon),
+    .pain-point-list li:has(ion-icon) {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding-left: 0;
+    }
+
+    .bullet-list li:has(ion-icon)::before,
+    .pain-point-list li:has(ion-icon)::before {
+      content: none;
+    }
+
+    .bullet-list li ion-icon,
+    .pain-point-list li ion-icon {
+      font-size: 16px;
+      color: var(--accent);
+      margin-top: 3px;
+    }
+
+    .quote-icon {
+      font-size: 28px;
+      color: var(--accent);
+      opacity: 0.5;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .step-icon {
+      font-size: 20px;
+      color: var(--accent);
+      margin-right: 8px;
+      flex-shrink: 0;
     }
 
     /* ===== 响应式 ===== */

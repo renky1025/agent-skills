@@ -2,228 +2,141 @@
 name: video-dubbing
 description: >
   Translate video/audio content into another language with dubbed voice and synchronized subtitles.
-  Use this skill whenever the user asks to: translate a video, dub a video into another language,
-  generate foreign-language voiceover for a video, add translated subtitles with dubbed audio,
-  or any workflow involving ASR → translate → TTS → video composition.
-  Also trigger when the user mentions replacing audio track with translated narration,
-  or syncing subtitles with generated dubbing.
+  Use this skill whenever the user asks to: translate a video, dub a video, generate foreign-language voiceover for a video,
+  add translated subtitles with dubbed audio, or any workflow involving ASR → translate → TTS → video composition.
 ---
 
 # Video Dubbing & Subtitle Sync
 
-Complete workflow for translating video/audio content into another language with dubbed voice and precisely synchronized subtitles.
+Complete workflow: **ASR → translate → TTS → merge audio → burn subtitles**
 
-## Overview
+## Pipeline
 
-This skill produces a final video where:
-- The original audio is replaced by AI-generated dubbing in the target language
-- Hardcoded subtitles appear exactly when the dubbed words are spoken
-- The video duration matches the original (or is explicitly controlled)
-
-## Critical Insight
-
-**Never reuse the original subtitle timestamps for translated text.**
-Translated text has different length, word count, and speaking rhythm. If you burn subtitles using the original English timestamps while playing Chinese dubbing, the subtitles will appear 3–5 seconds too early (or too late).
-
-The correct approach:
-1. Generate the dubbed audio first
-2. Run ASR on the **generated dubbing** to obtain its real timestamps
-3. Use those real timestamps for the translated subtitles
-4. Then burn them into the video
+```
+视频 → 抽音轨(16kHz) → ASR(whisper) → AI翻译 → TTS(dub_segments) → 合并音轨 → 烧录硬字幕
+```
 
 ## Workflow
 
-### 1. Extract Original Subtitles
+### 0. Prerequisite Check
 
-Use `whisper` on the original audio to get the source transcript and baseline timing:
+Ensure whisper + moviepy + mlx-audio are installed:
 
 ```bash
-whisper original_audio.m4a \
-  --model turbo \
+pip install openai-whisper moviepy 2>/dev/null
+# mlx_audio for TTS:
+pip install mlx-audio 2>/dev/null  # Apple Silicon
+```
+
+### 1. Extract Audio & Transcribe (ASR)
+
+Extract 16kHz mono audio, then run whisper for **accurate per-segment timestamps**:
+
+```bash
+ffmpeg -y -i input.mp4 -ar 16000 -ac 1 -c:a pcm_s16le audio16k.wav
+
+whisper audio16k.wav \
+  --model large-v3-turbo \
   --language <source_lang> \
-  --output_format all \
-  --output_dir .
-```
-
-Outputs: `.srt`, `.txt`, `.json`, `.vtt`, `.tsv`
-
-### 2. Translate the Text
-
-Translate the full transcript into the target language. Preserve paragraph/sentence boundaries so the text flows naturally when spoken.
-
-Save as `transcript_<lang>.txt`.
-
-### 3. Generate Dubbed Audio
-
-Generate the full narration in one pass using TTS (e.g., mlx-tts, edge-tts, etc.). Use natural speed (do not slow down or speed up at generation time).
-
-```bash
-mlx_audio.tts.generate \
-  --model mlx-community/Qwen3-TTS-12Hz-1.7B-VoiceDesign-8bit \
-  --text "$(cat transcript_zh.txt)" \
-  --instruct "a professional narrator, clear and authoritative" \
-  --speed 1.0 \
-  --output_path dubbing_raw.wav
-```
-
-> **Why one pass?** Generating the entire text at once preserves natural prosody, pauses, and intonation across sentence boundaries. Splitting into chunks creates audible seams.
-
-### 4. Adjust Dubbing Duration to Match Video
-
-Measure the raw dubbing duration and the original video duration:
-
-```bash
-ffprobe -v error -show_entries format=duration -of csv=p=0 dubbing_raw.wav/audio_000.wav
-ffprobe -v error -show_entries format=duration -of csv=p=0 original_video.mp4
-```
-
-Use `ffmpeg atempo` to stretch or compress the entire dubbing track:
-
-```bash
-# Example: raw=87.4s, target=77.5s → atempo = 87.4 / 77.5 = 1.128
-ffmpeg -y -i dubbing_raw.wav/audio_000.wav \
-  -af "atempo=<ratio>" \
-  -ar 24000 \
-  dubbing_adjusted.wav
-```
-
-> **Why atempo?** It changes speed without altering pitch, so the voice still sounds natural.
-
-### 5. Obtain Real Subtitle Timestamps (The Key Step)
-
-Run ASR on the **adjusted dubbing audio** to get timestamps that match what the listener actually hears:
-
-```bash
-whisper dubbing_adjusted.wav \
-  --model turbo \
-  --language <target_lang> \
   --output_format srt \
   --output_dir .
 ```
 
-This produces `dubbing_adjusted.srt` with real timestamps.
+Output: `audio16k.srt` with native timestamps matching the video.
 
-### 6. Replace ASR Text with Correct Translation
+> Use `large-v3-turbo` for best accuracy. If you want even better Chinese recognition, install Qwen3-ASR (`pip install qwen-asr`) and use `scripts/qwen3_asr.py` instead.
 
-The ASR output may contain recognition errors (e.g., "试用范围" instead of "适用范围"). Replace each subtitle segment's text with your carefully translated text, **keeping the ASR timestamps intact**.
+### 2. Translate Subtitles (AI does this)
 
-Save the result as `subtitle_<lang>_synced.srt`.
+Read the SRT, translate each segment's text into the target language. **Output one line per SRT segment**, preserving order exactly.
 
-> **Rule:** Timestamps come from the dubbing ASR. Text comes from your human-reviewed translation. Never the other way around.
+- Count SRT segments first (e.g. 27 segments → 27 translated lines)
+- Save as `translated.txt` in the working directory
+- Verify line count matches SRT segment count before proceeding
 
-### 7. Merge Audio and Video
-
-```bash
-ffmpeg -y -i original_video.mp4 -i dubbing_adjusted.wav \
-  -c:v copy -c:a aac -shortest output_temp.mp4
-```
-
-### 8. Burn Subtitles into Video
-
-Use `moviepy` (or ffmpeg with libass if available) to hardcode the synced subtitles:
+### 3. Generate Dubbed Audio
 
 ```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install moviepy
-python3 burn_subtitles.py
+python3 scripts/dub_segments.py audio16k.srt translated.txt dubbing.wav subtitle_synced.srt --lang <target_lang>
 ```
 
-Helper script (`scripts/burn_subtitles.py`):
+What it does:
+- Generates TTS per segment with **voice consistency** (first segment = voice reference)
+- **Preserves original timestamps** — subtitles stay synced with video
+- Smart speed adjustment: only adjusts segments that overflow their slot (atempo 0.88–1.20)
+- Bridges adjacent gaps <1s for natural flow
 
-```python
-#!/usr/bin/env python3
-import re
-from moviepy import VideoFileClip, TextClip, CompositeVideoClip
-
-def parse_srt(filepath):
-    with open(filepath, 'r', encoding='utf-8') as f:
-        content = f.read()
-    blocks = re.split(r'\n\s*\n', content.strip())
-    subtitles = []
-    for block in blocks:
-        lines = block.strip().split('\n')
-        if len(lines) >= 3:
-            time_line = lines[1]
-            text = '\n'.join(lines[2:])
-            match = re.match(r'(\d+):(\d+):(\d+),(\d+) --> (\d+):(\d+):(\d+),(\d+)', time_line)
-            if match:
-                h1, m1, s1, ms1, h2, m2, s2, ms2 = map(int, match.groups())
-                start = h1 * 3600 + m1 * 60 + s1 + ms1 / 1000.0
-                end = h2 * 3600 + m2 * 60 + s2 + ms2 / 1000.0
-                subtitles.append((start, end, text.strip()))
-    return subtitles
-
-if __name__ == "__main__":
-    video = VideoFileClip("output_temp.mp4")
-    subs = parse_srt("subtitle_zh_synced.srt")
-    clips = [video]
-    W, H = video.size
-    duration = video.duration
-
-    for start, end, text in subs:
-        if start >= duration:
-            break
-        end = min(end, duration)
-        txt_clip = TextClip(
-            text=text,
-            font="/System/Library/Fonts/PingFang.ttc",
-            font_size=48,
-            color="white",
-            stroke_color="black",
-            stroke_width=2,
-            method="caption",
-            size=(W - 120, None),
-            text_align="center",
-            horizontal_align="center",
-            vertical_align="bottom"
-        )
-        txt_clip = txt_clip.with_position(("center", H - txt_clip.h - 120))
-        txt_clip = txt_clip.with_start(start).with_end(end)
-        clips.append(txt_clip)
-
-    final = CompositeVideoClip(clips, size=video.size)
-    final = final.with_audio(video.audio)
-    final.write_videofile("output_final.mp4", codec="libx264", audio_codec="aac", fps=video.fps, preset="fast")
-```
-
-### 9. Verify
+### 4. Merge Dubbed Audio into Video
 
 ```bash
-ffprobe -v error -show_entries format=duration -of csv=p=0 output_final.mp4
+ffmpeg -y \
+  -i input.mp4 \
+  -i dubbing.wav \
+  -map 0:v:0 -map 1:a:0 \
+  -c:v copy -c:a aac -b:a 192k \
+  -shortest \
+  output_temp.mp4
 ```
 
-Duration should match the original video (or the adjusted dubbing).
+Verify audio replaced:
+```bash
+ffprobe -v error -show_entries stream=codec_type -of csv=p=0 output_temp.mp4
+# Should show: video, audio
+```
 
-## Common Mistakes to Avoid
+### 5. Burn Hard Subtitles into Video
 
-| Mistake | Why It Fails | Correct Approach |
-|---------|-------------|------------------|
-| Reuse original timestamps for translated subtitles | Text length and rhythm differ across languages | Re-ASR the dubbed audio for real timestamps |
-| Generate TTS sentence-by-sentence and concatenate | Audible seams, unnatural pauses | Generate the entire script in one pass |
-| Adjust TTS speed parameter to match duration | Speeds above ~1.3x or below ~0.7x sound robotic | Generate at natural speed, then use `ffmpeg atempo` |
-| Burn subtitles with ffmpeg `subtitles=` filter | Requires libass; often missing in default ffmpeg builds | Use moviepy or install ffmpeg with `--enable-libass` |
-| Forget to clip subtitles that exceed video duration | moviepy crashes or renders empty frames | Cap `end = min(end, video.duration)` |
+```bash
+python3 scripts/burn_subtitles.py output_temp.mp4 subtitle_synced.srt output_final.mp4
+```
 
-## Dependencies
+This renders translated subtitles permanently into the video frame (hardcoded).
 
-- `ffmpeg` (with standard filters)
-- `whisper` (OpenAI Whisper or compatible)
-- `mlx-audio` / `edge-tts` / any TTS engine
-- `moviepy` (for subtitle burning if ffmpeg lacks libass)
-- Python 3 with ` Pillow`
+### 6. Cleanup (Optional)
+
+```bash
+rm -f audio16k.wav audio16k.srt translated.txt dubbing.wav subtitle_synced.srt output_temp.mp4
+```
 
 ## Output Files
 
 | File | Description |
 |------|-------------|
 | `output_final.mp4` | Final video with dubbed audio + hardcoded subtitles |
-| `subtitle_<lang>_synced.srt` | Synced subtitles matching the dubbed audio |
-| `dubbing_adjusted.wav` | Time-stretched/compressed dubbing track |
+| `subtitle_synced.srt` | Synced subtitles (original timestamps + translated text) |
+| `dubbing.wav` | Per-segment aligned dubbing track |
 
-## Example Trigger Phrases
+## Key Design Decisions
 
-- "把这段视频翻译成中文并配音"
-- "Extract English subtitles, translate to Chinese, generate new dubbing"
-- "给这个视频加上日语配音和字幕"
-- "Replace the audio with Spanish narration and burn captions"
+| Principle | Why |
+|-----------|-----|
+| **Preserve original ASR timestamps** | They match the video's visual cues natively. Re-ASR on dubbing drifts. |
+| **Per-segment speed adjustment** (0.88–1.20x) | Global atempo on the whole dubbing sounds robotic. Per-segment is natural. |
+| **Hard subtitles (burned in)** | Soft subtitles don't work on all platforms. Burn them so they always show. |
+| **16kHz mono for ASR** | Whisper expects this. Higher sample rate wastes compute without improving accuracy. |
+| **Voice consistency via first segment reference** | mlx-tts supports `--ref_audio`. First segment sets the voice for all others. |
+| **No Demucs by default** | For typical narration/speech videos, background music removal is unnecessary overhead. |
+| **large-v3-turbo model** | Best accuracy/speed tradeoff. Significantly better than `base` for proper nouns and fast speech. |
+
+## Dependencies
+
+| Component | Install | Purpose |
+|-----------|---------|---------|
+| `ffmpeg` | `brew install ffmpeg` | Audio extraction, merging |
+| `openai-whisper` | `pip install openai-whisper` | Speech-to-text (ASR) |
+| `moviepy` | `pip install moviepy` | Burn subtitles into video |
+| `mlx-audio` | `pip install mlx-audio` | TTS on Apple Silicon |
+| `qwen-asr` | `pip install qwen-asr` (optional) | Better Chinese ASR |
+
+## Common Mistakes to Avoid
+
+| Mistake | Why It Fails | Correct Approach |
+|---------|-------------|------------------|
+| ffmpeg without `-map` | Picks original audio (video source's audio stream), dubbing ignored | Always use `-map 0:v:0 -map 1:a:0` |
+| Global atempo on entire dubbing | All speech slows uniformly (EN→ZH ~0.8x), sounds robotic | Per-segment alignment (dub_segments.py) |
+| Re-ASR on dubbed audio for timestamps | Timestamps drift from visual cues | Reuse original Step 1 timestamps |
+| Translation line count ≠ SRT segments | `dub_segments.py` requires strict 1:1 mapping | Count SRT segments first, match exactly |
+| Use whisper `base`/`tiny` model | Proper nouns wrong, fast speech missed | Use `large-v3-turbo` or `turbo` |
+| Burn subtitles without checking FFmpeg libass | `subtitles=` filter silently fails | Use `scripts/burn_subtitles.py` (moviepy) |
+| Translate segments out of order | Subtitles play at wrong times | Keep segment order: 1 translated line per SRT segment |
+| Skip verification | Audio may not have been replaced | Run ffprobe to check both audio + video streams exist |

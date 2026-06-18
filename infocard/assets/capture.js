@@ -26,10 +26,11 @@ async function main() {
 
   const execPath = process.env.PLAYWRIGHT_BROWSERS_PATH
     ? null
-    : '/Users/kyren/Library/Caches/ms-playwright/chromium_headless_shell-1217/chrome-headless-shell-mac-arm64/chrome-headless-shell';
+    : '/Users/kyren/Library/Caches/ms-playwright/chromium_headless_shell-1223/chrome-headless-shell-mac-arm64/chrome-headless-shell';
 
   const browser = await chromium.launch({ executablePath: execPath });
-  const page = await browser.newPage();
+  const context = await browser.newContext({ deviceScaleFactor: scale });
+  const page = await context.newPage();
 
   if (fullpage) {
     // Step 1: load at wide viewport so content flows naturally
@@ -86,7 +87,7 @@ async function main() {
       // card.top should now be ~0, so viewport from 0 to card bottom = pure card image
       const vpW = Math.max(1, Math.ceil(cardInfo.width));
       const vpH = Math.max(1, Math.ceil(cardInfo.top) + Math.ceil(cardInfo.height));
-      await page.setViewportSize({ width: vpW, height: vpH, deviceScaleFactor: scale });
+      await page.setViewportSize({ width: vpW, height: vpH });
       await page.waitForTimeout(200);
 
       await page.screenshot({
@@ -135,7 +136,7 @@ async function main() {
     if (cardInfo && cardInfo.width > 50 && cardInfo.height > 50) {
       const vpW = Math.max(1, Math.ceil(cardInfo.width));
       const vpH = Math.max(1, Math.ceil(cardInfo.top) + Math.ceil(cardInfo.height));
-      await page.setViewportSize({ width: vpW, height: vpH, deviceScaleFactor: scale });
+      await page.setViewportSize({ width: vpW, height: vpH });
       await page.waitForTimeout(200);
       await page.screenshot({ path: path.resolve(outputPath), type: 'png', fullPage: false });
     } else {
