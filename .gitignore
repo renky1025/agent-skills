@@ -16,7 +16,9 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
-
+.omx/
+.workbuddy/
+.claude
 # Windows
 Thumbs.db
 Thumbs.db:encryptable
