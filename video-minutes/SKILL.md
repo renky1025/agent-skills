@@ -54,8 +54,8 @@ description: |
 
 ```bash
 # 检测配置文件存在性
-test -f ".opencode/skills/video-minutes/config.yaml" && echo "project"
-test -f "$HOME/.opencode/skills/video-minutes/config.yaml" && echo "user"
+test -f "video-minutes/config.yaml" && echo "project"
+test -f "$HOME/.workbuddy/skills/video-minutes/config.yaml" && echo "user"
 test -f "$HOME/.video-minutes-config.json" && echo "legacy"
 ```
 
@@ -132,7 +132,7 @@ test -f "$HOME/.video-minutes-config.json" && echo "legacy"
 - 🛠️ 教程演示 (步骤清单)
 ```
 
-**配置保存路径**: `~/.opencode/skills/video-minutes/config.yaml`
+**配置保存路径**: `~/.workbuddy/skills/video-minutes/config.yaml`
 
 ```yaml
 # config.yaml 示例
@@ -189,7 +189,7 @@ integrations:
 
 ```bash
 # 基本用法
-python .opencode/skills/video-minutes/generate_minutes.py <视频路径>
+python video-minutes/generate_minutes.py <视频路径>
 
 # 指定类型 (跳过自动分类)
 python .opencode/skills/video-minutes/generate_minutes.py meeting.mp4 --type meeting
@@ -400,8 +400,8 @@ AI 从视频中提取行动项时，自动识别并添加 @tags:
 |-----|----------|--------|
 | `@user` | 指派给具体人员 | 用户通知 |
 | `@assistant` | 需要 AI 执行 | 内置工具 |
-| `@Codex` | 代码相关任务 | agent-swarm |
-| `@Claude` | 前端/设计任务 | agent-swarm |
+| `@dev` | 代码相关任务 | 开发助手 |
+| `@design` | 设计/前端任务 | 设计助手 |
 | `@article` | 需要写文章 | content-publisher |
 | `@reminder` | 需要提醒 | cron/gcal |
 | `@research` | 需要调研 | web_search |
@@ -430,7 +430,7 @@ AI 从视频中提取行动项时，自动识别并添加 @tags:
 **AI**: 已从会议视频中提取以下行动项：
 
 ```markdown
-### @Codex
+### @dev
 - [ ] 实现用户认证模块的 JWT 刷新机制 (deadline: 周五)
 - [ ] 优化数据库查询性能，目标 QPS > 1000
 
@@ -602,7 +602,7 @@ whisper:
 ## 目录结构 (更新)
 
 ```
-opencode/skills/video-minutes/
+video-minutes/
 ├── SKILL.md                          # 本文件
 ├── config.yaml                       # 默认配置模板
 ├── README.md                         # 快速开始指南
@@ -625,33 +625,6 @@ opencode/skills/video-minutes/
 └── references/
     └── config/
         └── config-schema.md          # 配置 schema
-```
-
----
-
-## 依赖安装
-
-### 必需依赖
-
-```bash
-# ffmpeg
-brew install ffmpeg              # macOS
-sudo apt install ffmpeg          # Ubuntu
-winget install Gyan.FFmpeg       # Windows
-
-# Python 依赖
-pip install -r requirements.txt
-```
-
-### requirements.txt
-
-```
-openai-whisper>=20231117
-ffmpeg-python>=0.2.0
-pyyaml>=6.0
-requests>=2.31.0
-notion-client>=2.2.1
-yt-dlp>=2023.12.30
 ```
 
 ---
@@ -696,7 +669,7 @@ A: 长视频建议分段 `--segment-duration 1800` (30分钟一段)
 
 | Skill | 关系 |
 |-------|------|
-| `agent-swarm` | 接收 `@Codex` `@Claude` 代码任务 |
+| `task-dispatcher` | 接收 `@dev` `@design` 代码/设计任务 |
 | `content-publisher` | 接收 `@article` 文章任务 |
 | `cron` / `gcal` | 接收 `@reminder` 提醒任务 |
 | `elyfinn-voice-notes` | 语音备忘录处理 (姊妹 skill) |
@@ -740,3 +713,9 @@ A: 长视频建议分段 `--segment-duration 1800` (30分钟一段)
 - [ ] 视频摘要生成 (短视频)
 - [ ] 团队协作功能 (共享队列)
 - [ ] 移动端支持 (iOS Shortcuts)
+
+---
+
+## 备选方案
+
+- **多模态视频理解**：对于 2 小时以内的短视频，当前多模态模型可直接理解视频内容并生成纪要，无需完整的 ASR→转录→LLM 流水线。适合快速预览和简单总结场景。长视频（>2h）或需要精确字幕的场景仍推荐使用本技能的完整处理流程。

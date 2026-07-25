@@ -113,3 +113,9 @@ Arc speed matches genre: inspirational stories transform quickly; literary reali
 | Arc that happens to the character rather than through choices | Key transformation must come from a **decision**, not an event |
 | Opening that explains instead of hooks | Start with action, mystery, or provocative statement — explain later or never |
 | Middle that drifts | Every scene must answer: what does the Lead want **now**, and what's blocking it? |
+
+---
+
+## 相关 Skill
+
+- **[snowflake-novel-writer](../snowflake-novel-writer/SKILL.md)** — 雪花写作法小说创作助手，提供更详尽的10步创作流程（从一句话概括到初稿写作），中文优先，内置去AI味和反俗套检查。与本技能互补：LOCK系统适合快速搭建叙事骨架，雪花法适合逐层展开的精细创作。

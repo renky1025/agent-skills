@@ -1,6 +1,6 @@
 ---
 name: image-design
-description: 高级质感图片设计 —— 基于摄影逻辑的 AI 图片提示词生成技能。当用户需要生成图片、写提示词、或讨论 AI 图片质量时激活此技能。通过主体描述、构图位置、光线逻辑、相机视角、风格与质感五大模块，生成专业级 AI 绘图提示词。适用于 GPT-image2、nanobanana、Midjourney、Stable Diffusion 等 AI 绘图工具。
+description: 高级质感图片设计 —— 基于摄影逻辑的 AI 图片提示词生成技能。当用户需要生成图片、写提示词、或讨论 AI 图片质量时激活此技能。通过主体描述、构图位置、光线逻辑、相机视角、风格与质感五大模块，生成专业级 AI 绘图提示词。适用于 ImageGen、GPT-image2、Midjourney、Stable Diffusion 等 AI 绘图工具。
 ---
 
 # 高级质感图片设计
@@ -227,3 +227,10 @@ color fade, realistic skin texture. No illustration style, no dramatic
 lighting, pure realism, everyday emotion, quiet atmosphere.
 --ar 9:16
 ```
+
+---
+
+## 相关 Skill & 工具
+
+- **ImageGen（内置图片生成工具）** — 可直接执行本技能生成的提示词，无需输出到第三方平台。当用户想"看到效果"而不仅是拿到提示词时，可以直接发送生成的提示词到 ImageGen。
+- **[infocard](../infocard/SKILL.md)** — 从 URL 或文本内容生成信息卡片图片，侧重知识可视化而非摄影美学

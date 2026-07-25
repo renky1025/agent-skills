@@ -7,7 +7,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@600;700;900&family=Oswald:wght@500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <script type="module" src="https://esm.sh/ionicons@8.0.0/loader"></script>
+  <script>
+    // No external icon CDN needed — using inline SVG sprite instead
+  </script>
   <style>
     *,
     *::before,
@@ -16,6 +18,9 @@
       padding: 0;
       box-sizing: border-box;
     }
+
+    /* Inline SVG icon base class (replaces ionicons web components) */
+    .icon { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: inline-block; vertical-align: -0.125em; flex-shrink: 0; pointer-events: none; }
 
     :root {
       /* 配色方案 - 通过模板变量注入 */
@@ -725,67 +730,13 @@
       font-weight: 700;
     }
 
-    /* ===== Ionicons 图标 ===== */
-    ion-icon {
-      font-size: inherit;
-      vertical-align: -0.125em;
-      flex-shrink: 0;
-      pointer-events: none;
-    }
-
-    .section-title ion-icon {
-      font-size: 18px;
-      margin-right: 6px;
-    }
-
-    .feature-icon {
-      display: block;
-      font-size: 28px;
-      color: var(--accent);
-      margin-bottom: 10px;
-    }
-
-    .card-icon {
-      font-size: 22px;
-      color: var(--accent);
-      flex-shrink: 0;
-    }
-
-    /* 带图标的列表项：图标替换默认圆点 */
-    .bullet-list li:has(ion-icon),
-    .pain-point-list li:has(ion-icon) {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding-left: 0;
-    }
-
-    .bullet-list li:has(ion-icon)::before,
-    .pain-point-list li:has(ion-icon)::before {
-      content: none;
-    }
-
-    .bullet-list li ion-icon,
-    .pain-point-list li ion-icon {
-      font-size: 16px;
-      color: var(--accent);
-      margin-top: 3px;
-    }
-
-    .quote-icon {
-      font-size: 28px;
-      color: var(--accent);
-      opacity: 0.5;
-      margin-bottom: 10px;
-      display: block;
-    }
-
-    .step-icon {
-      font-size: 20px;
-      color: var(--accent);
-      margin-right: 8px;
-      flex-shrink: 0;
-    }
+    /* ===== Inline SVG Icons (replaces ionicons) ===== */
+    svg.icon { flex-shrink: 0; pointer-events: none; }
+    .section-title svg.icon { font-size: 18px; margin-right: 6px; }
+    .feature-icon { display: block; font-size: 28px; color: var(--accent); margin-bottom: 10px; }
+    .card-icon { font-size: 22px; color: var(--accent); flex-shrink: 0; }
+    .quote-icon { font-size: 28px; color: var(--accent); opacity: 0.5; margin-bottom: 10px; display: block; }
+    .step-icon { font-size: 20px; color: var(--accent); margin-right: 8px; flex-shrink: 0; }
 
     /* ===== 响应式 ===== */
     @media (max-width: 768px) {
@@ -833,6 +784,23 @@
   </style>
 </head>
 <body>
+  <!-- Inline SVG icon sprite (no CDN dependency, guaranteed to render in screenshots) -->
+  <!-- Add only the icons you need; remove unused symbols -->
+  <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <symbol id="i-flash" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+      <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M5 17l1 2.5L8.5 20l-2.5 1L5 23l-1-2.5L1.5 20 4 19.5 5 17z"/><path d="M19 14l.5 1.5L21 16l-1.5.5L19 18l-.5-1.5L17 16l1.5-.5L19 14z"/></symbol>
+      <symbol id="i-layers" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></symbol>
+      <symbol id="i-speed" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></symbol>
+      <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0018 8 6 6 0 006 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 008.91 14"/></symbol>
+      <symbol id="i-chart" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></symbol>
+      <symbol id="i-compare" viewBox="0 0 24 24"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 012 2v7"/><line x1="6" y1="9" x2="6" y2="21"/></symbol>
+      <symbol id="i-code" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol>
+      <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol>
+    </defs>
+  </svg>
   <div class="container">
     {{CONTENT}}
   </div>

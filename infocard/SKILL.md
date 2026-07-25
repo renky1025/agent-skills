@@ -1,8 +1,8 @@
 ---
 name: infocard
-description: "从 URL 或文本内容生成可定制样式的信息卡片图片。智能分析内容结构，动态选择最适合的视觉呈现方式。默认输出与原文同语言的单语卡片到 ~/Downloads/infocard-img/。使用方法：/infocard <URL|文本> [--theme=slate|ocean|sunset|coral|indigo|forest|dark|purple] [--width=1080] [--lang=auto|zh|en|both]"
+description: "从 URL 或文本内容生成可定制样式的信息卡片图片。智能分析内容结构，动态选择最适合的视觉呈现方式。默认输出与原文同语言的单语卡片到 ~/Downloads/infocard-img/。使用方法：/infocard <URL|文本> [--theme=slate|ocean|sunset|coral|indigo|forest|dark|purple|guofeng] [--width=1080] [--lang=auto|zh|en|both]"
 user_invocable: true
-version: "6.4.0"
+version: "6.6.0"
 ---
 
 # infocard: 智能信息卡片生成器
@@ -22,7 +22,7 @@ version: "6.4.0"
 | 参数 | 说明 | 默认值 |
 |------|------|--------|
 | `URL 或 文本` | 网页链接 或 纯文本内容 | 必填 |
-| `--theme` | 配色主题：`slate`(默认)、`ocean`、`sunset`、`coral`、`indigo`、`forest`、`dark`、`purple`、`dashboard` | `slate` |
+| `--theme` | 配色主题：`slate`(默认)、`ocean`、`sunset`、`coral`、`indigo`、`forest`、`dark`、`purple`、`dashboard`、`guofeng` | `slate` |
 | `--width` | 图片宽度 | `1080` |
 | `--output` | 输出文件名（不含扩展名） | 自动提取 |
 | `--lang` | 语言版本：`auto`(自动检测，默认)、`zh`(中文)、`en`(英文)、`both`(双语) | `auto` |
@@ -44,9 +44,14 @@ version: "6.4.0"
 **内容驱动布局** —— 先理解内容，再选择布局：
 
 1. 提取元信息（标题、副标题、核心要点、金句）
-2. 三个维度判断（密度、结构、情绪）
-3. 根据判断选择布局和配色
-4. 生成匹配的 HTML
+2. **内容精炼**（🔴 关键步骤）—— 将原始内容转化为"知识分享"而非"摘要"：
+   - 确定卡片模式（概念解说 / 金句卡片 / 密集知识）
+   - 设计类比和具体例子，让抽象概念可感
+   - 确保每个区块都在回答"为什么"而非"是什么"
+   - 验证：读者看完能否用自己的话复述？
+3. 三个维度判断（密度、结构、情绪）
+4. 根据判断选择布局和配色
+5. 生成匹配的 HTML
 
 ## 执行步骤
 
@@ -105,6 +110,50 @@ version: "6.4.0"
 5. **金句**：独立成段的短句（< 25 字），承载核心洞察
 6. **数据**：如有数字、百分比、统计
 
+#### 🔴 内容质量规则：知识分享 × 理解传递（对所有内容适用）
+
+元信息提取完成后，**卡片的最终内容必须是一篇独立的"知识分享"，而不是一篇"摘要"**。这决定了卡片里写什么、怎么写。
+
+**黄金标准：卡片应该让读者看完说"原来如此"，而不是"哦，讲了这些"。**
+
+**三类内容模式，根据内容特征选择：**
+
+**模式 A — 概念解说（适合：科普、原理、方法论）**
+卡片的核心是"解释一个概念为什么有意思"。不是罗列要点，而是：
+- 先抛出一个**让人好奇的问题**（"为什么一次性检索不够？"）
+- 用**类比或比喻**让抽象概念变得可感（"像图书馆查书 vs 大脑回忆"）
+- 解释**核心机制**（Cue → Tag → Content 如何工作）
+- 点明**为什么这很重要**（"记忆不是文件，是过程"）
+- 关键一：**每个区块都在回答"为什么"**，而不是"是什么"
+- 关键二：**必须使用类比**——如果读完不能用自己的话讲给别人听，说明卡片的解释没到位
+
+**模式 B — 金句卡片（适合：观点、洞察、金句）**
+卡片的核心是一句话的力量。围绕金句展开：
+- 金句占据视觉重心
+- 副标题是金句的展开阐释
+- 可用 2-3 个短句提供背景支撑，**但不得冲淡金句的冲击力**
+- 留白 ≥ 50%，一个巨大元素统治画面
+
+**模式 C — 密集知识（适合：教程、对比、产品介绍）**
+卡片的核心是信息密度和结构清晰：
+- 按逻辑分层排布（并列/流程/层级）
+- 每个区块有独立标题
+- 可以用编号、图标辅助导航
+- 数据和规格突出显示
+- 留白 ≤ 30%
+
+**提取原则（全部场景）：**
+
+- **🔴 以原文思想脉络为主线，不做高度概括，不无中生有**：卡片的"知识分享"不是把原文压缩成几条摘要——而是沿着原文的逻辑线索展开，传递原文的核心洞察。具体要求：
+  - 内容必须基于原文的具体论述构建，不能脱离原文做"通用概念卡"
+  - 不能为了"看起来像知识分享"而编造原文没有的类比、例子或观点
+  - 内容结构应反映原文的论述脉络（如：问题→分析→解法→机制），而不是把原文扁平化为几个独立要点
+  - 验证：删去所有与原文无关的内容后，剩下的就是卡片全部内容——没有剩余，说明没有编造
+- **用类比替代术语解释**：不要写"Cue 是原子级记忆提示"，要写"Cue 是那些细粒度的'记忆钩子'：一个名字、一个时间戳、一个关键词"
+- **内容支撑标题**：每个区块都应该让读者更理解标题中的核心概念。如果删掉某个区块不影响理解，它就不该存在
+- **传递理解，而非信息**：读者读完应该能向你解释这个概念，而不是复述你写了"3个要点"
+- **化抽象为具体**：所有概念必须配具体例子，例子的优先级是：生活类比 > 具体场景 > 技术描述
+
 #### 🔴 产品发布/对比类内容特殊提取规则
 
 当内容涉及**产品发布、模型对比、功能介绍**时（如 AI 模型发布、软件更新、竞品对比），必须额外提取：
@@ -158,6 +207,7 @@ version: "6.4.0"
 | 技术的 | ocean/dark/purple | 架构、系统、算法、代码、工程、CLI工具 |
 | 科研的 | ocean/forest | 论文、实验、数据、研究 |
 | 创意的 | sunset/coral | 艺术、设计、创作、美学 |
+| 优雅的 | guofeng | 文艺、人文、传统美学、文化内容、古典艺术 |
 | **发布的** | **dashboard** | **产品发布、模型更新、功能对比、规格参数、基准测试、定价信息** |
 
 **判断方法**：扫描内容高频关键词，匹配最贴近的情绪。
@@ -252,6 +302,8 @@ version: "6.4.0"
 
 **注意**：卡片内容属于短文本，translate-polisher 会自动适配短文本处理流程。
 
+**🔴 翻译保真规则**：如果英文翻译成中文后**无法准确传达原文含义**（包括但不限于：技术概念非中文原生、文化特定表达、原文精炼短语在中文中找不到等价的简洁表达），则**保留英文原文，不强制翻译**。宁可让读者读英文原文，也不要因强行翻译导致信息失真。例如："one-shot"不要硬译成"一次性解决"，"intent alignment"不要硬译成"意图对齐"（如果"对齐"在中文上下文中难以传达原意），直接保留英文。
+
 **语言检测规则**：
 - 扫描提取的标题和正文内容
 - 若中文字符占比 > 50%，判定为中文内容
@@ -308,43 +360,70 @@ capture.js 截图流程会**强制剥离 body 上的 padding/margin/flex/min-hei
 - **来源、日期**：不显示
 - Footer 样式：字号 12-13px，颜色使用 `var(--text-secondary)` 或更低透明度
 
-**图标使用规范（Ionicons 8.x）：**
-- 图标库已预置于 `template.html`（CDN: `esm.sh/ionicons@8.0.0/loader`），无需额外引入
-- 图标元素格式：`<ion-icon name="icon-name"></ion-icon>`
-- 统一使用 `outline` 变体（如 `bulb-outline`），与卡片设计风格一致
-- 图标颜色自动继承父元素 `color` 属性，跟随主题配色
-- 图标应起到视觉引导作用，每个内容区块最多使用 1 个图标，避免过度装饰
+**🔴 图标使用规范 — 内联 SVG 雪碧图（必须使用，禁止 CDN Web Component）：**
 
-**内容类型 → 图标映射：**
+**关键规则**：capture.js 截图时，`esm.sh/ionicons@8.0.0/loader` 等 CDN Web Component 可能因网络延迟或渲染时机问题导致图标缺失。**必须使用内联 SVG `<use>` 雪碧图**，零外部依赖，截图 100% 可靠。
 
-| 内容类型 | 推荐图标 | 使用位置 |
-|---------|---------|---------|
-| 核心观点 / 洞察 | `bulb-outline` | section-title, feature-icon |
-| 功能 / 特性 | `sparkles-outline`, `pricetags-outline` | feature-icon, card-icon |
-| 步骤 / 流程 | `layers-outline`, `footsteps-outline` | section-title, step-icon |
-| 对比 / 比较 | `git-compare-outline`, `swap-horizontal-outline` | section-title |
-| 数据 / 统计 | `stats-chart-outline`, `bar-chart-outline` | data-item, metric-item |
-| 代码 / 技术 | `code-slash-outline`, `terminal-outline` | section-title, code-block |
-| 引用 / 金句 | `chatbubble-ellipses-outline` | quote-icon |
-| 总结 / 要点 | `checkmark-circle-outline`, `checkbox-outline` | summary-box |
-| 警告 / 注意 | `warning-outline`, `alert-circle-outline` | pain-point-list |
-| 来源 / 链接 | `link-outline`, `open-outline` | footer |
-| 安全 / 认证 | `shield-checkmark-outline`, `lock-closed-outline` | feature-card |
-| 性能 / 速度 | `flash-outline`, `speedometer-outline` | metric-item |
-| AI / 智能 | `hardware-chip-outline`, `color-wand-outline` | header-tag |
+**正确做法：**
+- 在 `<body>` 之前定义 `<svg style="display:none"><defs>` 雪碧图，包含所有需要的图标
+- 使用 `<svg class="icon" viewBox="0 0 24 24"><use href="#i-xxx"/></svg>` 引用图标
+- 定义通用 `.icon` CSS 类控制大小和颜色
+- 每个内容区块最多使用 1 个图标，避免过度装饰
+
+**必须包含的 CSS（在 `<style>` 中添加）：**
+```css
+.icon { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: inline-block; vertical-align: -0.125em; flex-shrink: 0; pointer-events: none; }
+```
+
+**必须包含的 SVG 雪碧图骨架（在 `<body>` 前添加）：**
+```html
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <symbol id="i-flash" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+    <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M5 17l1 2.5L8.5 20l-2.5 1L5 23l-1-2.5L1.5 20 4 19.5 5 17z"/><path d="M19 14l.5 1.5L21 16l-1.5.5L19 18l-.5-1.5L17 16l1.5-.5L19 14z"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></symbol>
+    <symbol id="i-speed" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></symbol>
+    <symbol id="i-branch" viewBox="0 0 24 24"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 01-9 9"/></symbol>
+    <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0018 8 6 6 0 006 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 008.91 14"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></symbol>
+    <symbol id="i-compare" viewBox="0 0 24 24"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 012 2v7"/><line x1="6" y1="9" x2="6" y2="21"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></symbol>
+    <symbol id="i-people" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol>
+  </defs>
+</svg>
+```
+
+**内容类型 → 图标 ID 映射：**
+
+| 内容类型 | 推荐图标 ID | 使用位置 |
+|---------|------------|---------|
+| 核心观点 / 洞察 | `i-bulb` | section-title, feature-icon |
+| 功能 / 特性 | `i-sparkles` | feature-icon, card-icon |
+| 步骤 / 流程 | `i-layers` | section-title, step-icon |
+| 对比 / 比较 | `i-compare` | section-title |
+| 数据 / 统计 | `i-chart` | data-item, metric-item |
+| 代码 / 技术 | `i-code` | section-title, code-block |
+| 安全 / 认证 | `i-shield` | feature-card |
+| 性能 / 速度 | `i-flash`, `i-speed` | metric-item |
+| 引用 / 金句 | `i-bulb` | quote-icon |
+| 总结 / 要点 | `i-check` | summary-box |
+| 来源 / 链接 | `i-book`, `i-code` | footer |
 
 **图标使用示例：**
 
 ```html
 <!-- 区块标题带图标 -->
 <div class="section-title">
-  <ion-icon name="bulb-outline"></ion-icon>
+  <svg class="icon" viewBox="0 0 24 24"><use href="#i-bulb"/></svg>
   核心观点
 </div>
 
 <!-- 特性卡片带图标 -->
 <div class="feature-item">
-  <ion-icon class="feature-icon" name="sparkles-outline"></ion-icon>
+  <svg class="feature-icon" viewBox="0 0 24 24"><use href="#i-sparkles"/></svg>
   <div class="feature-text">
     <strong>实时协作</strong>
     多人同时编辑，实时同步
@@ -353,18 +432,18 @@ capture.js 截图流程会**强制剥离 body 上的 padding/margin/flex/min-hei
 
 <!-- 步骤带图标 -->
 <div class="step-title">
-  <ion-icon class="step-icon" name="footsteps-outline"></ion-icon>
+  <svg class="step-icon" viewBox="0 0 24 24"><use href="#i-layers"/></svg>
   第一步：安装 CLI
 </div>
 
 <!-- 列表项带图标 -->
 <ul class="bullet-list">
-  <li><ion-icon name="checkmark-circle-outline"></ion-icon>支持 TypeScript 类型推导</li>
+  <li><svg class="icon" viewBox="0 0 24 24"><use href="#i-check"/></svg>支持 TypeScript 类型推导</li>
 </ul>
 
 <!-- 引用带图标 -->
 <div class="quote-section">
-  <ion-icon class="quote-icon" name="chatbubble-ellipses-outline"></ion-icon>
+  <svg class="quote-icon" viewBox="0 0 24 24"><use href="#i-bulb"/></svg>
   <div class="quote-text">代码是写给人看的，顺带能在机器上运行</div>
 </div>
 ```
@@ -402,7 +481,7 @@ mkdir -p ~/Downloads/infocard-img
 
 **单语截图（`--lang=auto/zh/en`）**：
 ```bash
-node ~/.claude/skills/infocard/assets/capture.js /tmp/infocard_{name}.html ~/Downloads/infocard-img/{name}.png 1080 800 fullpage
+node infocard/assets/capture.js /tmp/infocard_{name}.html ~/Downloads/infocard-img/{name}.png 1080 800 fullpage
 ```
 
 **双语截图（`--lang=both`）**：
@@ -512,6 +591,20 @@ node ~/.claude/skills/infocard/assets/capture.js /tmp/infocard_{name}_en.html ~/
 --blue: #3B82F6
 ```
 
+### guofeng（国风）
+适合：文艺、人文、传统美学、文化内容、古典艺术
+```
+--bg: #F5EDE0           /* 宣纸暖白 — 仿古宣纸底色 */
+--card-bg: #FAF3E7      /* 卡片面 — 略亮的纸色 */
+--text-primary: #2D1F14  /* 墨色 — 深棕黑，如浓墨 */
+--text-secondary: #7A6A5A /* 茶色 — 温润的棕灰 */
+--accent: #C5615C        /* 朱砂红 — 取自画中红袍 */
+--accent-light: rgba(197, 97, 92, 0.15)
+--border: #E2D4C2        /* 淡赭 — 柔和边界 */
+--highlight-bg: #F0E6D6  /* 淡金底 — 暖色高亮区 */
+--dark-card: #2D1F14     /* 深墨 — 深色区块底色 */
+```
+
 ## 示例：内容→判断→布局
 
 ### 示例 1：单一观点（稀 + 单点 + 沉思）
@@ -550,10 +643,14 @@ node ~/.claude/skills/infocard/assets/capture.js /tmp/infocard_{name}_en.html ~/
 8. **默认单语输出** — 不指定 `--lang` 时，自动检测原文语言，仅生成一张同语言卡片
 9. **双语需显式指定** — 只有用户明确要求 `--lang=both` 时才生成两张卡片
 10. **跨语言必须用 translate-polisher** — 只要源语言与目标语言不同（包括 `--lang=zh` 原文英文、`--lang=en` 原文中文），必须通过 `/translate-polisher` 翻译，严禁直译。直译会产生生硬、不符合目标语言语境的文本。
-11. **图标适度使用** — 每个内容区块最多 1 个图标，统一使用 Ionicons outline 变体；避免重复和过度装饰
+11. **🔴 必须使用内联 SVG 雪碧图替代 CDN Web Component 图标** — capture.js 截图时 `<ion-icon>` 依赖 `esm.sh/ionicons@8.0.0/loader` CDN，可能因网络或渲染时机导致图标缺失。必须使用内联 `<svg><use href="#i-xxx"/></svg>` 方式，零外部依赖。详见"图标使用规范"
 12. **🔴 必须用 `.card` 包裹内容** — 所有内容必须放在 `<div class="card">` 内，body 不得有 padding/margin/flex/min-height，否则截图只截到第一个子元素
 13. **🔴 产品发布/对比必须用 dashboard 风格** — 当内容涉及产品发布、模型对比、基准测试时，必须使用 dashboard 主题，突出对比数据和核心优势
 14. **🔴 对比数据必须提取具体数值** — 不要只写"性能更好"，要写"69.4% vs 64.8%"；不要只写"更便宜"，要写"$0.07 vs $4.10"
+15. **🔴 内容必须是知识分享，不是总结** — 卡片是"让读者理解一个概念"，不是"告诉读者原文讲了什么"。区别在于：总结是在原文基础上压缩（删除细节），知识分享是在原文基础上重构（解释为什么重要）。以下两条是判断标准：a) 读者读完是否能用自己的话向别人解释？b) 卡片是否使用了类比或具体例子让抽象概念可感？
+16. **🔴 用类比代替术语轰炸** — 每个抽象概念都应配一个生活类比。"检索再推理范式" → "像去图书馆但不确定要找什么书"；"选择性激活" → "只跟随'股票投资'标签，忽略'埃隆·马斯克'"。类比让卡片从"能读"变成"能记住"
+17. **🔴 翻译保真优先于强行翻译** — 英文→中文时，如果核心概念、术语或精炼短语翻译后丢失原意或变得冗长，直接保留英文原文。不要为了"全中文"牺牲信息准确性。例如："one-shot"、"intent alignment"、"spec-driven development"如果翻译不精确，宁可保留英文。
+18. **🔴 以原文脉络为主线，不编造内容** — 卡片的知识分享必须沿原文的论述逻辑展开（问题→分析→解法→机制等），禁止脱离原文做高度概括，禁止编造原文没有的类比、例子或观点。卡片的每一句话都应有原文依据。
 
 ## 常见错误
 
@@ -568,3 +665,9 @@ node ~/.claude/skills/infocard/assets/capture.js /tmp/infocard_{name}_en.html ~/
 9. **🔴 产品发布内容不用 dashboard 风格** — 模型发布、竞品对比、基准测试必须用 dashboard 深色网格布局，不能用普通浅色卡片
 10. ** 对比数据只写描述不写数值** — "成本更低" 是无效信息，必须写 "$0.07 vs $4.10（降低 60 倍）"
 11. **🔴 没有提取核心优势** — 产品发布类内容必须提取 3-5 个核心卖点，不能只罗列功能
+12. **🔴 把卡片写成论文摘要** — 最常见的错误：列出 5 个"核心要点"，每个都是名词解释级别的概括（"范式转变"、"CTC图结构"）。读者看到这 5 个点只会记住"有这些东西"，但完全不懂为什么。正确做法：选择一个角度，深入解释，让读者真的理解。
+13. **🔴 没有类比，全是抽象术语** — 如果卡片里连续出现 3 个以上专业术语没有类比或具体例子，立即重写。术语属于原文摘要，不属于知识分享。
+14. **🔴 内容脱节于标题** — 写完所有区块后检查：每个区块是否都能让人更理解标题里的概念？如果有一个区块删掉不影响对标题的理解，它就不属于这张卡片。
+15. **🔴 强行翻译导致信息失真** — 英文原文中精确的概念（如 "one-shot"、"intent alignment"、"spec-driven development"）在中文中没有完美对应的简洁表达时，强行翻译成冗长或不准确的短语。宁可保留英文原文，也不要让读者看到"一次性解决方案"这种模糊表述。
+16. **🔴 脱离原文编造知识分享** — 读了原文后不按原文逻辑走，自己编一套"通用知识框架"替换原文的具体内容。例如：原文讲的是在AI工作流中插入Spec Agent来处理复杂Issue，却做了一张通用的"为什么要写规格说明"卡片。卡片内容必须基于原文的具体内容，不能替换成另一篇文章。
+17. **🔴 使用 `<ion-icon>` CDN Web Component 导致截图图标缺失** — `esm.sh/ionicons@8.0.0/loader` 在 Playwright 截图时可能因 web component 渲染时机或网络问题导致图标不可见。**必须使用内联 SVG `<use>` 雪碧图**。放在 HTML `<head>` 中的 `<script type="module" src="https://esm.sh/ionicons@8.0.0/loader">` 也要一并移除。

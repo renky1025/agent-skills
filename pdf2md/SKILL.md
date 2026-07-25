@@ -58,10 +58,10 @@ pip show opendataloader-pdf[hybrid]
 
 ```bash
 # 基础转换
-python3 ~/.claude/skills/pdf2md/pdf2md.py document.pdf
+python3 pdf2md/pdf2md.py document.pdf
 
 # Hybrid 模式（高质量，支持复杂表格/公式）
-python3 ~/.claude/skills/pdf2md/pdf2md.py document.pdf --mode=hybrid
+python3 pdf2md/pdf2md.py document.pdf --mode=hybrid
 
 # 扫描版PDF（带OCR）
 python3 ~/.claude/skills/pdf2md/pdf2md.py scan.pdf --mode=hybrid --ocr --ocr-lang=ch_sim
@@ -97,14 +97,9 @@ python3 ~/.claude/skills/pdf2md/pdf2md.py --install
   --check               仅检查环境依赖
   --install             安装/更新依赖
 ```
-
-# 4. 检查 hybrid 模式依赖 (如果使用)
-pip show opendataloader-pdf[hybrid]
-```
-
 ### 自动安装
 
-如果未安装，Claude 会自动执行：
+如果未安装，助手会自动执行：
 
 ```bash
 # 基础安装
@@ -591,6 +586,10 @@ $$
 - [OpenDataLoader GitHub](https://github.com/opendataloader-project/opendataloader-pdf)
 - [官方文档](https://opendataloader.org/docs)
 - [Benchmark结果](https://github.com/opendataloader-project/opendataloader-bench)
+
+## 备选方案
+
+- **原生 PDF 读取**：对于简单的数字PDF文档，当前模型可直接读取 PDF 内容并输出 Markdown，无需安装 OpenDataLoader 工具链。适合快速处理少量简单文档。复杂表格、公式、扫描件仍需使用本技能的 hybrid 模式。
 
 ## License
 

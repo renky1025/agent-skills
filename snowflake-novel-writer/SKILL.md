@@ -481,3 +481,10 @@ description: 使用雪花写作法引导用户创作小说的专业写作助手�
 ```
 
 如果用户只回答了部分信息，就基于已有信息推进，不要卡住流程。
+
+---
+
+## 相关 Skill
+
+- **[novel-writing](../novel-writing/SKILL.md)** — 基于LOCK系统+三幕结构的英文优先小说创作框架，6步工作流，适合快速搭建叙事骨架和人物弧光。与本技能互补：LOCK系统侧重叙事驱动力（Lead/Objective/Conflict/Knockout），雪花法侧重从一句话逐层展开的精细创作。两项技能可以组合使用——用LOCK系统搭骨架，用雪花法填血肉。
+- **[de-ai-writing](../de-ai-writing/SKILL.md)** — 通用文本去AI味五步法，本文第10步的"去AI味三遍法"是其小说场景的精简版

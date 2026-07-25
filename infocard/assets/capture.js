@@ -26,7 +26,7 @@ async function main() {
 
   const execPath = process.env.PLAYWRIGHT_BROWSERS_PATH
     ? null
-    : '/Users/kyren/Library/Caches/ms-playwright/chromium_headless_shell-1223/chrome-headless-shell-mac-arm64/chrome-headless-shell';
+    : '/Users/kyren/Library/Caches/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-mac-arm64/chrome-headless-shell';
 
   const browser = await chromium.launch({ executablePath: execPath });
   const context = await browser.newContext({ deviceScaleFactor: scale });

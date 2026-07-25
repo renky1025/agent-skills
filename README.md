@@ -1,10 +1,10 @@
 # Agent Skills Collection
 
-Claude Code 智能技能集合 - 自动化内容创作、社交媒体管理、安全检查与生产力工具箱。
+WorkBuddy 智能技能集合 — 自动化内容创作、社交媒体管理、安全检查与生产力工具箱。原为 Claude Code 设计，已适配 WorkBuddy 环境。
 
 ## 项目简介
 
-本项目是一系列为 Claude Code 设计的 Skill（技能）模块，每个 Skill 都是针对特定场景的自动化解决方案。从视频内容处理到社交媒体运营，从文章分析到内容生成，从安全检查到翻译优化，帮助用户提升工作效率，实现智能化创作流程。
+本项目是一系列为 AI 助手设计的 Skill（技能）模块，每个 Skill 都是针对特定场景的自动化解决方案。从视频内容处理到社交媒体运营，从文章分析到内容生成，从安全检查到翻译优化，帮助用户提升工作效率，实现智能化创作流程。
 
 ## Skill 目录
 
@@ -12,11 +12,11 @@ Claude Code 智能技能集合 - 自动化内容创作、社交媒体管理、�
 
 | Skill | 描述 | 状态 |
 |-------|------|------|
-| [attention-daily](#attention-daily) | 每日科技情报报告（GitHub + AttentionVC） | ✅ v2.0 |
 | [article-deconstructor](#article-deconstructor) | 文章拆解分析器 | ✅ 可用 |
-| [infocard](#infocard) | 智能信息卡片生成器 | ✅ v5.0 |
+| [infocard](#infocard) | 智能信息卡片生成器 | ✅ v6.6 |
 | [pdf2md](#pdf2md) | PDF 转 Markdown 工具 | ✅ 可用 |
-| [seed-article](#seed-article) | Markdown 文章导入与 CMS 发布 | ✅ 可用 |
+| [design-md-extractor](#design-md-extractor) | URL 设计系统提取器 | ✅ 可用 |
+| [github-analyzer](#github-analyzer) | GitHub 项目一键分析 | ✅ 可用 |
 
 ### ✍️ 内容创作与生成
 
@@ -46,27 +46,22 @@ Claude Code 智能技能集合 - 自动化内容创作、社交媒体管理、�
 | Skill | 描述 | 状态 |
 |-------|------|------|
 | [skill-security-check](#skill-security-check) | Skill 安装前安全检查 | ✅ 可用 |
-| [claude-simplify](#claude-simplify) | 代码简化与质量检查 | ✅ 可用 |
-| [claude-remember](#claude-remember) | 自动记忆管理与整理 | ✅ 可用 |
-| [design-md-extractor](#design-md-extractor) | URL 设计系统提取器 | ✅ 可用 |
+| [claude-simplify](#claude-simplify) | 代码简化与质量检查（三 Agent 并行审查） | ✅ 可用 |
+| [claude-remember](#claude-remember) | 记忆管理与整理（已适配 WorkBuddy 记忆层级） | ✅ 可用 |
 
 ### 🧠 学习与效率
 
 | Skill | 描述 | 状态 |
 |-------|------|------|
 | [blitz](#blitz) | 通用加速学习协议 — 7 阶段交互式学习（费曼技巧、主动回忆、间隔重复） | ✅ 可用 |
+| [llm-aiops](#llm-aiops) | LLM + AIOps 研究参考指南（78+ 论文） | ✅ 可用 |
 
 ### 🤖 AI Agent 与自动化
 
 | Skill | 描述 | 状态 |
 |-------|------|------|
 | [hermes-setup](#hermes-setup) | Hermes Agent 全自动安装与配置 | ✅ 可用 |
-
-### 📚 研究与参考
-
-| Skill | 描述 | 状态 |
-|-------|------|------|
-| [llm-aiops](#llm-aiops) | LLM + AIOps 研究参考指南（78+ 论文） | ✅ 可用 |
+| [claude-simplify](#claude-simplify-1) | 三 Agent 并行代码审查（复用/质量/效率） | ✅ 可用 |
 
 ---
 
@@ -131,40 +126,22 @@ extract design tokens from https://stripe.com
 
 ---
 
-### attention-daily
+### github-analyzer
 
-**每日科技情报报告** - 自动生成综合日报，整合 GitHub Trending 热门项目和 AttentionVC.ai 热门文章分析。
+**GitHub 项目一键分析** - 快速分析任意 GitHub 仓库，回答项目是什么、有什么用、怎么用。
 
-#### ✨ v2.0 新功能
-
-**🔥 Part 1: GitHub 热门项目**
-- 获取 GitHub Trending Top 10 开源项目
-- 项目语言、Stars、简介一览
-- 热门语言统计和趋势分析
-
-**📰 Part 2: 热门文章深度分析**
-- 从 AttentionVC.ai 获取 Tech + AI 文章（各10篇）
-- **多视角点评**：技术、商业、用户、趋势四个视角
-- **智能分析**：关键词提取、热度计算、内容总结
-
-**🎯 智能总结**
-- GitHub 项目与社区讨论关联分析
-- 热门关键词统计
-- 关键趋势和洞察
+**核心能力：**
+- 📖 **README 理解** - 自动分析项目文档和代码结构
+- 📊 **五章节报告** - 项目概述、核心亮点、技术栈、使用指南、社区活跃度
+- 🔍 **智能评估** - 代码质量、文档完整度、维护状态
 
 **使用方式：**
-```bash
-cd attention-daily/scripts
-npm install
-npm run daily
+```
+分析 https://github.com/xxx/xxx
+这个项目是做什么的
 ```
 
-**输出：**
-- 格式：Markdown 报告
-- 位置：`scripts/output/daily-report-{date}.md`
-- 内容：GitHub 项目 + 文章分析 + 综合总结
-
-[查看完整文档](attention-daily/SKILL.md)
+[查看完整文档](github-analyzer/SKILL.md)
 
 ---
 
@@ -222,14 +199,11 @@ python scripts/generate_minutes.py ~/Recordings --batch
 
 **核心能力：**
 - 🔗 **URL 内容抓取** - 自动读取并解析网页/Twitter 内容
-- 🧠 **智能内容梳理** - 分析内容类型，自动提取核心要点
-- 🎨 **动态布局选择** - 根据内容特征选择最适合的视觉呈现
-  - 列表布局（痛点/问题）
-  - 代码块（安装步骤/命令）
-  - 卡片网格（功能特性/集成方式）
-  - 对比布局（方案对比）
-- 🌈 **多主题配色** - 7 种预设主题（slate/ocean/sunset/coral/indigo/forest/dark）
-- 📷 **图片导出** - HTML 转 PNG，支持自适应高度
+- 🧠 **智能内容梳理** - 分析内容类型，自动提取核心要点，以"知识分享"而非"摘要"方式呈现
+- 🎨 **内容驱动布局** - 三个维度（密度/结构/情绪）自动选择最佳视觉形式
+- 🌈 **10 种主题配色** - slate/ocean/sunset/coral/indigo/forest/dark/purple/dashboard/guofeng
+- 📷 **图片导出** - HTML 转 PNG，支���自适应高度
+- 🌐 **多语言支持** - 自动检测语言，支持中英双语输出
 
 **使用方式：**
 ```bash
@@ -593,25 +567,6 @@ mlx_audio.stt.generate --audio ./input.wav --output-path ./transcript.txt --lang
 
 ---
 
-### seed-article
-
-**Markdown 文章导入与 CMS 发布** - 从本地 Markdown 文件和可选封面图片，一键清理、翻译、总结并发布文章到 YorkTools CMS 系统。
-
-**核心能力：**
-- 📄 **本地 Markdown 读取** - 支持任意路径的本地 Markdown 文件
-- 🧹 **智能清理** - 自动清理非法字符、标签和超链接
-- 🌐 **概括提炼式翻译** - 利用 AI 原生能力进行中/英翻译与提炼
-- 🚀 **一键发布** - 通过本地脚本上传封面并创建 CMS 文章
-- 🔒 **无需外部 API** - 翻译与提炼完全在上下文中完成
-
-**使用方式：**
-```
-帮我把这个 markdown 导入到 CMS
-使用 seed-article 发布这篇文章
-```
-
-[查看完整文档](seed-article/SKILL.md)
-
 ---
 
 ### llm-aiops
@@ -642,7 +597,7 @@ mlx_audio.stt.generate --audio ./input.wav --output-path ./transcript.txt --lang
 
 ### 环境要求
 
-- Claude Code 或兼容的 AI 编程助手
+- WorkBuddy 或兼容的 AI 编程助手
 - 部分 Skill 需要：
   - Python 3.8+
   - Node.js 14+
@@ -656,12 +611,6 @@ cd video-minutes
 pip install -r requirements.txt
 # macOS: brew install ffmpeg
 # Ubuntu: sudo apt install ffmpeg
-```
-
-**attention-daily：**
-```bash
-cd attention-daily/scripts
-npm install
 ```
 
 **skill-security-check：**
@@ -701,9 +650,6 @@ agent-skills/
 │
 ├── blitz/                        # 通用加速学习协议
 │   └── SKILL.md
-│├── attention-daily/              # 每日科技情报报告
-│   ├── scripts/
-│   └── SKILL.md
 │
 ├── skill-security-check/         # Skill 安全检查 (TypeScript)
 │   ├── src/
@@ -742,7 +688,7 @@ agent-skills/
 ├── snowflake-novel-writer/      # 雪花写作法小说创作
 │   └── SKILL.md
 │
-├── infocard/                    # 信息卡片生成器 v5.0
+├── infocard/                    # 信息卡片生成器 v6.6
 │   ├── assets/
 │   ├── evals/
 │   ├── references/
@@ -761,6 +707,9 @@ agent-skills/
 │
 ├── design-md-extractor/         # URL 设计系统提取器
 │   ├── references/
+│   └── SKILL.md
+│
+├── github-analyzer/              # GitHub 项目一键分析
 │   └── SKILL.md
 │
 ├── mlx-tts/                     # Apple Silicon 本地 TTS
@@ -788,9 +737,6 @@ agent-skills/
 │   └── skill.md
 │
 ├── llm-aiops/                   # LLM + AIOps 研究参考
-│   └── SKILL.md
-│
-├── seed-article/                # Markdown 导入与 CMS 发布
 │   └── SKILL.md
 │
 └── novel-writing/               # 小说创作专业助手
@@ -823,6 +769,19 @@ agent-skills/
 ## 许可证
 
 本项目采用 MIT 许可证 - 详见 [LICENSE](LICENSE) 文件。
+
+---
+
+## 最近更新 (2026-07-25)
+
+### 批量巡视与优化
+
+- **缺陷修复**: pdf2md 残留代码片段清除、video-minutes 重复"依赖安装"章节删除
+- **路径适配**: pdf2md / infocard / video-minutes 的 `~/.claude/skills/` 路径更新为工作区相对路径
+- **生态适配**: claude-remember 记忆层级映射到 WorkBuddy 的 MEMORY.md / 日报 / 云记忆体系；video-minutes 的 `@Codex`/`@Claude`/`agent-swarm` 引用泛化
+- **交叉引用**: 为重叠技能对添加互引（de-ai-writing↔viral-hook, novel-writing↔snowflake-novel-writer, wechat-article-writer↔weitoutiao-creator）
+- **能力增强**: image-design 添加 ImageGen 内置工具链路说明；pdf2md 添加原生 PDF 读取备选方案
+- **README 清理**: 移除已不存在的 attention-daily / seed-article，添加 github-analyzer，更新环境要求为 WorkBuddy
 
 ---
 
