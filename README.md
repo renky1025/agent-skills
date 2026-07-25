@@ -26,7 +26,7 @@
 | [weitoutiao-creator](#weitoutiao-creator) | 微头条短文案爆款生成器 | — |
 | [snowflake-novel-writer](#snowflake-novel-writer) | 雪花写作法小说创作（10 步） | — |
 | [novel-writing](#novel-writing) | LOCK 系统小说创作框架 | — |
-| [image-design](#image-design) | 高级质感 AI 图���提示词设计 | — |
+| [image-design](#image-design) | 高级质感 AI 图片提示词设计 | — |
 | [mckinsey-cover](#mckinsey-cover) | 麦肯锡风格封面/信息图生成 | — |
 | [frontend-design](#frontend-design) | 高保真前端界面设计 | — |
 | [curriculum-design](#curriculum-design) | 专业课程设计与教学设计 | — |
@@ -230,7 +230,7 @@ python video-minutes/scripts/generate_minutes.py ~/Recordings --batch
 
 ### mckinsey-cover
 
-**麦肯锡风格封面/��息图生成** �� 输入主题词和用途，自动生成顶级咨询公司视觉风格的高级封面或信息图。提示词模版来自 Adrian Punk 原创。
+**麦肯锡风格封面/信息图生成** — 输入主题词和用途，自动生成顶级咨询公司视觉风格的高级封面或信息图。提示词模版来自 Adrian Punk 原创。
 
 [查看完整文档](mckinsey-cover/SKILL.md)
 
@@ -335,7 +335,7 @@ agent-skills/
 ├── blitz/                        # 通用加速学习协议
 ├── claude-remember/              # 记忆管理与整理
 ├── claude-simplify/              # 代码简化与质量检查
-├── curriculum-design/            # 专业课程��计
+├── curriculum-design/            # 专业课程设计
 ├── de-ai-writing/                # 文本去AI味
 ├── design-md-extractor/          # URL 设计系统提取器
 ├── github-analyzer/              # GitHub 项目分析
@@ -375,7 +375,7 @@ agent-skills/
 ## 贡献指南
 
 1. 每个 Skill 包含完整的 SKILL.md 文档
-2. 遵循现有��录结构和命名规范
+2. 遵循现有目录结构和命名规范
 3. 在 README 目录和项目结构中添加新 Skill
 4. 脚本型 Skill 提供安装和配置说明
 
