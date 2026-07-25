@@ -1,6 +1,6 @@
 # Agent Skills Collection
 
-WorkBuddy 智能技能集合 — 自动化内容创作、社交媒体管理、安全检查与生产力工具箱。原为 Claude Code 设计，已适配 WorkBuddy 环境。
+通用 AI Agent 智能技能集合 — 自动化内容创作、社交媒体管理、安全检查与生产力工具箱。
 
 ## 项目简介
 
@@ -47,7 +47,7 @@ WorkBuddy 智能技能集合 — 自动化内容创作、社交媒体管理、�
 |-------|------|------|
 | [skill-security-check](#skill-security-check) | Skill 安装前安全检查 | ✅ 可用 |
 | [claude-simplify](#claude-simplify) | 代码简化与质量检查（三 Agent 并行审查） | ✅ 可用 |
-| [claude-remember](#claude-remember) | 记忆管理与整理（已适配 WorkBuddy 记忆层级） | ✅ 可用 |
+| [claude-remember](#claude-remember) | 记忆管理与整理 | ✅ 可用 |
 
 ### 🧠 学习与效率
 
@@ -597,7 +597,7 @@ mlx_audio.stt.generate --audio ./input.wav --output-path ./transcript.txt --lang
 
 ### 环境要求
 
-- WorkBuddy 或兼容的 AI 编程助手
+- 通用 AI 编程助手
 - 部分 Skill 需要：
   - Python 3.8+
   - Node.js 14+
@@ -777,11 +777,11 @@ agent-skills/
 ### 批量巡视与优化
 
 - **缺陷修复**: pdf2md 残留代码片段清除、video-minutes 重复"依赖安装"章节删除
-- **路径适配**: pdf2md / infocard / video-minutes 的 `~/.claude/skills/` 路径更新为工作区相对路径
-- **生态适配**: claude-remember 记忆层级映射到 WorkBuddy 的 MEMORY.md / 日报 / 云记忆体系；video-minutes 的 `@Codex`/`@Claude`/`agent-swarm` 引用泛化
+- **路径通用化**: pdf2md / infocard / video-minutes 的硬编码平台路径更新为工作区相对路径
+- **生态适配**: claude-remember 记忆层级改为通用记忆体系描述，不绑定特定平台；video-minutes 任务分发标签泛化
 - **交叉引用**: 为重叠技能对添加互引（de-ai-writing↔viral-hook, novel-writing↔snowflake-novel-writer, wechat-article-writer↔weitoutiao-creator）
-- **能力增强**: image-design 添加 ImageGen 内置工具链路说明；pdf2md 添加原生 PDF 读取备选方案
-- **README 清理**: 移除已不存在的 attention-daily / seed-article，添加 github-analyzer，更新环境要求为 WorkBuddy
+- **能力增强**: image-design 添加原生图片生成工具链路说明；pdf2md 添加原生 PDF 读取备选方案
+- **README 清理**: 移除已不存在的 attention-daily / seed-article，添加 github-analyzer，去除所有平台特定引用
 
 ---
 

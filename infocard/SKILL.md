@@ -486,8 +486,8 @@ node infocard/assets/capture.js /tmp/infocard_{name}.html ~/Downloads/infocard-i
 
 **双语截图（`--lang=both`）**：
 ```bash
-node ~/.claude/skills/infocard/assets/capture.js /tmp/infocard_{name}_zh.html ~/Downloads/infocard-img/{name}_zh.png 1080 800 fullpage
-node ~/.claude/skills/infocard/assets/capture.js /tmp/infocard_{name}_en.html ~/Downloads/infocard-img/{name}_en.png 1080 800 fullpage
+node infocard/assets/capture.js /tmp/infocard_{name}_zh.html ~/Downloads/infocard-img/{name}_zh.png 1080 800 fullpage
+node infocard/assets/capture.js /tmp/infocard_{name}_en.html ~/Downloads/infocard-img/{name}_en.png 1080 800 fullpage
 ```
 
 ## 主题配色

@@ -55,7 +55,7 @@ description: |
 ```bash
 # 检测配置文件存在性
 test -f "video-minutes/config.yaml" && echo "project"
-test -f "$HOME/.workbuddy/skills/video-minutes/config.yaml" && echo "user"
+test -f "$HOME/.ai-agent/skills/video-minutes/config.yaml" && echo "user"
 test -f "$HOME/.video-minutes-config.json" && echo "legacy"
 ```
 
@@ -132,7 +132,7 @@ test -f "$HOME/.video-minutes-config.json" && echo "legacy"
 - 🛠️ 教程演示 (步骤清单)
 ```
 
-**配置保存路径**: `~/.workbuddy/skills/video-minutes/config.yaml`
+**配置保存路径**: `~/.ai-agent/skills/video-minutes/config.yaml`
 
 ```yaml
 # config.yaml 示例
@@ -192,38 +192,38 @@ integrations:
 python video-minutes/generate_minutes.py <视频路径>
 
 # 指定类型 (跳过自动分类)
-python .opencode/skills/video-minutes/generate_minutes.py meeting.mp4 --type meeting
+python video-minutes/generate_minutes.py meeting.mp4 --type meeting
 
 # 指定输出
-python .opencode/skills/video-minutes/generate_minutes.py lecture.mp4 -o ~/Notes/课程.md
+python video-minutes/generate_minutes.py lecture.mp4 -o ~/Notes/课程.md
 
 # 指定语言
-python .opencode/skills/video-minutes/generate_minutes.py interview.mp4 --language zh
+python video-minutes/generate_minutes.py interview.mp4 --language zh
 
 # 使用更高精度模型
-python .opencode/skills/video-minutes/generate_minutes.py presentation.mp4 --model medium
+python video-minutes/generate_minutes.py presentation.mp4 --model medium
 
 # 仅提取字幕不生成纪要
-python .opencode/skills/video-minutes/generate_minutes.py video.mp4 --transcript-only
+python video-minutes/generate_minutes.py video.mp4 --transcript-only
 
 # 批量处理目录
-python .opencode/skills/video-minutes/generate_minutes.py ~/Recordings/ --batch
+python video-minutes/generate_minutes.py ~/Recordings/ --batch
 ```
 
 ### 自动扫描
 
 ```bash
 # 扫描配置路径中的新视频
-python .opencode/skills/video-minutes/scripts/scan-and-process.py
+python video-minutes/scripts/scan-and-process.py
 
 # 扫描指定目录
-python .opencode/skills/video-minutes/scripts/scan-and-process.py ~/Downloads --since-hours 24
+python video-minutes/scripts/scan-and-process.py ~/Downloads --since-hours 24
 
 # 查看待处理队列
-python .opencode/skills/video-minutes/scripts/queue.py --list
+python video-minutes/scripts/queue.py --list
 
 # 查看处理统计
-python .opencode/skills/video-minutes/scripts/queue.py --stats
+python video-minutes/scripts/queue.py --stats
 ```
 
 ---

@@ -64,19 +64,19 @@ python3 pdf2md/pdf2md.py document.pdf
 python3 pdf2md/pdf2md.py document.pdf --mode=hybrid
 
 # 扫描版PDF（带OCR）
-python3 ~/.claude/skills/pdf2md/pdf2md.py scan.pdf --mode=hybrid --ocr --ocr-lang=ch_sim
+python3 pdf2md/pdf2md.py scan.pdf --mode=hybrid --ocr --ocr-lang=ch_sim
 
 # 学术论文（含公式）
-python3 ~/.claude/skills/pdf2md/pdf2md.py paper.pdf --mode=hybrid --formula
+python3 pdf2md/pdf2md.py paper.pdf --mode=hybrid --formula
 
 # 批量处理文件夹
-python3 ~/.claude/skills/pdf2md/pdf2md.py ./pdfs/ --mode=hybrid --output=./output/
+python3 pdf2md/pdf2md.py ./pdfs/ --mode=hybrid --output=./output/
 
 # 检查环境
-python3 ~/.claude/skills/pdf2md/pdf2md.py --check
+python3 pdf2md/pdf2md.py --check
 
 # 安装依赖
-python3 ~/.claude/skills/pdf2md/pdf2md.py --install
+python3 pdf2md/pdf2md.py --install
 ```
 
 ### CLI 参数说明
