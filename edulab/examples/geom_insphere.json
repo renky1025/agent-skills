@@ -1,0 +1,6 @@
+{
+  "title": "正四棱锥的内切球",
+  "solid": "pyramid4",
+  "params": {"side": 2, "h": 1},
+  "query": {"type": "insphere"}
+}

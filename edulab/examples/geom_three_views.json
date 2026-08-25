@@ -1,0 +1,6 @@
+{
+  "title": "长方体的三视图",
+  "solid": "cuboid",
+  "params": {"a": 2, "b": 1, "c": 1},
+  "query": {"type": "three_views"}
+}

@@ -1,0 +1,11 @@
+{
+  "title": "垂直判定: A1B 与 B1C",
+  "solid": "cube",
+  "params": {"side": 1},
+  "query": {
+    "type": "parallel_perp",
+    "check": "perp",
+    "v1": ["A1", "B"],
+    "v2": ["B1", "C"]
+  }
+}

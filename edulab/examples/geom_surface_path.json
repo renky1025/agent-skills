@@ -1,0 +1,6 @@
+{
+  "title": "长方体表面最短路径",
+  "solid": "cuboid",
+  "params": {"a": 4, "b": 3, "c": 2},
+  "query": {"type": "surface_shortest_path", "from": "A", "to": "C1"}
+}

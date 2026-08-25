@@ -1,0 +1,6 @@
+{
+  "title": "长方体的展开图",
+  "solid": "cuboid",
+  "params": {"a": 3, "b": 2, "c": 1},
+  "query": {"type": "net"}
+}

@@ -1,0 +1,9 @@
+{
+  "family": "multi",
+  "items": [
+    {"expr": "x^2", "label": "y = x^2"},
+    {"expr": "-x^2 + 3", "label": "y = -x^2 + 3"},
+    {"expr": "sin(x)", "label": "y = sin(x)"}
+  ],
+  "xr": [-4, 4]
+}

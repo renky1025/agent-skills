@@ -15,7 +15,7 @@ agent_created: true
 拿到 GitHub 仓库后，不搞面面俱到的评审，只回答用户真正关心的问题：
 这个项目是干什么的、能解决什么问题、有什么亮点、怎么用。
 
-默认使用代理 `http://127.0.0.1:7890` 访问 GitHub。
+默认读取环境变量 `https_proxy`/`http_proxy` 作为代理（若已设置，curl 自动走代理）；未设置则直连 GitHub。
 
 ## 分析流程
 
@@ -33,7 +33,7 @@ agent_created: true
 获取仓库元数据和 README：
 
 ```bash
-curl -s -x http://127.0.0.1:7890 \
+curl -s \
   "https://api.github.com/repos/{owner}/{repo}"
 ```
 
@@ -74,7 +74,7 @@ curl -s -x http://127.0.0.1:7890 \
 
 ## 注意事项
 
-- 访问 GitHub API 一律使用代理 `http://127.0.0.1:7890`
+- 访问 GitHub API 自动使用 `https_proxy`/`http_proxy` 环境变量（若已设置）；未设置则直连。
 - 当 API 遇到 rate limit (403)，提示用户可配置 GITHUB_TOKEN
 - 保持客观，结合实际用途评价，不堆砌空洞的形容词
 - 对于中国开发者关注的维度（中文支持、国内可用性）应额外注意

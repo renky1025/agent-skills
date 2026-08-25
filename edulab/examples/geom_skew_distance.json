@@ -1,0 +1,10 @@
+{
+  "title": "正方体中异面直线的距离",
+  "solid": "cube",
+  "params": {"side": 1},
+  "query": {
+    "type": "skew_distance",
+    "line1": ["A", "B"],
+    "line2": ["B1", "C1"]
+  }
+}

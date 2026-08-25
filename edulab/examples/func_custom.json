@@ -1,0 +1,4 @@
+{
+  "family": "custom",
+  "expr": "sin(x)/x"
+}

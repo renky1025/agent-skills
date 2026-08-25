@@ -1,0 +1,9 @@
+{
+  "title": "正方体的外接球",
+  "solid": "cube",
+  "params": {"side": 1},
+  "query": {
+    "type": "circumsphere",
+    "points": ["A", "C", "D1", "B1"]
+  }
+}

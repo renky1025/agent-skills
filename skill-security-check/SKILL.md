@@ -9,6 +9,19 @@ description: 专门用于skill安装前的安全检查。支持多种编程语�
 
 **支持语言**: JavaScript/TypeScript, Python, Rust, Java, Go, C/C++, Ruby, PHP, Shell, PowerShell, Perl
 
+## 自动化工具（推荐入口）
+
+本 skill 随附可执行实现，优先用工具扫描，再按需做人工研判：
+
+- `scripts/security-check.js`：开箱即用的 Node CLI。对目标 skill 目录做 11 项静态扫描并生成报告：
+  ```bash
+  node scripts/security-check.js <skill-path>
+  ```
+- `src/`：TypeScript 源码（`npm install && npm run build` 编译至 `dist/`，`dist/` 默认被 .gitignore 忽略）。
+
+下方「安全检查流程」即工具的检测逻辑；手动审查时可直接使用文末的 grep 模式。
+`scripts/security-report-*.md` 为示例输出，仅作格式参考（其中引用的 skill 名仅为样例）。
+
 ## 何时使用
 
 在以下情况下必须执行安全检查:

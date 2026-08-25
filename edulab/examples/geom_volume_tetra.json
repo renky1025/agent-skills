@@ -1,0 +1,10 @@
+{
+  "title": "三棱锥的体积(等体积法场景)",
+  "solid": "cube",
+  "params": {"side": 1},
+  "query": {
+    "type": "volume_tetra",
+    "apex": "D1",
+    "base": ["A", "B", "C"]
+  }
+}

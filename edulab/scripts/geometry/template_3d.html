@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__</title>
+<style>
+  html,body{margin:0;height:100%;background:#0f0f17;color:#e8e8f0;font-family:sans-serif;overflow:hidden}
+  #c{position:absolute;top:0;left:0;width:calc(100% - 340px);height:100%}
+  #panel{position:absolute;top:0;right:0;width:340px;height:100%;background:#16161f;
+         padding:16px;box-sizing:border-box;overflow:auto;border-left:1px solid #2a2a3a}
+  #panel h3{margin:0 0 10px;font-size:15px;font-weight:500}
+  .step{margin:8px 0;padding:8px 10px;background:#1f1f2b;border-radius:8px;font-size:13px;line-height:1.6}
+  #result{margin-top:14px;padding:10px;background:#1f3326;border-radius:8px;font-size:13px;line-height:1.6}
+  .label{color:#fff;font-size:12px;background:rgba(0,0,0,0.55);padding:1px 5px;border-radius:4px;pointer-events:none}
+  #hint{position:absolute;left:12px;bottom:10px;color:#9aa0b4;font-size:12px}
+  #views{margin-top:14px}
+  #views h3{font-size:13px;font-weight:500;margin:10px 0 4px;color:#9fb4e8}
+  #views canvas{background:#101018;border:1px solid #2a2a3a;border-radius:6px;width:100%;box-sizing:border-box}
+</style>
+</head>
+<body>
+<div id="c"></div>
+<div id="panel">
+  <h3>解题步骤</h3>
+  <div id="steps"></div>
+  <div id="result"></div>
+  <div id="views"></div>
+</div>
+<div id="hint">拖拽旋转 · 滚轮缩放 · 右键平移</div>
+
+<script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/renderers/CSS2DRenderer.js"></script>
+<script>
+const DATA = /*__DATA__*/;
+
+const container = document.getElementById('c');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0f0f17);
+
+const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 100);
+camera.position.set(2.6, 2.0, 2.6);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(container.clientWidth, container.clientHeight);
+container.appendChild(renderer.domElement);
+
+const labelRenderer = new THREE.CSS2DRenderer();
+labelRenderer.setSize(container.clientWidth, container.clientHeight);
+labelRenderer.domElement.style.position = 'absolute';
+labelRenderer.domElement.style.top = '0';
+labelRenderer.domElement.style.left = '0';
+container.appendChild(labelRenderer.domElement);
+
+const controls = new THREE.OrbitControls(camera, labelRenderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+
+scene.add(new THREE.AxesHelper(1.8));
+
+function v3(a){ return new THREE.Vector3(a[0], a[1], a[2]); }
+function hex2int(h){ return parseInt((h||'').replace('#',''), 16) || 0xffffff; }
+
+// extra points (e.g. foot of perpendicular) merged into points
+if (DATA.extra_points){
+  for (const name in DATA.extra_points){ DATA.points[name] = DATA.extra_points[name]; }
+}
+
+// points + labels
+for (const name in DATA.points){
+  const p = v3(DATA.points[name]);
+  const m = new THREE.Mesh(new THREE.SphereGeometry(0.035, 16, 16),
+    new THREE.MeshBasicMaterial({ color: 0xffffff }));
+  m.position.copy(p); scene.add(m);
+  const div = document.createElement('div');
+  div.className = 'label'; div.textContent = name;
+  const lab = new THREE.CSS2DObject(div);
+  lab.position.copy(p); scene.add(lab);
+}
+
+// solid edges
+DATA.edges.forEach(function(e){
+  const g = new THREE.BufferGeometry().setFromPoints([v3(DATA.points[e[0]]), v3(DATA.points[e[1]])]);
+  scene.add(new THREE.Line(g, new THREE.LineBasicMaterial({ color: 0x6c8cff })));
+});
+
+// rotational solids: cylinder / cone / sphere mesh
+if (DATA.mesh){
+  const m = DATA.mesh;
+  let geo;
+  if (m.kind === 'cylinder'){ geo = new THREE.CylinderGeometry(m.r, m.r, 1, 48); }
+  else if (m.kind === 'cone'){ geo = new THREE.ConeGeometry(m.r, 1, 48); }
+  else if (m.kind === 'sphere'){ geo = new THREE.SphereGeometry(m.r, 32, 24); }
+  if (geo && m.kind === 'sphere'){
+    scene.add(new THREE.Mesh(geo, new THREE.MeshBasicMaterial({
+      color: 0x6c8cff, wireframe: true, transparent: true, opacity: 0.25 })));
+  } else if (geo){
+    scene.add(new THREE.Mesh(geo, new THREE.MeshBasicMaterial({
+      color: 0x6c8cff, transparent: true, opacity: 0.18 })));
+    scene.add(new THREE.Mesh(new THREE.EdgesGeometry(geo),
+      new THREE.LineBasicMaterial({ color: 0x6c8cff })));
+  }
+}
+
+// auxiliary sphere (circumsphere) centered at an extra point
+if (DATA.sphere_wire){
+  const sw = DATA.sphere_wire;
+  const c = v3(DATA.points[sw.center]);
+  const s = new THREE.Mesh(new THREE.SphereGeometry(sw.r, 32, 24),
+    new THREE.MeshBasicMaterial({ color: 0xd38a5f, wireframe: true, transparent: true, opacity: 0.2 }));
+  s.position.copy(c);
+  scene.add(s);
+}
+
+// highlighted lines: single highlight_line and/or list highlight_lines
+const hls = [];
+if (DATA.highlight_line) hls.push(DATA.highlight_line);
+if (DATA.highlight_lines) hls.push.apply(hls, DATA.highlight_lines);
+hls.forEach(function(hl){
+  const g = new THREE.BufferGeometry().setFromPoints([v3(DATA.points[hl.from]), v3(DATA.points[hl.to])]);
+  scene.add(new THREE.Line(g, new THREE.LineBasicMaterial({ color: hex2int(hl.color) })));
+});
+
+// dashed auxiliary lines
+if (DATA.dashed_lines){
+  DATA.dashed_lines.forEach(function(dl){
+    const g = new THREE.BufferGeometry().setFromPoints([v3(DATA.points[dl.from]), v3(DATA.points[dl.to])]);
+    const line = new THREE.Line(g, new THREE.LineDashedMaterial({
+      color: hex2int(dl.color), dashSize: 0.08, gapSize: 0.05 }));
+    line.computeLineDistances();
+    scene.add(line);
+  });
+}
+
+// planes: single plane and/or list planes
+const pls = [];
+if (DATA.plane) pls.push(DATA.plane);
+if (DATA.planes) pls.push.apply(pls, DATA.planes);
+pls.forEach(function(pl){
+  const arr = [];
+  for (let i = 1; i < pl.points.length - 1; i++){
+    const a = v3(DATA.points[pl.points[0]]);
+    const b = v3(DATA.points[pl.points[i]]);
+    const c = v3(DATA.points[pl.points[i + 1]]);
+    arr.push(a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z);
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(arr, 3));
+  g.computeVertexNormals();
+  scene.add(new THREE.Mesh(g, new THREE.MeshBasicMaterial({
+    color: hex2int(pl.color), transparent: true, opacity: 0.35, side: THREE.DoubleSide })));
+});
+
+// normal arrows: single normal and/or list normals
+const nls = [];
+if (DATA.normal) nls.push(DATA.normal);
+if (DATA.normals) nls.push.apply(nls, DATA.normals);
+nls.forEach(function(n){
+  const origin = v3(DATA.points[n.origin]);
+  const dir = v3(n.vec).normalize();
+  scene.add(new THREE.ArrowHelper(dir, origin, 0.7, hex2int(n.color), 0.18, 0.1));
+});
+
+// net (unfolding) panel
+if (DATA.net){
+  const netEl = document.getElementById('views') || document.getElementById('panel');
+  const h = document.createElement('h3');
+  h.textContent = '展开图';
+  const cv3 = document.createElement('canvas');
+  cv3.width = 300; cv3.height = 300;
+  cv3.style.cssText = 'background:#101018;border:1px solid #2a2a3a;border-radius:6px;width:100%;box-sizing:border-box';
+  netEl.appendChild(h); netEl.appendChild(cv3);
+  const c3 = cv3.getContext('2d');
+  // bounds
+  let nx0=Infinity,nx1=-Infinity,ny0=Infinity,ny1=-Infinity;
+  DATA.net.faces.forEach(function(fc){ fc.corners.forEach(function(p){
+    nx0=Math.min(nx0,p[0]); nx1=Math.max(nx1,p[0]);
+    ny0=Math.min(ny0,p[1]); ny1=Math.max(ny1,p[1]); }); });
+  const pad=25, W=cv3.width-2*pad, H=cv3.height-2*pad;
+  const dx=(nx1-nx0)||1, dy=(ny1-ny0)||1;
+  const sc=Math.min(W/dx,H/dy);
+  const ox=pad+(W-dx*sc)/2-nx0*sc;
+  const oy=pad+(H-dy*sc)/2+ny1*sc;
+  const palette=['#5fd38a','#6c8cff','#d38a5f','#c79fe0','#e8d06c','#7fd4e0'];
+  DATA.net.faces.forEach(function(fc,i){
+    c3.beginPath();
+    fc.corners.forEach(function(p,j){
+      const X=ox+p[0]*sc, Y=oy-p[1]*sc;
+      if(j===0)c3.moveTo(X,Y); else c3.lineTo(X,Y);
+    });
+    c3.closePath();
+    c3.fillStyle=palette[i%palette.length]+'33';
+    c3.fill();
+    c3.strokeStyle=palette[i%palette.length];
+    c3.lineWidth=1.5;
+    c3.stroke();
+    // label at centroid
+    let cx=0,cy=0;
+    fc.corners.forEach(function(p){cx+=p[0];cy+=p[1];});
+    cx/=fc.corners.length; cy/=fc.corners.length;
+    c3.fillStyle='#e8e8f0';
+    c3.font='11px sans-serif';
+    c3.textAlign='center';
+    c3.fillText(fc.label.replace(/ /g,''), ox+cx*sc, oy-cy*sc);
+  });
+}
+
+// steps panel
+const stepsEl = document.getElementById('steps');
+DATA.steps.forEach(function(s, i){
+  const d = document.createElement('div');
+  d.className = 'step';
+  d.textContent = (i + 1) + '. ' + s;
+  stepsEl.appendChild(d);
+});
+document.getElementById('result').innerHTML = '<b>结果</b><br>' + DATA.result.html;
+
+// three-views mini panels
+if (DATA.views){
+  const viewsEl = document.getElementById('views');
+  const h = document.createElement('h3');
+  h.textContent = '三视图';
+  viewsEl.appendChild(h);
+  for (const key of ['front','side','top']){
+    const view = DATA.views[key];
+    const title = document.createElement('h3');
+    title.textContent = view.label;
+    const cv2 = document.createElement('canvas');
+    cv2.width = 300; cv2.height = 200;
+    viewsEl.appendChild(title);
+    viewsEl.appendChild(cv2);
+    const c2 = cv2.getContext('2d');
+    // compute bounds
+    let xmin=Infinity,xmax=-Infinity,ymin=Infinity,ymax=-Infinity;
+    view.segs.forEach(function(s){ s.forEach(function(p){
+      xmin=Math.min(xmin,p[0]); xmax=Math.max(xmax,p[0]);
+      ymin=Math.min(ymin,p[1]); ymax=Math.max(ymax,p[1]); }); });
+    const pad=20, W=cv2.width-2*pad, H=cv2.height-2*pad;
+    const dx=(xmax-xmin)||1, dy=(ymax-ymin)||1;
+    const sc=Math.min(W/dx, H/dy);
+    const ox=pad+(W-dx*sc)/2 - xmin*sc;
+    const oy=pad+(H-dy*sc)/2 + ymax*sc;
+    c2.strokeStyle='#6c8cff'; c2.lineWidth=1.5;
+    view.segs.forEach(function(s){
+      c2.beginPath();
+      c2.moveTo(ox+s[0][0]*sc, oy-s[0][1]*sc);
+      c2.lineTo(ox+s[1][0]*sc, oy-s[1][1]*sc);
+      c2.stroke();
+    });
+  }
+}
+
+function animate(){
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+  labelRenderer.render(scene, camera);
+}
+animate();
+
+window.addEventListener('resize', function(){
+  camera.aspect = container.clientWidth / container.clientHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  labelRenderer.setSize(container.clientWidth, container.clientHeight);
+});
+</script>
+</body>
+</html>

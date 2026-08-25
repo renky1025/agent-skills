@@ -1,5 +1,7 @@
 # 去AI味完全指南（Avoid AI Writing Patterns）
 
+> **来源**：本文件为 `de-ai-writing` 技能（去 AI 味五步法权威真源）的本地副本，供 `wechat-article-writer` 离线/自包含引用。如需更新，请以 `de-ai-writing` 为准。
+
 基于 avoid-ai-writing skill 核心规则，36种AI写作模式检测，三层词汇替换系统。
 
 ## 核心洞察：AI味不是词的问题，是模式的问题

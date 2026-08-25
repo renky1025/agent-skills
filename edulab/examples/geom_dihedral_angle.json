@@ -1,0 +1,11 @@
+{
+  "title": "正方体中的二面角",
+  "solid": "cube",
+  "params": {"side": 1},
+  "query": {
+    "type": "dihedral_angle",
+    "edge": ["A", "D"],
+    "face1": ["A", "D", "A1"],
+    "face2": ["A", "D", "C"]
+  }
+}

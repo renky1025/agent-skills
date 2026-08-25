@@ -7,6 +7,10 @@ description: 文本去AI味技能。用 "检测→删除→声纹校准→改写
 
 真实可靠的文风指令。不输出一套新腔调替换旧腔调，而是教你找出机器味、删掉空话、校准到自己的声音。
 
+## 相关 / 分工
+
+本技能是「去 AI 味」的**唯一真源（single source of truth）**。`snowflake-novel-writer`（references/anti-ai-writing.md）与 `wechat-article-writer`（references/avoid-ai-writing.md）内嵌了本指南的本地副本，便于离线/自包含引用；如需更新去 AI 味规则，请以本技能为准并同步上述副本。
+
 ## 核心认知
 
 **AI味的本质不是"用词太AI"，而是"没有具体的人在里面"。**

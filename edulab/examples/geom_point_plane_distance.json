@@ -1,0 +1,10 @@
+{
+  "title": "点到平面的距离",
+  "solid": "cube",
+  "params": {"side": 1},
+  "query": {
+    "type": "point_plane_distance",
+    "point": "C1",
+    "plane": ["A", "B", "D"]
+  }
+}

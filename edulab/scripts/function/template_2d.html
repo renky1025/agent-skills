@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>函数图像演示</title>
+<style>
+  html,body{margin:0;height:100%;background:#0f0f17;color:#e8e8f0;font-family:sans-serif;overflow:hidden}
+  #wrap{display:flex;height:100%}
+  #plot{flex:1;position:relative}
+  canvas{display:block}
+  #panel{width:320px;background:#16161f;padding:16px;box-sizing:border-box;
+         overflow:auto;border-left:1px solid #2a2a3a}
+  #panel h3{margin:0 0 10px;font-size:15px;font-weight:500}
+  .ctrl{margin:12px 0}
+  .ctrl label{font-size:13px;display:block;margin-bottom:4px}
+  .ctrl input[type=range]{width:100%}
+  #props{margin-top:16px;padding:10px;background:#1b2b27;border-radius:8px;font-size:13px;line-height:1.7}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="plot"><canvas id="cv"></canvas></div>
+  <div id="panel">
+    <h3>参数控制</h3>
+    <div id="ctrls"></div>
+    <div id="props"></div>
+  </div>
+</div>
+
+<script>
+const DATA = /*__DATA__*/;
+
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+const XR = DATA.xrange;           // x range
+let YR = [-6, 6];                 // auto-adjusted below
+
+function f(p, x){
+  if (DATA.kind === 'quadratic'){ const {a,b,c} = p; return a*x*x + b*x + c; }
+  if (DATA.kind === 'linear'){ const {k,b} = p; return k*x + b; }
+  if (DATA.kind === 'inverse'){ return p.k / x; }
+  if (DATA.kind === 'trig'){ const {A,w,p:ph,k} = p; return A*Math.sin(w*x + ph) + k; }
+  if (DATA.kind === 'exp'){ return Math.pow(p.a, x); }
+  if (DATA.kind === 'log'){ return x > 0 ? Math.log(x) / Math.log(p.a) : NaN; }
+  if (DATA.kind === 'power'){
+    // 负指数在 0 处无定义；非整数指数对负数底无定义
+    if (x === 0 && p.p <= 0) return NaN;
+    if (x < 0 && !Number.isInteger(p.p)) return NaN;
+    return Math.pow(x, p.p);
+  }
+  return 0;
+}
+
+function propsHtml(p){
+  const pr = computeProps(p);
+  const parts = [];
+  for (const k in pr){ parts.push('<div>' + k + ' = ' + pr[k] + '</div>'); }
+  return parts.join('');
+}
+
+function computeProps(p){
+  if (DATA.kind === 'quadratic'){
+    const a=p.a, b=p.b, c=p.c;
+    const vx=-b/(2*a), vy=c-b*b/(4*a);
+    const D=b*b-4*a*c;
+    let roots='-';
+    if (D>=0){ roots='[' + (( -b-Math.sqrt(D))/(2*a)).toFixed(3) + ', ' + ((-b+Math.sqrt(D))/(2*a)).toFixed(3) + ']'; }
+    return {'顶点':'('+vx.toFixed(3)+', '+vy.toFixed(3)+')', '对称轴':'x='+vx.toFixed(3),
+            '零点':roots, 'y截距':c, '开口方向': a>0?'向上':'向下'};
+  }
+  if (DATA.kind === 'linear'){
+    const k=p.k, b=p.b;
+    return {'斜率':k, '截距':b, '零点': k!==0 ? (-b/k).toFixed(3) : '-'};
+  }
+  if (DATA.kind === 'inverse'){
+    const q = p.k>0 ? '一、三' : (p.k<0 ? '二、四' : '-');
+    return {'k':p.k, '渐近线':'x=0, y=0', '所在象限':q,
+            '每支单调性': p.k>0 ? '递减' : (p.k<0 ? '递增' : '-')};
+  }
+  if (DATA.kind === 'trig'){
+    const A=p.A, w=p.w, ph=p.p, k=p.k;
+    const T = w!==0 ? 2*Math.PI/Math.abs(w) : NaN;
+    return {'振幅':Math.abs(A), '周期':isFinite(T)?T.toFixed(3):'-',
+            '相位平移': w!==0 ? (-ph/w).toFixed(3) : '-', '值域':'['+(k-Math.abs(A)).toFixed(2)+', '+(k+Math.abs(A)).toFixed(2)+']'};
+  }
+  if (DATA.kind === 'exp'){
+    const a=p.a;
+    return {'底数':a, '渐近线':'y=0', '过定点':'(0, 1)',
+            '单调性': a>1?'递增':(a<1&&a>0?'递减':'常数')};
+  }
+  if (DATA.kind === 'log'){
+    const a=p.a;
+    return {'底数':a, '定义域':'x>0', '渐近线':'x=0', '过定点':'(1, 0)',
+            '单调性': a>1?'递增':'递减'};
+  }
+  if (DATA.kind === 'power'){
+    return {'指数':p.p, '恒过':'(1, 1)',
+            '0处有定义': p.p>0 ? '是' : '否'};
+  }
+  return {};
+}
+
+function draw(){
+  const box = document.getElementById('plot');
+  cv.width = box.clientWidth; cv.height = box.clientHeight;
+  const W = cv.width, H = cv.height;
+  ctx.fillStyle = '#0f0f17'; ctx.fillRect(0,0,W,H);
+
+  // current params
+  const p = {};
+  document.querySelectorAll('.ctrl input').forEach(function(inp){ p[inp.dataset.name] = parseFloat(inp.value); });
+
+  // sample to find y extent
+  let ymin=Infinity, ymax=-Infinity;
+  const N = 400, xs=[];
+  if (DATA.kind === 'custom'){
+    // 自定义表达式: 直接使用 Python 端安全解析器预算好的采样点, 前端零求值
+    DATA.samples.forEach(function(xy){ xs.push(xy); });
+  }
+  let multiMode = false, curves = [];
+  if (DATA.kind === 'multi'){
+    multiMode = true;
+    curves = DATA.curves;
+    curves.forEach(function(cv){ cv.points.forEach(function(xy){
+      const y = xy[1];
+      if (isFinite(y)){ ymin=Math.min(ymin,y); ymax=Math.max(ymax,y); }
+    }); });
+  }
+  if (!multiMode && DATA.kind !== 'custom'){
+    for (let i=0;i<=N;i++){
+      const x = XR[0] + (XR[1]-XR[0])*i/N;
+      const y = f(p,x); xs.push([x,y]);
+      if (isFinite(y)){ ymin=Math.min(ymin,y); ymax=Math.max(ymax,y); }
+    }
+  }
+  ymin=Math.min(ymin,-5); ymax=Math.max(ymax,5);
+  YR=[ymin-1, ymax+1];
+
+  const sx = function(x){ return (x-XR[0])/(XR[1]-XR[0])*W; };
+  const sy = function(y){ return H-(y-YR[0])/(YR[1]-YR[0])*H; };
+
+  // grid + axes
+  ctx.strokeStyle='#23233a'; ctx.lineWidth=1;
+  for(let gx=Math.ceil(XR[0]);gx<=XR[1];gx++){ ctx.beginPath();ctx.moveTo(sx(gx),0);ctx.lineTo(sx(gx),H);ctx.stroke(); }
+  for(let gy=Math.ceil(YR[0]);gy<=YR[1];gy++){ ctx.beginPath();ctx.moveTo(0,sy(gy));ctx.lineTo(W,sy(gy));ctx.stroke(); }
+  ctx.strokeStyle='#555a70'; ctx.lineWidth=1.5;
+  if(YR[0]<=0&&YR[1]>=0){ ctx.beginPath();ctx.moveTo(0,sy(0));ctx.lineTo(W,sy(0));ctx.stroke(); }
+  if(XR[0]<=0&&XR[1]>=0){ ctx.beginPath();ctx.moveTo(sx(0),0);ctx.lineTo(sx(0),H);ctx.stroke(); }
+
+  // curve
+  function strokePts(pts, color){
+    ctx.strokeStyle=color; ctx.lineWidth=2.5;
+    ctx.beginPath();
+    let started=false;
+    pts.forEach(function(xy){
+      const y=xy[1];
+      if(!isFinite(y)||y<YR[0]-50||y>YR[1]+50){ started=false; return; }
+      if(!started){ ctx.moveTo(sx(xy[0]),sy(y)); started=true; }
+      else{ ctx.lineTo(sx(xy[0]),sy(y)); }
+    });
+    ctx.stroke();
+  }
+
+  if (multiMode){
+    curves.forEach(function(cv){ strokePts(cv.points, cv.color); });
+    // legend
+    ctx.font='12px sans-serif';
+    curves.forEach(function(cv,i){
+      const lx=14, ly=20+i*18;
+      ctx.fillStyle=cv.color;
+      ctx.fillRect(lx,ly-9,16,4);
+      ctx.fillStyle='#e8e8f0';
+      ctx.fillText(cv.label, lx+22, ly-2);
+    });
+  } else {
+    strokePts(xs, '#6c8cff');
+  }
+
+  // key points per family
+  ctx.fillStyle='#ff9d5c';
+  if(DATA.kind==='quadratic'){
+    dot(-p.b/(2*p.a), p.c-p.b*p.b/(4*p.a));
+  }
+  if(DATA.kind==='linear' && p.k!==0){ dot(-p.b/p.k, 0); }
+  if(DATA.kind==='trig'){ dot(0, p.k); }
+  if(DATA.kind==='exp'){ dot(0, 1); }
+  if(DATA.kind==='log'){ dot(1, 0); }
+  if(DATA.kind==='power'){ dot(1, 1); }
+
+  function dot(x,y){
+    ctx.beginPath(); ctx.arc(sx(x),sy(y),5,0,Math.PI*2); ctx.fill();
+  }
+
+  function dot(x,y){
+    ctx.beginPath(); ctx.arc(sx(x),sy(y),5,0,Math.PI*2); ctx.fill();
+  }
+
+  document.getElementById('props').innerHTML =
+    '<b>' + DATA.label.replace(/(\^|x\^)/g,'$1') + '</b>' +
+    '<br><span style=\"color:#9aa0b4\">当前参数:</span> ' +
+    Object.keys(p).map(function(k){return k+'='+p[k];}).join(', ') +
+    '<br>' + propsHtml(p).replace(/<div>/g,'').replace(/<\/div>/g,'<br>');
+}
+
+function buildCtrls(){
+  const el = document.getElementById('ctrls');
+  for (const name in DATA.params){
+    const cfg = DATA.params[name];
+    const cur = DATA.current[name];
+    const d = document.createElement('div'); d.className='ctrl';
+    d.innerHTML = '<label>'+name+' = <span id=\"v_'+name+'\">'+cur+'</span></label>' +
+      '<input type=\"range\" min=\"'+cfg.min+'\" max=\"'+cfg.max+'\" step=\"'+cfg.step+
+      '\" value=\"'+cur+'\" data-name=\"'+name+'\">';
+    el.appendChild(d);
+  }
+  el.addEventListener('input', function(e){
+    const inp=e.target;
+    document.getElementById('v_'+inp.dataset.name).textContent = inp.value;
+    draw();
+  });
+}
+
+buildCtrls();
+window.addEventListener('resize', draw);
+draw();
+</script>
+</body>
+</html>

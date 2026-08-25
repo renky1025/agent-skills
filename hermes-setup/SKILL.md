@@ -31,7 +31,7 @@ metadata:
     - https://x.com/PrajwalTomar_/status/2064324584254710262
   official_repo: https://github.com/NousResearch/hermes-agent
   official_docs: https://hermes-agent.nousresearch.com/docs/
-  stars: 194k+
+  stars: 185K+
   latest_features: Hermes Desktop, Stripe integration, Async subagents, NVIDIA Nemotron Ultra for Hermes
 ---
 

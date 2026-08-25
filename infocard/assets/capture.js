@@ -20,13 +20,29 @@ async function main() {
     const req = createRequire(__filename);
     chromium = req('playwright').chromium;
   } catch {
-    console.error('Playwright not found. Run: cd ~/.claude/skills/infocard && npm install && npx playwright install chromium');
+    console.error('Playwright not found. Run: cd ~/.workbuddy/skills/infocard && npm install && npx playwright install chromium');
     process.exit(1);
   }
 
-  const execPath = process.env.PLAYWRIGHT_BROWSERS_PATH
-    ? null
-    : '/Users/kyren/Library/Caches/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-mac-arm64/chrome-headless-shell';
+  const fs = require('fs');
+  const cached = '/Users/kyren/Library/Caches/ms-playwright';
+  let execPath = null;
+  if (!process.env.PLAYWRIGHT_BROWSERS_PATH) {
+    // try headless shell versions in descending order
+    const entries = fs.readdirSync(cached).filter(e => e.startsWith('chromium_headless_shell-')).sort().reverse();
+    for (const e of entries) {
+      const p = path.join(cached, e, 'chrome-headless-shell-mac-arm64', 'chrome-headless-shell');
+      if (fs.existsSync(p)) { execPath = p; break; }
+    }
+    if (!execPath) {
+      // fallback: try full chromium
+      const cEntries = fs.readdirSync(cached).filter(e => e.startsWith('chromium-')).sort().reverse();
+      for (const e of cEntries) {
+        const p = path.join(cached, e, 'chrome-mac-arm64', 'Google Chrome for Testing.app', 'Contents', 'MacOS', 'Google Chrome for Testing');
+        if (fs.existsSync(p)) { execPath = p; break; }
+      }
+    }
+  }
 
   const browser = await chromium.launch({ executablePath: execPath });
   const context = await browser.newContext({ deviceScaleFactor: scale });

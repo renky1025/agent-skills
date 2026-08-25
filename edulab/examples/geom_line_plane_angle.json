@@ -1,0 +1,10 @@
+{
+  "title": "正方体中直线与平面的夹角",
+  "solid": "cube",
+  "params": {"side": 1},
+  "query": {
+    "type": "line_plane_angle",
+    "line": ["A1", "B"],
+    "plane": ["A", "D", "C"]
+  }
+}

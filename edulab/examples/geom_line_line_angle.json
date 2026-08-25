@@ -1,0 +1,10 @@
+{
+  "title": "正方体中异面直线所成角",
+  "solid": "cube",
+  "params": {"side": 1},
+  "query": {
+    "type": "line_line_angle",
+    "line1": ["A1", "B"],
+    "line2": ["A", "C"]
+  }
+}

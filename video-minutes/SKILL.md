@@ -132,7 +132,7 @@ test -f "$HOME/.video-minutes-config.json" && echo "legacy"
 - 🛠️ 教程演示 (步骤清单)
 ```
 
-**配置保存路径**: `~/.ai-agent/skills/video-minutes/config.yaml`
+**配置保存路径**: `~/.workbuddy/skills/video-minutes/config.yaml`
 
 ```yaml
 # config.yaml 示例
@@ -391,6 +391,8 @@ python video-minutes/scripts/queue.py --stats
 ---
 
 ## 任务分发系统 (@tags)
+
+> **分发为可选能力**：下方 @tags 对应的 `content-publisher` / `cron` / `gcal` / `calendar` / `image-gen` / `agent-swarm` / `transcribe` 等兄弟技能在多数环境未安装。当目标技能不可用时，AI 仅将行动项整理为**本地 TODO 清单（Markdown）**，不强制分发；仅当对应技能确实可用时才尝试派发。
 
 ### 提取标签规则
 
@@ -666,6 +668,8 @@ A: 长视频建议分段 `--segment-duration 1800` (30分钟一段)
 ---
 
 ## 相关 Skill
+
+> 以下为可选兄弟技能，本仓库快照未包含；缺失时不影响核心纪要功能，相关行动项降级为本地 TODO。
 
 | Skill | 关系 |
 |-------|------|
