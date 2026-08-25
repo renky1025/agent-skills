@@ -10,7 +10,7 @@
 
 ## 技能总览
 
-当前共 **26** 个顶层技能，按领域分组如下。质量标注：⭐ = 标杆（5/5），✅ = 良好（4/5），🔧 = 本轮治理达标。
+当前共 **27** 个顶层技能，按领域分组如下。质量标注：⭐ = 标杆（5/5），✅ = 良好（4/5），🔧 = 本轮治理达标。
 
 ### ✍️ 写作与内容创作
 
@@ -155,6 +155,11 @@ pip install "opendataloader-pdf[hybrid]"
 - **文件规范**：`hermes-setup/skill.md` 重命名为 `SKILL.md`（大小写敏感 FS 可识别）；删除 `infocard/capture_dsh.js` 死文件。
 - **导航**：`novel-writing` ↔ `snowflake-novel-writer`、`obsidian-kb-builder` 的 `<skill>` 占位符加使用说明。
 - **README 重写**：与 26 个实际目录严格对齐，补齐 `black-humor-writing` / `clean-code` / `edulab` / `obsidian-kb-builder`，移除仓库不存在的 `frontend-design` / `life-quotes` / `material-to-slides` / `viral-hook` 条目。
+
+### 2026-08-25 — teach-eli5 重构
+
+- **融合 mattpocock `teach` 方法论**：从 1 行 stub 升级为多文件技能（SKILL.md + references/{MISSION,LESSON,LEARNING-RECORD}-FORMAT.md + assets/base.css）。MISSION 锚定目标、ZPD 最近发展区选材、每课一个自包含精美 HTML、复用组件库、术语表与学习记录沉淀；叠加 eli5 小白约束（图多字少、先类比后精确、禁行话、可离线）。
+- 计入顶层技能总数，目录对齐更新为 27 个。
 
 ### 2026-07-27 — grasp v2 重构
 
