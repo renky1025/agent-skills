@@ -1,0 +1,112 @@
+/* teach-eli5 shared stylesheet
+ * Every lesson links this so the course looks consistent.
+ * Tufte-ish: single column, generous whitespace, readable type, neutral palette.
+ * Self-contained: no external fonts/CDN, prints and opens offline.
+ */
+
+:root {
+  --bg: #fbfaf7;
+  --card: #ffffff;
+  --ink: #1f2328;
+  --ink-soft: #5b636e;
+  --accent: #2563eb;
+  --accent-soft: #eaf1ff;
+  --line: #e6e3dc;
+  --radius: 10px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-size: 18px;
+  line-height: 1.75;
+}
+
+.lesson {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 24px 96px;
+}
+
+h1 { font-size: 30px; line-height: 1.3; margin: 0 0 8px; }
+h2 { font-size: 22px; margin: 40px 0 12px; }
+.lede { color: var(--ink-soft); font-size: 19px; margin: 0 0 32px; }
+
+p { margin: 0 0 18px; }
+
+/* Analogy block: the "aha" bridge for beginners */
+.analogy {
+  background: var(--accent-soft);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 18px 22px;
+  margin: 28px 0;
+}
+.analogy .label {
+  display: inline-block;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+/* Self-contained SVG diagram wrapper */
+.figure {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin: 28px 0;
+  text-align: center;
+}
+.figure svg { max-width: 100%; height: auto; }
+.figure .caption { color: var(--ink-soft); font-size: 15px; margin-top: 12px; }
+
+/* Precise statement, revealed after the analogy */
+.precise {
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin: 24px 0;
+  color: var(--ink-soft);
+}
+.precise .label {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* Takeaway card at the end */
+.takeaway {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin: 36px 0 24px;
+}
+.takeaway strong { color: var(--accent); }
+
+/* Reminder footer */
+.reminder {
+  color: var(--ink-soft);
+  font-size: 15px;
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+  margin-top: 40px;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+@media print {
+  body { background: #fff; }
+  .lesson { max-width: none; padding: 0; }
+}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>一课搞懂：API 到底是什么？</title>
+<link rel="stylesheet" href="../assets/base.css">
+</head>
+<body>
+<div class="lesson">
+
+  <h1>API 到底是什么？</h1>
+  <p class="lede">设想你想在外卖 App 上点一杯奶茶，却没进奶茶店——你点的是"菜单"，奶茶店在后厨做好递给你。API 就是那个"菜单 + 传话窗口"。</p>
+
+  <div class="analogy">
+    <span class="label">先类比</span>
+    <p>餐厅里，你（顾客）看不到厨房，也不直接抓原料。你只看<strong>菜单</strong>点单，服务员把单子送进厨房，做好再把菜端出来。</p>
+    <p>两个程序之间也一样：程序 A 想用程序 B 的能力（比如"查天气"），它不翻 B 的源码，而是照 B 提供的 <strong>API 菜单</strong>发一个"订单"（请求），B 算完把"菜"（数据）回给它。</p>
+  </div>
+
+  <div class="figure">
+    <svg viewBox="0 0 560 180" role="img" aria-label="API 类比图">
+      <rect x="20" y="60" width="120" height="60" rx="8" fill="#eaf1ff" stroke="#2563eb"/>
+      <text x="80" y="96" text-anchor="middle" font-size="15" fill="#1f2328">你 / 程序 A</text>
+      <rect x="220" y="60" width="120" height="60" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+      <text x="280" y="88" text-anchor="middle" font-size="14" fill="#1f2328">API 菜单</text>
+      <text x="280" y="106" text-anchor="middle" font-size="12" fill="#5b636e">(传话窗口)</text>
+      <rect x="420" y="60" width="120" height="60" rx="8" fill="#fbfaf7" stroke="#e6e3dc"/>
+      <text x="480" y="96" text-anchor="middle" font-size="14" fill="#1f2328">程序 B</text>
+      <line x1="140" y1="90" x2="214" y2="90" stroke="#2563eb" stroke-width="2" marker-end="url(#a)"/>
+      <line x1="346" y1="90" x2="416" y2="90" stroke="#2563eb" stroke-width="2" marker-end="url(#a)"/>
+      <text x="177" y="80" text-anchor="middle" font-size="11" fill="#2563eb">请求</text>
+      <text x="381" y="80" text-anchor="middle" font-size="11" fill="#2563eb">数据</text>
+      <defs><marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#2563eb"/></marker></defs>
+    </svg>
+    <div class="caption">你点单 -> 窗口传话 -> 后厨出菜。你不必懂后厨怎么炒。</div>
+  </div>
+
+  <div class="precise">
+    <span class="label">再精确</span>
+    <p>API（Application Programming Interface）是一套<strong>事先约定好的规则和格式</strong>：程序 A 按格式发请求，程序 B 按格式回数据。双方都不必知道对方内部怎么实现。</p>
+  </div>
+
+  <div class="takeaway">
+    <strong>带走这一句：</strong>API 是"程序之间点单的菜单"。你按菜单点，它按格式回，谁都不用懂对方后厨。
+  </div>
+
+  <p class="reminder">有哪一步没懂？随时问我，我可以接着拆下一层（比如"API 和 SDK 有啥区别""网址里那一长串参数是什么"）。</p>
+
+</div>
+</body>
+</html>

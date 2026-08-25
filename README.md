@@ -40,6 +40,7 @@
 | 技能 | 一句话说明 | 质量 |
 |------|-----------|------|
 | [grasp](grasp/SKILL.md) | 十维认知框架 × 加速学习协议，7 阶段交互式学习 | ⭐ |
+| [teach-eli5](teach-eli5/SKILL.md) | 给小白讲明白：MISSION 锚定 + 自包含教学 HTML（图多字少） | ✅ |
 | [obsidian-kb-builder](obsidian-kb-builder/SKILL.md) | Karpathy Wiki 模式知识库，双链图谱 + 图数据导出 | 🔧 |
 | [claude-remember](claude-remember/SKILL.md) | 跨记忆层级整理与管理 | ✅ |
 | [llm-aiops](llm-aiops/SKILL.md) | LLM + AIOps 研究参考（78+ 论文） | ✅ |
@@ -95,6 +96,7 @@ agent-skills/
 +-- pdf2md/                        # PDF 转 Markdown
 +-- skill-security-check/          # Skill 安全检查
 +-- snowflake-novel-writer/        # 雪花写作法小说创作
++-- teach-eli5/                    # 给小白讲明白（教学 HTML 引擎）
 +-- video-dubbing/                 # AI 视频配音
 +-- video-minutes/                 # 视频纪要生成器
 +-- weitoutiao-creator/            # 微头条短文案生成器
