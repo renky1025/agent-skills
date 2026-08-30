@@ -59,7 +59,7 @@ version: "6.7.0"
 **8. 截图**
 ```bash
 mkdir -p ~/Downloads/infocard-img
-node ~/.workbuddy/skills/infocard/assets/capture.js /tmp/infocard_{name}.html ~/Downloads/infocard-img/{name}.png 1080 800 fullpage
+node ~/.claude/skills/infocard/assets/capture.js /tmp/infocard_{name}.html ~/Downloads/infocard-img/{name}.png 1080 800 fullpage
 # 双语：对 _zh.html / _en.html 各跑一次
 ```
 

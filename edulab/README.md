@@ -3,8 +3,8 @@
 面向中高考数学的可视化工具：**空间几何题生成可交互 3D 解题演示，函数表达式生成参数可控的 2D 图形**。产物为单文件自包含 HTML，浏览器直接打开即可使用。
 
 - 触发词：`/edulab <题目或函数>`
-- 位置：`~/.workbuddy/skills/edulab/`（用户级）
-- 运行环境：managed venv `~/.workbuddy/binaries/python/envs/default/bin/python`（sympy 1.14.0）
+- 位置：`~/.claude/skills/edulab/`（用户级）
+- 运行环境：Python 3 + sympy 1.14.0（建议：`python3 -m venv .venv && .venv/bin/pip install sympy`）
 
 ## 架构
 
@@ -113,9 +113,9 @@ cat > /tmp/spec.json << 'EOF'
 }
 EOF
 
-# 2. 求解(managed venv)
-cd ~/.workbuddy/skills/edulab/scripts/geometry
-~/.workbuddy/binaries/python/envs/default/bin/python geometry_solver.py /tmp/spec.json /tmp/scene.json
+# 2. 求解(Python 3 + sympy)
+cd ~/.claude/skills/edulab/scripts/geometry
+python3 geometry_solver.py /tmp/spec.json /tmp/scene.json
 
 # 3. 生成 HTML(--offline 内联 Three.js, 无网可开)
 python3 build_html.py /tmp/scene.json /tmp/out.html --offline
@@ -124,22 +124,22 @@ python3 build_html.py /tmp/scene.json /tmp/out.html --offline
 ### 函数图
 
 ```bash
-cd ~/.workbuddy/skills/edulab/scripts/function
+cd ~/.claude/skills/edulab/scripts/function
 
 # 参数族: family + params JSON
 echo '{"a":1,"b":0,"c":-1}' > /tmp/p.json
-~/.workbuddy/binaries/python/envs/default/bin/python function_engine.py quadratic /tmp/p.json /tmp/scene.json
+python3 function_engine.py quadratic /tmp/p.json /tmp/scene.json
 python3 build_html.py /tmp/scene.json /tmp/out.html
 
 # 自由表达式(custom): 表达式经 safe_expr 解析, 非法输入拒绝
 echo '{"expr":"sin(x)/x"}' > /tmp/c.json
-~/.workbuddy/binaries/python/envs/default/bin/python function_engine.py custom /tmp/c.json /tmp/scene2.json
+python3 function_engine.py custom /tmp/c.json /tmp/scene2.json
 
 # 多函数对比(multi)
 cat > /tmp/m.json << 'EOF'
 {"items":[{"expr":"x^2","label":"y=x^2"},{"expr":"-x^2+3","label":"y=-x^2+3"}]}
 EOF
-~/.workbuddy/binaries/python/envs/default/bin/python function_engine.py multi /tmp/m.json /tmp/scene3.json
+python3 function_engine.py multi /tmp/m.json /tmp/scene3.json
 ```
 
 ## 扩展指南

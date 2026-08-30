@@ -24,7 +24,7 @@ agent_created: true
 
 ## Workflow
 
-> **路径约定**：下文命令中的 `<skill>` 指本技能安装目录（如 `~/.workbuddy/skills/obsidian-kb-builder`）。运行脚本时请将 `<skill>` 替换为实际路径，或在技能目录下执行。
+> **路径约定**：下文命令中的 `<skill>` 指本技能安装目录（如 `~/.claude/skills/obsidian-kb-builder`）。运行脚本时请将 `<skill>` 替换为实际路径，或在技能目录下执行。
 
 ### 1. 初始化（仅首次）
 

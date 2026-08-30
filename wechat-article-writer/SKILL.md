@@ -1007,4 +1007,4 @@ AI 把"写"的成本干掉之后，"想"和"经历"的价值被放大了十倍�
 
 - **[weitoutiao-creator](../weitoutiao-creator/SKILL.md)** — 微头条短文案爆款生成器，提供5种写作风格和10种文案框架，适合300字以内的短内容创作。与本技能互补：一个侧重长篇自媒体文章创作，一个侧重短小的社交媒体爆款文案。
 - **[de-ai-writing](../de-ai-writing/SKILL.md)** — 通用文本去AI味五步法
-- **viral-hook（运行时依赖）** — 社交媒体评论文案生成器，内置去AI味检查；该技能在 WorkBuddy 运行环境中已安装，本仓库快照未包含（路径 `~/.workbuddy/skills/viral-hook`）。
+- **viral-hook（运行时依赖）** — 社交媒体评论文案生成器，内置去AI味检查；该技能在多数 Agent 运行环境中已预装，本仓库快照未包含（如 `~/.claude/skills/viral-hook`）。

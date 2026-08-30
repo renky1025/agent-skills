@@ -1,6 +1,6 @@
 # Agent Skills: 工业级 AI Agent 技能生态库
 
-面向下一代自主 Agent 与开发者协作系统（WorkBuddy、Claude Code、Codex、Cursor 等）的生产级开源技能集（Agent Skills）。全量模块采用标准化 `SKILL.md` 契约体系与结构化上下文传递设计，提供从内容创作、多媒体音视频工程、代码研发与安全审计，到认知学习与智能知识库管理的一站式可复用能力。
+面向下一代自主 Agent 与开发者协作系统（Claude Code、Codex、Cursor 等）的生产级开源技能集（Agent Skills）。全量模块采用标准化 `SKILL.md` 契约体系与结构化上下文传递设计，提供从内容创作、多媒体音视频工程、代码研发与安全审计，到认知学习与智能知识库管理的一站式可复用能力。
 
 ---
 
@@ -388,7 +388,7 @@ agent-skills/
 - **核心产出**：高精度 `output.md` 文档、提取的插图文件夹 `images/`。
 
 #### 28. claude-remember (多层级 AI Agent 长期记忆审查与归档工具)
-- **功能特性**：规范管理 Agent 的三层记忆架构（Layer 1 云端全局记忆、Layer 2 用户级持久化规范 `~/.workbuddy/MEMORY.md`、Layer 3 项目级日常工作日志 `YYYY-MM-DD.md` 与精炼记忆 `MEMORY.md`）。提供记忆冗余检测、矛盾解决与超过 30 天日志的蒸馏归档能力。
+- **功能特性**：规范管理 Agent 的三层记忆架构（Layer 1 云端全局记忆、Layer 2 用户级持久化规范 `~/.claude/MEMORY.md`、Layer 3 项目级日常工作日志 `YYYY-MM-DD.md` 与精炼记忆 `MEMORY.md`）。提供记忆冗余检测、矛盾解决与超过 30 天日志的蒸馏归档能力。
 - **触发意图**：整理记忆、审查记忆文件、记忆去重与归档、更新长期记忆。
 - **调用方式**：
   ```
@@ -408,16 +408,16 @@ agent-skills/
 # 克隆仓库
 git clone https://github.com/your-username/agent-skills.git ~/workspace/agent-skills
 
-# 方式 A：安装特定技能到 WorkBuddy 全局目录 (推荐)
-mkdir -p ~/.workbuddy/skills
-cp -r ~/workspace/agent-skills/de-ai-writing ~/.workbuddy/skills/
-cp -r ~/workspace/agent-skills/infocard ~/.workbuddy/skills/
+# 方式 A：安装特定技能到全局 skills 目录 (推荐)
+mkdir -p ~/.claude/skills
+cp -r ~/workspace/agent-skills/de-ai-writing ~/.claude/skills/
+cp -r ~/workspace/agent-skills/infocard ~/.claude/skills/
 
 # 方式 B：全量批量软链接
 for dir in ~/workspace/agent-skills/*/; do
   skill_name=$(basename "$dir")
   if [ -f "$dir/SKILL.md" ]; then
-    ln -sfn "$dir" ~/.workbuddy/skills/"$skill_name"
+    ln -sfn "$dir" ~/.claude/skills/"$skill_name"
   fi
 done
 ```

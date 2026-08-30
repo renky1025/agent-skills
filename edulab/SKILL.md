@@ -15,13 +15,15 @@ description: 面向中高考数学的可视化解题工具：空间几何题生�
 
 ## 工作流
 
+> **路径约定**：下文 `<skill>` 指本技能安装目录（如 `~/.claude/skills/edulab`）。运行脚本前请先 `cd` 到该目录，或将其替换为实际路径。Python 需已安装 sympy（建议：`python3 -m venv .venv && .venv/bin/pip install sympy`）。
+
 ### 几何模块
 
 1. 读题，确定立体类型与参数，写入 spec JSON（契约见 references/schema.md；题型清单见 references/taxonomy.md）。支持 query.type: line_plane_angle / line_line_angle / dihedral_angle / point_plane_distance / volume_tetra / parallel_perp / skew_distance / circumsphere / three_views / surface_shortest_path / insphere；solid: cube/cuboid/tetra/prism3/pyramid4/cylinder/cone/sphere。
-2. 求解（必须用 managed venv 的 python）：
+2. 求解（需用已安装 sympy 的 Python 3）：
    ```
-   cd ~/.workbuddy/skills/edulab/scripts/geometry
-   ~/.workbuddy/binaries/python/envs/default/bin/python geometry_solver.py <spec.json> <scene.json>
+   cd <skill>/scripts/geometry
+   python3 geometry_solver.py <spec.json> <scene.json>
    ```
    solver 内含 sympy 计算，输出精确值 + 数值。检查 steps 与 result 是否与标准答案一致，不一致则修 spec 重跑，不得静默交付错误答案。
 3. 生成 HTML（加 --offline 内联 Three.js，无网环境可打开）：
@@ -35,8 +37,8 @@ description: 面向中高考数学的可视化解题工具：空间几何题生�
 1. 确定函数族（quadratic/linear/inverse/trig/exp/log/power 或 custom 自由表达式）。custom 时 params 传 {"expr": "sin(x)/x"}，表达式经 safe_expr.py 安全解析（禁 eval），非法输入直接拒绝。
 2. 生成 scene（参数写 JSON 文件传入）：
    ```
-   cd ~/.workbuddy/skills/edulab/scripts/function
-   ~/.workbuddy/binaries/python/envs/default/bin/python function_engine.py quadratic <params.json> <scene.json>
+   cd <skill>/scripts/function
+   python3 function_engine.py quadratic <params.json> <scene.json>
    ```
 3. `python3 build_html.py <scene.json> <out.html>` 后 present_files。
 

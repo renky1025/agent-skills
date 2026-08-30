@@ -20,7 +20,7 @@ async function main() {
     const req = createRequire(__filename);
     chromium = req('playwright').chromium;
   } catch {
-    console.error('Playwright not found. Run: cd ~/.workbuddy/skills/infocard && npm install && npx playwright install chromium');
+    console.error('Playwright not found. Run: cd ~/.claude/skills/infocard && npm install && npx playwright install chromium');
     process.exit(1);
   }
 

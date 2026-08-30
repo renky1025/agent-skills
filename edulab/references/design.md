@@ -62,7 +62,7 @@ scene 是唯一中间契约；模板只消费 scene，不关心求解细节。�
 
 ## 运行环境
 
-managed venv: ~/.workbuddy/binaries/python/envs/default/bin/python (sympy 1.14.0)
+运行环境：Python 3 + sympy 1.14.0
 
 ## 已验证
 

@@ -132,7 +132,7 @@ test -f "$HOME/.video-minutes-config.json" && echo "legacy"
 - 🛠️ 教程演示 (步骤清单)
 ```
 
-**配置保存路径**: `~/.workbuddy/skills/video-minutes/config.yaml`
+**配置保存路径**: `~/.claude/skills/video-minutes/config.yaml`
 
 ```yaml
 # config.yaml 示例
