@@ -86,7 +86,10 @@
 
 ```bash
 node scripts/security-check.js <skill-path>
+npm test
 ```
+
+需要访问用户指定服务的 Skill 可声明 `network_access: user-configured-origin`。该声明只会把网络访问列为需要用户知晓的能力，仍需人工确认代码不存在固定第三方上报端点。
 
 示例:
 ```bash

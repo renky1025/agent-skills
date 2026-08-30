@@ -120,6 +120,22 @@ class SecurityChecker {
   }
 
   /**
+   * 读取 SKILL.md frontmatter 中声明的网络权限。
+   * 只有明确声明 user-configured-origin，网络请求才视为用户知情能力。
+   */
+  getNetworkAccessDeclaration() {
+    const skillFile = path.join(this.skillPath, 'SKILL.md');
+    if (!fs.existsSync(skillFile)) return null;
+
+    const content = fs.readFileSync(skillFile, 'utf-8');
+    const frontmatter = content.match(/^---\s*\n([\s\S]*?)\n---/);
+    if (!frontmatter) return null;
+
+    const match = frontmatter[1].match(/^network_access:\s*([^\s#]+)\s*$/m);
+    return match ? match[1] : null;
+  }
+
+  /**
    * 检查数据外泄
    */
   checkDataExfiltration() {
@@ -222,10 +238,18 @@ class SecurityChecker {
       }
     }
     
+    const declaration = this.getNetworkAccessDeclaration();
+    const declaredUserOrigin = declaration === 'user-configured-origin';
+
     this.results.checks.dataExfiltration = {
-      passed: issues.length === 0,
+      passed: issues.length === 0 || declaredUserOrigin,
       issues: issues,
-      message: issues.length === 0 ? '无外部服务器通信' : `发现 ${issues.length} 个网络请求位置`
+      declaredAccess: declaration,
+      message: issues.length === 0
+        ? '无外部服务器通信'
+        : declaredUserOrigin
+          ? `发现 ${issues.length} 个已声明的用户配置目标网络请求位置,需人工审查目标约束`
+          : `发现 ${issues.length} 个未声明的网络请求位置`
     };
   }
 
@@ -913,7 +937,7 @@ class SecurityChecker {
       
       // 检查是否有大量编码字符串（排除 Markdown 文档和提示词模板文件）
       if (!['.md', '.txt'].includes(ext)) {
-        const encodedStrings = content.match(/["'][^"']{100,}["']/g);  // 提高长度阈值到100
+        const encodedStrings = content.match(/["'][^"'\r\n]{100,}["']/g);  // 字符串不得跨行匹配
         // 提高阈值，避免误判正常的提示词模板
         if (encodedStrings && encodedStrings.length > 20) {  // 提高数量阈值到20
           obfuscated = true;
@@ -1205,10 +1229,17 @@ class SecurityChecker {
     
     // 数据外泄分析
     if (checks.dataExfiltration?.passed) {
-      securityAdvantages.push({
-        title: '无数据外泄',
-        detail: '无外部服务器通信'
-      });
+      if (checks.dataExfiltration?.issues?.length > 0) {
+        userNotices.push({
+          title: '已声明网络访问',
+          detail: '网络请求仅允许发往用户配置的服务地址,安装前需人工确认代码未包含固定第三方上报端点'
+        });
+      } else {
+        securityAdvantages.push({
+          title: '无数据外泄',
+          detail: '无外部服务器通信'
+        });
+      }
     } else {
       const networkIssues = checks.dataExfiltration?.issues || [];
       const userInitiated = networkIssues.every(i => 

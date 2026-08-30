@@ -39,11 +39,12 @@ agent-skills/
 |   +-- video-minutes/                # 智能视频纪要生成与 @tags 任务分发
 |
 +-- [代码工程与研发安全]
+|   +-- agent-coding-style/           # Coding Agent 确定性回答与操作规范
 |   +-- claude-simplify/              # 三 Agent 并行代码审查与精简流水线
 |   +-- clean-code/                   # 《Clean Code》17 章全书知识体系与重构指南
 |   +-- design-md-extractor/          # Web 视觉设计系统逆向提取器 (DESIGN.md)
 |   +-- github-analyzer/              # GitHub 仓库极速 5 维解构报告生成器
-|   +-- hermes-setup/                 # NousResearch Hermes 自主 Agent 部署指南
+|   +-- jira-server-pat-cli/          # Jira Server/Data Center 通用管理 CLI
 |   +-- llm-aiops/                    # 大模型 AIOps 运维与根因定位研究参考库
 |   +-- skill-security-check/         # Agent Skill 11 项静态漏洞与安全审计器
 |
@@ -78,12 +79,13 @@ agent-skills/
 | **image-design** | 媒体 | 摄影学五维模型（主体/构图/光影/镜头/胶片）AI 绘图提示词 | 生图提示词, Midjourney, 摄影描述 | 无 |
 | **mckinsey-cover** | 媒体 | 麦肯锡/波士顿咨询风格研报封面与信息图结构化提示词 | `/mckinsey-cover`, 咨询封面, 研报配图 | 无 |
 | **infocard** | 媒体 | 自动适配内容骨架，10+ 套杂志/看板风高清信息卡片渲染 | `/infocard <URL/文本>`, 信息卡片 | Node.js, Canvas/Playwright |
+| **agent-coding-style** | 工程 | Coding Agent 的确定性回复、搜索、编辑、Git、规划、审阅与前端生成规则 | coding style, Agent 编码规范, 确定性操作 | 无 |
 | **claude-simplify** | 工程 | 代码提交前三 Agent 并行审查（代码复用 / 坏味道 / 运行效率） | `/simplify`, 代码审查, 重构精简 | Git |
 | **clean-code** | 工程 | Uncle Bob《Clean Code》全书 17 章知识体系蒸馏与重构指南 | 代码异味, 代码整洁之道, 重构指南 | 无 |
 | **skill-security-check** | 工程 | 11 项静态安全审计扫描（注入、越权、敏感路径、凭证泄漏） | `security-check.js`, 技能审计, 漏洞扫描 | Node.js, TypeScript |
 | **github-analyzer** | 工程 | 5 维度 GitHub 仓库极速解构分析（定位/痛点/架构/上手/亮点） | 分析 GitHub 项目, review this repo | Python / Node.js, curl |
 | **design-md-extractor** | 工程 | 从 Web 逆向提取排版/配色/空间规范并输出 DESIGN.md | 提取设计系统, 页面设计规范, DESIGN.md | 浏览器 / Node.js |
-| **hermes-setup** | 工程 | NousResearch Hermes 持久化自主 Agent 部署与 7 天实战计划 | hermes agent, 自主智能体配置 | Python / Git |
+| **jira-server-pat-cli** | 工程 | 通用 Jira Server/Data Center REST CLI，支持 PAT、内部 CA、元数据发现和完整 issue 生命周期 | Jira CLI, PAT, JQL, issue 管理 | Python 3 标准库 |
 | **llm-aiops** | 工程 | 大模型在云原生运维、故障定位（RCA）与日志解析的研究知识库 | AIOps, 根因定位, 故障排查知识库 | 无 |
 | **grasp** | 认知 | 十维认知框架 x 费曼交互式学习协议（含主动回忆与概念地图） | `/grasp <主题>`, 深度学习, 掌握概念 | 无 |
 | **teach-eli5** | 认知 | Matt Pocock 教学法：生活类比先行、自包含 HTML 交互课件 | `/eli5 <主题>`, 给小白讲明白, 看图就懂 | 浏览器打开 HTML |
@@ -95,7 +97,7 @@ agent-skills/
 
 ---
 
-## 27 个技能详细功能与使用指南
+## 28 个技能详细功能与使用指南
 
 ### 一、深度写作与自媒体矩阵 (Content Creation & Media)
 
@@ -242,7 +244,16 @@ agent-skills/
 
 ### 三、代码工程与研发安全 (Code Engineering & DevSecOps)
 
-#### 14. claude-simplify (三 Agent 并行代码审查与精简流水线)
+#### 14. agent-coding-style (Coding Agent 确定性行为规范)
+- **功能特性**：将 Coding Agent 的回复格式、搜索策略、精准编辑、Git 安全、任务规划、代码审阅和前端生成规则统一为 43 条确定性约束，减少过度修改、无验证交付、危险 Git 操作和格式漂移。
+- **触发意图**：Agent 编码规范、确定性代码修改、统一 Coding Agent 行为、提交前操作约束。
+- **调用方式**：
+  ```
+  按 agent-coding-style 规范完成以下代码任务：[任务描述]
+  ```
+- **核心产出**：边界明确的修改方案、最小代码变更、验证结果和可审计的 Git 操作说明。
+
+#### 15. claude-simplify (三 Agent 并行代码审查与精简流水线)
 - **功能特性**：在 Git Commit 或 PR 提交前触发。基于分支差异（`git diff`），并行调度三个独立审计角色：
   - **Reuse Reviewer**：扫描是否重复造轮子、是否存在项目中已有的工具函数未被复用；
   - **Quality Reviewer**：检查代码异味、圈复杂度过高、深层嵌套、不合规范的命名与硬编码；
@@ -254,7 +265,7 @@ agent-skills/
   ```
 - **核心产出**：三维度代码审查报告、精确到文件和行号的修改建议、精简前后的代码对比补丁。
 
-#### 15. clean-code (《Clean Code》全书 17 章知识体系与重构指南)
+#### 16. clean-code (《Clean Code》全书 17 章知识体系与重构指南)
 - **功能特性**：将 Robert C. Martin (Uncle Bob)《代码整洁之道》全书 17 章核心原则（有意义的命名、函数单一职责与单一抽象层、注释准则、对象与数据结构、异常处理与消灭 null、边界隔离、TDD 三定律、并发防御、Smells and Heuristics 代码异味全集）进行系统化蒸馏，并提供现代语言（TypeScript, Python, Go, Rust, C++）的现代化代码映射。
 - **触发意图**：Clean Code、代码整洁规范、代码坏味道检查、重构原则咨询。
 - **调用方式**：
@@ -263,7 +274,7 @@ agent-skills/
   ```
 - **核心产出**：代码异味诊断清单（带 Uncle Bob 原书规则编号如 `F1`, `G14`）、重构后的整洁代码、设计原则说明。
 
-#### 16. skill-security-check (Agent Skill 11 项静态漏洞与安全审计器)
+#### 17. skill-security-check (Agent Skill 11 项静态漏洞与安全审计器)
 - **功能特性**：在安装、导入或运行第三方 Agent Skill 之前执行静态安全扫描。覆盖 11 类核心威胁（提示词注入、任意代码执行、危险 shell 命令、敏感路径越权访问、环境变量与 Token 窃取、网络外发挂马等），输出严格的风险评级（P0 阻断 / P1 警告 / P2 安全）。
 - **触发意图**：检查技能安全性、审查 Skill、扫描 SKILL.md、技能安全审计。
 - **CLI 调用方式**：
@@ -272,7 +283,7 @@ agent-skills/
   ```
 - **核心产出**：静态代码与 Markdown 审计报告、漏洞定位（文件与行号）、安全风险评分（P0/P1/P2）。
 
-#### 17. github-analyzer (GitHub 仓库极速 5 维解构报告生成器)
+#### 18. github-analyzer (GitHub 仓库极速 5 维解构报告生成器)
 - **功能特性**：针对用户提供的 GitHub 仓库链接，自动抓取 `README.md`、仓库元数据、目录结构与依赖包，在 60 秒内输出五章节结构化分析研报（是什么、核心痛点、关键特性、3 分钟快速上手指南、架构与实现亮点）。
 - **触发意图**：分析 GitHub 项目、帮我看下这个仓库、analyze repo、这个项目是干啥的。
 - **调用方式**：
@@ -281,7 +292,7 @@ agent-skills/
   ```
 - **核心产出**：标准 Markdown 格式的项目解析研报、技术栈雷达、适用场景评估。
 
-#### 18. design-md-extractor (Web 视觉设计系统逆向提取器)
+#### 19. design-md-extractor (Web 视觉设计系统逆向提取器)
 - **功能特性**：通过读取目标网页的 DOM、计算样式（Computed Styles）与视觉截屏，逆向推导并生成符合 Google Labs 规范的 `DESIGN.md` 设计规范文件，提取包含色彩语义系统（Tokens）、字体层级、排版间距、阴影网格与组件样式的设计系统文档。
 - **触发意图**：提取网站设计规范、生成 DESIGN.md、分析页面 UI 风格、提取设计 Token。
 - **调用方式**：
@@ -290,16 +301,19 @@ agent-skills/
   ```
 - **核心产出**：标准 `DESIGN.md` 文档、CSS Variables 定义代码块、Tailwind 配色扩展配置。
 
-#### 19. hermes-setup (NousResearch Hermes 自主 Agent 部署指南)
-- **功能特性**：NousResearch Hermes 个人持久化自主 Agent 部署方案与 7 天实战路线。涵盖从基础环境准备、LLM 运行后端接入、Tool Calling 工具库对接，到状态持久化（SQLite/JSON 状态机）与定时自动循环执行的完整配置。
-- **触发意图**：Hermes agent 搭建、部署自主智能体、Hermes 配置指南。
-- **调用方式**：
+#### 20. jira-server-pat-cli (Jira Server/Data Center 通用管理 CLI)
+- **功能特性**：提供纯 Python 标准库 Jira REST CLI，支持 PAT、Cookie、Basic Auth、组织 CA 和 context path。所有 issue type、custom field、transition、priority、component、version 与用户标识均从目标实例动态发现，避免固定 ID 和环境隐私泄露。
+- **触发意图**：Jira CLI、PAT 管理 Jira、JQL 搜索、批量 issue 操作、内部 CA Jira 自动化。
+- **CLI 调用方式**：
+  ```bash
+  export JIRA_BASE_URL="https://jira.example.com/jira"
+  export JIRA_PAT="<secret>"
+  python3 jira-server-pat-cli/scripts/jira_cli.py whoami
+  python3 jira-server-pat-cli/scripts/jira_cli.py search "project = PROJ ORDER BY updated DESC" --limit 100
   ```
-  配置 Hermes Agent：--mode=local --llm=ollama
-  ```
-- **核心产出**：环境检查清单、`config.yaml` 配置文件、7 天阶段演进指南。
+- **核心产出**：实例与权限探测结果、JQL JSON 数据、issue CRUD、transition、评论、工时、附件、链接、watcher 和 vote 操作结果；写操作支持 dry-run，破坏性及 raw REST 写操作要求 `--yes`。
 
-#### 20. llm-aiops (大模型 AIOps 运维与根因定位研究参考库)
+#### 21. llm-aiops (大模型 AIOps 运维与根因定位研究参考库)
 - **功能特性**：汇集 78+ 篇国际顶会及工业界前沿论文精华的 LLM for AIOps 知识库。覆盖大模型在日志异常检测、时序指标告警收敛、微服务调用链分布式追踪、根因定位（RCA）、自动故障修复（Auto-Remediation）与安全合规运维领域的成熟落地模式与架构方案。
 - **触发意图**：LLM AIOps、智能运维、大模型故障诊断、根因分析算法、日志大模型。
 - **调用方式**：
@@ -312,7 +326,7 @@ agent-skills/
 
 ### 四、认知学习与教育实验室 (Cognitive Learning & Education)
 
-#### 21. grasp (十维认知框架 x 费曼加速学习协议)
+#### 22. grasp (十维认知框架 x 费曼加速学习协议)
 - **功能特性**：基于「十维认知模型」（名称、类别、定义、特征、结构、功能、运行条件、历史演进、未来趋势、潜在风险）与费曼教学法。提供 7 个交互式学习阶段（锚定、探索、结构化、费曼输出、主动回忆、跨领域迁移、复习），构建深层概念理解。
 - **触发意图**：`/grasp <主题>`、深度学习一个概念、彻底搞懂某技术、概念拆解。
 - **调用方式**：
@@ -321,7 +335,7 @@ agent-skills/
   ```
 - **核心产出**：十维概念雷达图、概念架构 ASCII 关系图、主动回忆自测题库。
 
-#### 22. teach-eli5 (Matt Pocock 教学法小白友好交互课件引擎)
+#### 23. teach-eli5 (Matt Pocock 教学法小白友好交互课件引擎)
 - **功能特性**：融合 Matt Pocock `teach` 教学方法论（MISSION 学习目标锚定、最近发展区 ZPD 选材、术语表 glossary 与学习记录 ADR 沉淀、资产 assets 复用）与 ELI5（Explain Like I'm 5）小白约束。将复杂主题拆解为「图多、字少、生活类比先行」的独立自包含精美 HTML 教学页。
 - **触发意图**：`/eli5 <主题>`、用大白话讲明白、给外行解释技术、做个看图就懂的教学页。
 - **调用方式**：
@@ -330,7 +344,7 @@ agent-skills/
   ```
 - **核心产出**：`./lessons/0001-<slug>.html`（自包含可打印 HTML 课件，内联 SVG 机制图与类比卡片）、`references/glossary.md`、`learning-records/`。
 
-#### 23. curriculum-design (OBE 成果导向与布鲁姆认知模型课程设计系统)
+#### 24. curriculum-design (OBE 成果导向与布鲁姆认知模型课程设计系统)
 - **功能特性**：基于 OBE（Outcome-Based Education）产出导向教育理念与布鲁姆教育目标六层认知分类学（记忆、理解、应用、分析、评价、创造），生成符合高等院校与专业培训标准的教学大纲、教学日历与单课结构化教案。
 - **触发意图**：课程大纲设计、编写教案、教学设计、OBE 教学方案、培训课程规划。
 - **调用方式**：
@@ -339,7 +353,7 @@ agent-skills/
   ```
 - **核心产出**：课程教学目标矩阵（含布鲁姆层级对应）、学时分配表、期末考核评价权重表、分课时标准教案文档。
 
-#### 24. edulab (中高考数学可视化解题实验室)
+#### 25. edulab (中高考数学可视化解题实验室)
 - **功能特性**：面向初高中数学几何与函数题目的专业可视化求解与动态演示工具。支持：
   - **3D 立体几何**：通过 Python SymPy 空间向量自动建系求解，输出 Three.js 交互式 3D 解题页面（可旋转视角、显示垂线投影与法向量）；
   - **2D 函数与解析几何**：输出带参数滑块控制的 2D 交互图表，动态展现参数变化对图像交点、极值点与单调区间的影响。
@@ -354,7 +368,7 @@ agent-skills/
 
 ### 五、知识库与记忆管理 (Knowledge Base & Memory Management)
 
-#### 25. obsidian-kb-builder (Karpathy LLM-Wiki 本地双链 Obsidian 知识库)
+#### 26. obsidian-kb-builder (Karpathy LLM-Wiki 本地双链 Obsidian 知识库)
 - **功能特性**：遵循 Andrej Karpathy LLM-Wiki 架构模式。支持输入本地文件、文档目录或网络 URL，自动化抽取核心实体与关系，生成符合严格 Wiki-Schema 规范的本地 Markdown 双链笔记库（`[[双链]]` 互联），并支持导出结构化图数据供图计算分析。
 - **触发意图**：搭建知识库、构建 Obsidian vault、文档双链化、导出知识图谱。
 - **CLI 调用方式**：
@@ -364,7 +378,7 @@ agent-skills/
   ```
 - **核心产出**：Obsidian Vault 笔记集合（含 YAML Frontmatter、双链与标签）、`graph_data.json` 知识图谱结构数据。
 
-#### 26. pdf2md (基于 OpenDataLoader 的高精度 PDF 转 Markdown 引擎)
+#### 27. pdf2md (基于 OpenDataLoader 的高精度 PDF 转 Markdown 引擎)
 - **功能特性**：基于 OpenDataLoader-PDF 混合解析技术。专为学术论文、技术研报、财务报表等复杂版式 PDF 设计，能够高精度识别 LaTeX 数学公式、复杂跨页表格结构、代码块、双栏排版与内嵌图片，输出极度干净的 Markdown 格式文本。
 - **触发意图**：PDF 转 Markdown、提取 PDF 论文、解析 PDF 表格公式。
 - **CLI 调用方式**：
@@ -373,7 +387,7 @@ agent-skills/
   ```
 - **核心产出**：高精度 `output.md` 文档、提取的插图文件夹 `images/`。
 
-#### 27. claude-remember (多层级 AI Agent 长期记忆审查与归档工具)
+#### 28. claude-remember (多层级 AI Agent 长期记忆审查与归档工具)
 - **功能特性**：规范管理 Agent 的三层记忆架构（Layer 1 云端全局记忆、Layer 2 用户级持久化规范 `~/.workbuddy/MEMORY.md`、Layer 3 项目级日常工作日志 `YYYY-MM-DD.md` 与精炼记忆 `MEMORY.md`）。提供记忆冗余检测、矛盾解决与超过 30 天日志的蒸馏归档能力。
 - **触发意图**：整理记忆、审查记忆文件、记忆去重与归档、更新长期记忆。
 - **调用方式**：
