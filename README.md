@@ -46,6 +46,7 @@ agent-skills/
 |   +-- github-analyzer/              # GitHub 仓库极速 5 维解构报告生成器
 |   +-- jira-server-pat-cli/          # Jira Server/Data Center 通用管理 CLI
 |   +-- llm-aiops/                    # 大模型 AIOps 运维与根因定位研究参考库
+|   +-- prompt-enhancer/              # 弱提示词 -> 八段式生产级强指令增强器
 |   +-- skill-security-check/         # Agent Skill 11 项静态漏洞与安全审计器
 |
 +-- [认知学习与教育实验室]
@@ -87,6 +88,7 @@ agent-skills/
 | **design-md-extractor** | 工程 | 从 Web 逆向提取排版/配色/空间规范并输出 DESIGN.md | 提取设计系统, 页面设计规范, DESIGN.md | 浏览器 / Node.js |
 | **jira-server-pat-cli** | 工程 | 通用 Jira Server/Data Center REST CLI，支持 PAT、内部 CA、元数据发现和完整 issue 生命周期 | Jira CLI, PAT, JQL, issue 管理 | Python 3 标准库 |
 | **llm-aiops** | 工程 | 大模型在云原生运维、故障定位（RCA）与日志解析的研究知识库 | AIOps, 根因定位, 故障排查知识库 | 无 |
+| **prompt-enhancer** | 工程 | 弱提示词增强为八段式生产级强指令（角色/上下文/复述对齐/先思考/明确不要/自我批评/验收清单），内置 6 套领域模板 | 增强提示词, 强化 prompt, 改写成强指令 | 无 |
 | **grasp** | 认知 | 十维认知框架 x 费曼交互式学习协议（含主动回忆与概念地图） | `/grasp <主题>`, 深度学习, 掌握概念 | 无 |
 | **teach-eli5** | 认知 | Matt Pocock 教学法：生活类比先行、自包含 HTML 交互课件 | `/eli5 <主题>`, 给小白讲明白, 看图就懂 | 浏览器打开 HTML |
 | **curriculum-design** | 认知 | 基于 OBE 成果导向与布鲁姆认知模型的教学大纲与教案设计 | 课程大纲设计, 教案编写, OBE教学 | 无 |
@@ -97,7 +99,7 @@ agent-skills/
 
 ---
 
-## 28 个技能详细功能与使用指南
+## 29 个技能详细功能与使用指南
 
 ### 一、深度写作与自媒体矩阵 (Content Creation & Media)
 
@@ -322,11 +324,20 @@ agent-skills/
   ```
 - **核心产出**：AIOps 算法选型矩阵、微服务故障诊断 Agent 拓扑设计图、学术参考文献引用。
 
+#### 22. prompt-enhancer (弱提示词 -> 八段式生产级强指令增强器)
+- **功能特性**：将"一句话草稿"增强为覆盖八段式骨架（角色+目标 / 上下文 / 复述对齐 / 先思考 / 执行要求 / 明确不要 / 自我批评 / 输出与验收）的生产级强指令。内置 6 套领域模板（通用开发、需求理解与分析、技术方案/架构设计、仓库分析转高层方案图、文档写作、代码审查/重构），配套 8 条指导思想、分级澄清闸门与防虚构红线，将"不清楚就问"落实为可执行的两级澄清策略。
+- **触发意图**：增强提示词、强化 prompt、优化一段任务描述、改写成生产级强指令、让它更稳更准少返工。
+- **调用方式**：
+  ```
+  增强提示词：<原始提示词> [补充：受众/领域/我满意的例子/输出语言]
+  ```
+- **核心产出**：可粘贴的强指令全文 + 增强对照表（原稿薄弱点 -> 增强处理）+ 用法说明（占位符与可裁剪闸门）。
+
 ---
 
 ### 四、认知学习与教育实验室 (Cognitive Learning & Education)
 
-#### 22. grasp (十维认知框架 x 费曼加速学习协议)
+#### 23. grasp (十维认知框架 x 费曼加速学习协议)
 - **功能特性**：基于「十维认知模型」（名称、类别、定义、特征、结构、功能、运行条件、历史演进、未来趋势、潜在风险）与费曼教学法。提供 7 个交互式学习阶段（锚定、探索、结构化、费曼输出、主动回忆、跨领域迁移、复习），构建深层概念理解。
 - **触发意图**：`/grasp <主题>`、深度学习一个概念、彻底搞懂某技术、概念拆解。
 - **调用方式**：
@@ -335,7 +346,7 @@ agent-skills/
   ```
 - **核心产出**：十维概念雷达图、概念架构 ASCII 关系图、主动回忆自测题库。
 
-#### 23. teach-eli5 (Matt Pocock 教学法小白友好交互课件引擎)
+#### 24. teach-eli5 (Matt Pocock 教学法小白友好交互课件引擎)
 - **功能特性**：融合 Matt Pocock `teach` 教学方法论（MISSION 学习目标锚定、最近发展区 ZPD 选材、术语表 glossary 与学习记录 ADR 沉淀、资产 assets 复用）与 ELI5（Explain Like I'm 5）小白约束。将复杂主题拆解为「图多、字少、生活类比先行」的独立自包含精美 HTML 教学页。
 - **触发意图**：`/eli5 <主题>`、用大白话讲明白、给外行解释技术、做个看图就懂的教学页。
 - **调用方式**：
@@ -344,7 +355,7 @@ agent-skills/
   ```
 - **核心产出**：`./lessons/0001-<slug>.html`（自包含可打印 HTML 课件，内联 SVG 机制图与类比卡片）、`references/glossary.md`、`learning-records/`。
 
-#### 24. curriculum-design (OBE 成果导向与布鲁姆认知模型课程设计系统)
+#### 25. curriculum-design (OBE 成果导向与布鲁姆认知模型课程设计系统)
 - **功能特性**：基于 OBE（Outcome-Based Education）产出导向教育理念与布鲁姆教育目标六层认知分类学（记忆、理解、应用、分析、评价、创造），生成符合高等院校与专业培训标准的教学大纲、教学日历与单课结构化教案。
 - **触发意图**：课程大纲设计、编写教案、教学设计、OBE 教学方案、培训课程规划。
 - **调用方式**：
@@ -353,7 +364,7 @@ agent-skills/
   ```
 - **核心产出**：课程教学目标矩阵（含布鲁姆层级对应）、学时分配表、期末考核评价权重表、分课时标准教案文档。
 
-#### 25. edulab (中高考数学可视化解题实验室)
+#### 26. edulab (中高考数学可视化解题实验室)
 - **功能特性**：面向初高中数学几何与函数题目的专业可视化求解与动态演示工具。支持：
   - **3D 立体几何**：通过 Python SymPy 空间向量自动建系求解，输出 Three.js 交互式 3D 解题页面（可旋转视角、显示垂线投影与法向量）；
   - **2D 函数与解析几何**：输出带参数滑块控制的 2D 交互图表，动态展现参数变化对图像交点、极值点与单调区间的影响。
@@ -368,7 +379,7 @@ agent-skills/
 
 ### 五、知识库与记忆管理 (Knowledge Base & Memory Management)
 
-#### 26. obsidian-kb-builder (Karpathy LLM-Wiki 本地双链 Obsidian 知识库)
+#### 27. obsidian-kb-builder (Karpathy LLM-Wiki 本地双链 Obsidian 知识库)
 - **功能特性**：遵循 Andrej Karpathy LLM-Wiki 架构模式。支持输入本地文件、文档目录或网络 URL，自动化抽取核心实体与关系，生成符合严格 Wiki-Schema 规范的本地 Markdown 双链笔记库（`[[双链]]` 互联），并支持导出结构化图数据供图计算分析。
 - **触发意图**：搭建知识库、构建 Obsidian vault、文档双链化、导出知识图谱。
 - **CLI 调用方式**：
@@ -378,7 +389,7 @@ agent-skills/
   ```
 - **核心产出**：Obsidian Vault 笔记集合（含 YAML Frontmatter、双链与标签）、`graph_data.json` 知识图谱结构数据。
 
-#### 27. pdf2md (基于 OpenDataLoader 的高精度 PDF 转 Markdown 引擎)
+#### 28. pdf2md (基于 OpenDataLoader 的高精度 PDF 转 Markdown 引擎)
 - **功能特性**：基于 OpenDataLoader-PDF 混合解析技术。专为学术论文、技术研报、财务报表等复杂版式 PDF 设计，能够高精度识别 LaTeX 数学公式、复杂跨页表格结构、代码块、双栏排版与内嵌图片，输出极度干净的 Markdown 格式文本。
 - **触发意图**：PDF 转 Markdown、提取 PDF 论文、解析 PDF 表格公式。
 - **CLI 调用方式**：
@@ -387,7 +398,7 @@ agent-skills/
   ```
 - **核心产出**：高精度 `output.md` 文档、提取的插图文件夹 `images/`。
 
-#### 28. claude-remember (多层级 AI Agent 长期记忆审查与归档工具)
+#### 29. claude-remember (多层级 AI Agent 长期记忆审查与归档工具)
 - **功能特性**：规范管理 Agent 的三层记忆架构（Layer 1 云端全局记忆、Layer 2 用户级持久化规范 `~/.claude/MEMORY.md`、Layer 3 项目级日常工作日志 `YYYY-MM-DD.md` 与精炼记忆 `MEMORY.md`）。提供记忆冗余检测、矛盾解决与超过 30 天日志的蒸馏归档能力。
 - **触发意图**：整理记忆、审查记忆文件、记忆去重与归档、更新长期记忆。
 - **调用方式**：
