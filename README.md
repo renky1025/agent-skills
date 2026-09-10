@@ -1,450 +1,457 @@
-# Agent Skills: 工业级 AI Agent 技能生态库
+<div align="center">
 
-面向下一代自主 Agent 与开发者协作系统（Claude Code、Codex、Cursor 等）的生产级开源技能集（Agent Skills）。全量模块采用标准化 `SKILL.md` 契约体系与结构化上下文传递设计，提供从内容创作、多媒体音视频工程、代码研发与安全审计，到认知学习与智能知识库管理的一站式可复用能力。
+**English** | [简体中文](README.zh-CN.md)
 
----
+</div>
 
-## 核心设计与工程原则
+# Agent Skills: Production-Grade AI Agent Skill Library
 
-1. **契约化上下文传递 (Contract-Based Context Passing)**：每个 Skill 均定义明确的输入边界、产出契约（Outcome Contract）与完成标准（Done When），拒绝模糊盲注，确保多 Agent 协作时状态确定。
-2. **纯净规范与跨平台安全 (Zero-Garble & Pure ASCII Guarantee)**：文档与生成管道严守纯 ASCII 字符结构规范，杜绝特殊制表符引发的字符编码异常（`U+FFFD` / 乱码）。
-3. **单一真源与分层复用 (Single Source of Truth)**：通用能力（如 `de-ai-writing` 反 AI 腔调算法）沉淀为唯一真源，上层业务 Skill 引用而非重复硬编码。
-4. **渐进式降级 (Graceful Degradation)**：依赖外部可选插件或环境服务的技能，均提供完善的本地替代路径与确定性回退方案。
+A production-grade, open-source collection of Agent Skills for next-generation autonomous agents and developer collaboration systems (Claude Code, Codex, Cursor, and beyond). Every module follows a standardized `SKILL.md` contract system with structured context-passing design, covering content creation, multimedia engineering, code R&D and security auditing, cognitive learning, and intelligent knowledge-base management.
 
 ---
 
-## 仓库结构全景
+## Core Design & Engineering Principles
+
+1. **Contract-Based Context Passing**: Every skill defines explicit input boundaries, an Outcome Contract, and a Done-When standard. No vague blind injection — state stays deterministic in multi-agent collaboration.
+2. **Zero-Garble & Pure ASCII Guarantee**: Documents and generation pipelines strictly follow an ASCII-safe structure to eliminate encoding corruption (`U+FFFD` / mojibake) caused by decorative Unicode characters.
+3. **Single Source of Truth**: Generic capabilities (e.g., the `de-ai-writing` anti-AI-tone algorithm) are centralized as the single source of truth; upper-layer skills reference them instead of duplicating logic.
+4. **Graceful Degradation**: Skills that depend on optional plugins or external services always ship with local fallback paths and deterministic degradation strategies.
+
+---
+
+## Repository Structure
 
 ```
 agent-skills/
-+-- README.md                         # 权威架构与使用指南
-+-- LICENSE                           # 开源许可证
-+-- SKILLS-UPGRADE-AUDIT.md           # 架构审计与治理报告
++-- README.md                         # Authoritative architecture & usage guide (EN)
++-- README.zh-CN.md                   # Architecture & usage guide (Chinese)
++-- LICENSE                           # Open-source license
++-- SKILLS-UPGRADE-AUDIT.md           # Architecture audit & governance report
 |
-+-- [内容创作与自媒体]
-|   +-- article-deconstructor/        # 爆款文章 10 维结构解构器
-|   +-- black-humor-writing/          # 单立人黑色幽默五步创作法
-|   +-- de-ai-writing/                # 通用文本去 AI 味与活人声纹校准 (唯一真源)
-|   +-- novel-writing/                # 基于 LOCK 系统的叙事小说骨架
-|   +-- snowflake-novel-writer/       # 雪花写作法 10 步逐层精细长篇创作
-|   +-- wechat-article-writer/        # 微信公众号与自媒体长文爆款创作流
-|   +-- weitoutiao-creator/           # 微头条短文案 6 步爆款生成器
++-- [Content Creation & Media]
+|   +-- article-deconstructor/        # 10-dimension viral-article deconstruction
+|   +-- black-humor-writing/          # Five-step stand-up black-humor creation method
+|   +-- de-ai-writing/                # Generic AI-tone removal & human-voice calibration (single source of truth)
+|   +-- novel-writing/                # LOCK-system narrative novel skeleton
+|   +-- snowflake-novel-writer/       # Snowflake method 10-step long-form fiction
+|   +-- wechat-article-writer/        # WeChat official-account & self-media long-form creation flow
+|   +-- weitoutiao-creator/           # 300-character micro-post viral copy generator
 |
-+-- [多媒体与音视频工程]
-|   +-- image-design/                 # 摄影学五维 AI 绘图提示词生成器
-|   +-- infocard/                     # 高清自适应现代信息卡片渲染引擎
-|   +-- mckinsey-cover/               # 麦肯锡与顶级咨询风研报封面生成器
-|   +-- mlx-tts/                      # Apple Silicon (MLX) 本地极速语音合成
-|   +-- spec-image/                   # Spec-driven Prompting 工程化出图规格引擎
-|   +-- video-dubbing/                # 视频翻译、AI 语音克隆配音与字幕压制
-|   +-- video-minutes/                # 智能视频纪要生成与 @tags 任务分发
++-- [Multimedia & Audio/Video Engineering]
+|   +-- image-design/                 # Five-dimension photography AI image-prompt generator
+|   +-- infocard/                     # High-resolution adaptive modern info-card rendering engine
+|   +-- mckinsey-cover/               # McKinsey-style consulting report cover generator
+|   +-- mlx-tts/                      # Apple Silicon (MLX) local low-latency speech synthesis
+|   +-- spec-image/                   # Spec-driven Prompting engineering image-generation engine
+|   +-- video-dubbing/                # Video translation, AI voice cloning, dubbing & subtitle burning
+|   +-- video-minutes/                # Intelligent video minutes & @tags task dispatch
 |
-+-- [代码工程与研发安全]
-|   +-- agent-coding-style/           # Coding Agent 确定性回答与操作规范
-|   +-- claude-simplify/              # 三 Agent 并行代码审查与精简流水线
-|   +-- clean-code/                   # 《Clean Code》17 章全书知识体系与重构指南
-|   +-- design-md-extractor/          # Web 视觉设计系统逆向提取器 (DESIGN.md)
-|   +-- github-analyzer/              # GitHub 仓库极速 5 维解构报告生成器
-|   +-- jira-server-pat-cli/          # Jira Server/Data Center 通用管理 CLI
-|   +-- llm-aiops/                    # 大模型 AIOps 运维与根因定位研究参考库
-|   +-- prompt-enhancer/              # 弱提示词 -> 八段式生产级强指令增强器
-|   +-- skill-security-check/         # Agent Skill 11 项静态漏洞与安全审计器
++-- [Code Engineering & DevSecOps]
+|   +-- agent-coding-style/           # Deterministic Coding Agent behavior rules
+|   +-- claude-simplify/              # Three-agent parallel code review & simplification pipeline
+|   +-- clean-code/                   # "Clean Code" 17-chapter knowledge system & refactoring guide
+|   +-- design-md-extractor/          # Web visual design-system reverse extractor (DESIGN.md)
+|   +-- github-analyzer/              # Fast 5-dimension GitHub repo deconstruction reports
+|   +-- jira-server-pat-cli/          # Generic Jira Server/Data Center management CLI
+|   +-- llm-aiops/                    # LLM AIOps operations & root-cause-analysis research library
+|   +-- prompt-enhancer/              # Weak prompt -> eight-section production-grade instruction enhancer
+|   +-- skill-security-check/         # Agent Skill static vulnerability & security auditor (11 checks)
 |
-+-- [认知学习与教育实验室]
-|   +-- curriculum-design/            # OBE 成果导向与布鲁姆认知模型课程设计
-|   +-- edulab/                       # 中高考数学可视化解题 (3D 几何 + 2D 函数联动)
-|   +-- grasp/                        # 十维认知框架 x 费曼加速学习协议
-|   +-- teach-eli5/                   # Matt Pocock 教学法小白友好自包含课件生成器
++-- [Cognitive Learning & Education Lab]
+|   +-- curriculum-design/            # OBE outcome-based + Bloom taxonomy curriculum design
+|   +-- edulab/                       # Middle/high-school math visual problem solving (3D geometry + 2D functions)
+|   +-- grasp/                        # Ten-dimension cognitive framework x Feynman accelerated learning protocol
+|   +-- teach-eli5/                   # Matt Pocock teaching method, beginner-friendly self-contained courseware
 |
-+-- [知识库与记忆管理]
-    +-- claude-remember/              # 多层级 AI Agent 长期记忆审查与归档
-    +-- obsidian-kb-builder/          # Karpathy LLM-Wiki 本地双链 Obsidian 知识库
-    +-- pdf2md/                       # 高精度学术与工业 PDF 转 Markdown 引擎
++-- [Knowledge Base & Memory Management]
+    +-- claude-remember/              # Multi-layer AI Agent long-term memory review & archiving
+    +-- obsidian-kb-builder/          # Karpathy LLM-Wiki local bidirectional-link Obsidian knowledge base
+    +-- pdf2md/                       # High-fidelity academic & industrial PDF-to-Markdown engine
 ```
 
 ---
 
-## 技能全景矩阵 (Skill Catalog)
+## Skill Catalog
 
-| 技能名称 | 分类 | 核心定位与功能 | 交互命令 / 触发关键词 | 依赖环境 |
+| Skill | Category | Core Positioning | Trigger Keywords | Dependencies |
 |---|---|---|---|---|
-| **de-ai-writing** | 写作 | 36 种 AI 腔调模式检测、3 层词汇过滤、5 步活人声纹校准 | `/de-ai`, 去AI味, 人味改写 | 无 |
-| **wechat-article-writer** | 写作 | 痛点驱动选题、熊叔三段式骨架、情绪地图、低创作度合规 | 写公众号, 自媒体文章, 爆款文案 | 无 |
-| **weitoutiao-creator** | 写作 | 5 种文风 x 10 种框架，300 字高转化微头条分步生成 | 微头条, 头条文案, 300字爆款 | 无 |
-| **snowflake-novel-writer** | 写作 | 雪花法 10 步逐层精细长篇创作、欲望弧光、去 AI 味三遍法 | 写小说, 雪花写作法, 故事创作 | 无 |
-| **novel-writing** | 写作 | 基于 LOCK 系统与三幕两门结构的叙事小说极速骨架搭建 | 英文小说, LOCK系统, 故事骨架 | 无 |
-| **article-deconstructor** | 写作 | 10 维度爆款文章逆向拆解、情绪曲线与刺痛句式提取 | 拆解文章, 爆款分析, 写作模板提取 | 无 |
-| **black-humor-writing** | 写作 | 单立人黑色幽默五步法（主题/态度/预期违背/冲突放大） | 黑色幽默, 脱口秀段子, 讽刺文案 | 无 |
-| **video-minutes** | 媒体 | 7 种视频类型自动分类、Faster-Whisper int8 转录、@tags 任务派发 | `generate_minutes.py`, 视频纪要, 视频总结 | Python, FFmpeg, faster-whisper |
-| **video-dubbing** | 媒体 | ASR 转录 -> AI 翻译 -> TTS 配音 -> 分段变速对齐 -> 压制硬字幕 | `dub_segments.py`, 视频配音, 视频翻译 | Python, FFmpeg, whisper, mlx-audio |
-| **mlx-tts** | 媒体 | Apple Silicon 本地 Qwen3-TTS / CosyVoice 毫秒级语音合成 | `mlx_audio.tts`, 本地语音合成, TTS | macOS, uv, mlx-audio |
-| **image-design** | 媒体 | 摄影学五维模型（主体/构图/光影/镜头/胶片）AI 绘图提示词 | 生图提示词, Midjourney, 摄影描述 | 无 |
-| **mckinsey-cover** | 媒体 | 麦肯锡/波士顿咨询风格研报封面与信息图结构化提示词 | `/mckinsey-cover`, 咨询封面, 研报配图 | 无 |
-| **infocard** | 媒体 | 自动适配内容骨架，10+ 套杂志/看板风高清信息卡片渲染 | `/infocard <URL/文本>`, 信息卡片 | Node.js, Canvas/Playwright |
-| **spec-image** | 媒体 | Spec-driven Prompting 工程化出图：四段式规格 Prompt、参数语义解耦、编辑保护契约、12 类工作流模板 | `/spec-image <需求>`, 工程化出图, 透明底抠图 | 任意图像生成/编辑模型 |
-| **agent-coding-style** | 工程 | Coding Agent 的确定性回复、搜索、编辑、Git、规划、审阅与前端生成规则 | coding style, Agent 编码规范, 确定性操作 | 无 |
-| **claude-simplify** | 工程 | 代码提交前三 Agent 并行审查（代码复用 / 坏味道 / 运行效率） | `/simplify`, 代码审查, 重构精简 | Git |
-| **clean-code** | 工程 | Uncle Bob《Clean Code》全书 17 章知识体系蒸馏与重构指南 | 代码异味, 代码整洁之道, 重构指南 | 无 |
-| **skill-security-check** | 工程 | 11 项静态安全审计扫描（注入、越权、敏感路径、凭证泄漏） | `security-check.js`, 技能审计, 漏洞扫描 | Node.js, TypeScript |
-| **github-analyzer** | 工程 | 5 维度 GitHub 仓库极速解构分析（定位/痛点/架构/上手/亮点） | 分析 GitHub 项目, review this repo | Python / Node.js, curl |
-| **design-md-extractor** | 工程 | 从 Web 逆向提取排版/配色/空间规范并输出 DESIGN.md | 提取设计系统, 页面设计规范, DESIGN.md | 浏览器 / Node.js |
-| **jira-server-pat-cli** | 工程 | 通用 Jira Server/Data Center REST CLI，支持 PAT 本地持久化（0600 配置复用）、内部 CA、元数据发现和完整 issue 生命周期 | Jira CLI, PAT, JQL, issue 管理 | Python 3 标准库 |
-| **llm-aiops** | 工程 | 大模型在云原生运维、故障定位（RCA）与日志解析的研究知识库 | AIOps, 根因定位, 故障排查知识库 | 无 |
-| **prompt-enhancer** | 工程 | 弱提示词增强为八段式生产级强指令（角色/上下文/复述对齐/先思考/明确不要/自我批评/验收清单），内置 6 套领域模板 | 增强提示词, 强化 prompt, 改写成强指令 | 无 |
-| **grasp** | 认知 | 十维认知框架 x 费曼交互式学习协议（含主动回忆与概念地图） | `/grasp <主题>`, 深度学习, 掌握概念 | 无 |
-| **teach-eli5** | 认知 | Matt Pocock 教学法：生活类比先行、自包含 HTML 交互课件 | `/eli5 <主题>`, 给小白讲明白, 看图就懂 | 浏览器打开 HTML |
-| **curriculum-design** | 认知 | 基于 OBE 成果导向与布鲁姆认知模型的教学大纲与教案设计 | 课程大纲设计, 教案编写, OBE教学 | 无 |
-| **edulab** | 认知 | 中高考数学可视化：SymPy 向量建系 + Three.js 3D/2D 动态题解 | `/edulab`, 数学可视化, 几何建系 | Python (sympy), Three.js |
-| **obsidian-kb-builder** | 知识 | Karpathy LLM-Wiki 模式构建本地双链图谱，支持图数据导出 | 知识库构建, Obsidian 双链, 知识图谱 | Python |
-| **pdf2md** | 知识 | 基于 OpenDataLoader 的高保真 PDF 解析（支持公式、复杂跨页表格） | `pdf2md.py`, pdf 转 markdown, 论文提取 | Python, opendataloader-pdf |
-| **claude-remember** | 知识 | Layer 1/2/3 记忆系统审查、提炼与去重归档工具 | 整理记忆, 记忆归档, 更新长期记忆 | 无 |
+| **de-ai-writing** | Writing | 36 AI-tone pattern detectors, 3-layer vocabulary filtering, 5-step human-voice calibration | `/de-ai`, remove AI tone, humanize writing | None |
+| **wechat-article-writer** | Writing | Pain-point-driven topics, three-section skeleton, emotion mapping, low-creativity compliance | write WeChat article, viral copy | None |
+| **weitoutiao-creator** | Writing | 5 writing styles x 10 frameworks, 300-character high-conversion micro-post generation | micro-post, Toutiao copy | None |
+| **snowflake-novel-writer** | Writing | Snowflake method 10-step long-form fiction, desire arcs, 3-pass AI-tone removal | write a novel, snowflake method | None |
+| **novel-writing** | Writing | LOCK-system narrative novel skeleton with three-act / two-doorway structure | English fiction, LOCK system | None |
+| **article-deconstructor** | Writing | 10-dimension viral-article reverse deconstruction, emotion curves, hook extraction | deconstruct article, viral analysis | None |
+| **black-humor-writing** | Writing | Five-step black-humor method (topic / attitude / expectation violation / conflict amplification) | black humor, stand-up jokes, satire | None |
+| **video-minutes** | Media | 7-type video auto-classification, Faster-Whisper int8 transcription, @tags task dispatch | `generate_minutes.py`, video minutes | Python, FFmpeg, faster-whisper |
+| **video-dubbing** | Media | ASR -> AI translation -> TTS dubbing -> segment-scaled alignment -> hard-subtitle burning | `dub_segments.py`, video dubbing | Python, FFmpeg, whisper, mlx-audio |
+| **mlx-tts** | Media | Apple Silicon local Qwen3-TTS / CosyVoice millisecond speech synthesis | `mlx_audio.tts`, local TTS | macOS, uv, mlx-audio |
+| **image-design** | Media | Five-dimension photography model (subject / composition / lighting / lens / film) prompt generation | image prompts, Midjourney, photography | None |
+| **mckinsey-cover** | Media | McKinsey/BCG-style report covers & infographic structured prompts | `/mckinsey-cover`, consulting cover | None |
+| **infocard** | Media | Content-adaptive layout, 10+ editorial/dashboard-theme HD info cards | `/infocard <URL/text>`, info cards | Node.js, Canvas/Playwright |
+| **spec-image** | Media | Spec-driven Prompting image generation: 4-section spec prompts, parameter decoupling, edit-protection contracts, 12 workflow templates | `/spec-image <request>`, engineering imaging, transparent cutout | Any image generation/editing model |
+| **agent-coding-style** | Engineering | Deterministic reply, search, editing, Git, planning, review & frontend rules for Coding Agents | coding style, agent coding rules | None |
+| **claude-simplify** | Engineering | Three-agent parallel pre-commit review (reuse / code smells / runtime efficiency) | `/simplify`, code review | Git |
+| **clean-code** | Engineering | Distilled 17-chapter "Clean Code" knowledge system & refactoring guide | code smells, clean code, refactoring | None |
+| **skill-security-check** | Engineering | 11 static security scans (prompt injection, code execution, credential leaks, sensitive paths) | `security-check.js`, skill audit | Node.js, TypeScript |
+| **github-analyzer** | Engineering | Fast 5-dimension GitHub repo analysis (positioning / pain points / architecture / onboarding / highlights) | analyze GitHub project, review this repo | Python / Node.js, curl |
+| **design-md-extractor** | Engineering | Reverse-extract typography / color / spacing specs from the web into DESIGN.md | extract design system, DESIGN.md | Browser / Node.js |
+| **jira-server-pat-cli** | Engineering | Generic Jira Server/Data Center REST CLI with PAT local persistence (0600 config reuse), org CAs, metadata discovery & full issue lifecycle | Jira CLI, PAT, JQL, issue management | Python 3 stdlib |
+| **llm-aiops** | Engineering | LLM-for-AIOps research knowledge base: cloud ops, root-cause analysis, log parsing | AIOps, RCA, troubleshooting KB | None |
+| **prompt-enhancer** | Engineering | Weak prompts -> eight-section production-grade instructions, 6 domain templates built in | enhance prompt, strengthen prompt | None |
+| **grasp** | Cognition | Ten-dimension cognitive model x Feynman interactive learning protocol | `/grasp <topic>`, deep learning | None |
+| **teach-eli5** | Cognition | Matt Pocock teaching method: life analogies first, self-contained interactive HTML courseware | `/eli5 <topic>`, explain simply | Open HTML in browser |
+| **curriculum-design** | Cognition | OBE outcome-based + Bloom taxonomy syllabi & lesson plans | curriculum design, lesson plan, OBE | None |
+| **edulab** | Cognition | Middle/high-school math visualization: SymPy vector methods + Three.js 3D/2D interactive solutions | `/edulab`, math visualization | Python (sympy), Three.js |
+| **obsidian-kb-builder** | Knowledge | Karpathy LLM-Wiki bidirectional-link vaults with graph-data export | knowledge base, Obsidian links | Python |
+| **pdf2md** | Knowledge | OpenDataLoader-powered high-fidelity PDF parsing (formulas, cross-page tables) | `pdf2md.py`, pdf to markdown | Python, opendataloader-pdf |
+| **claude-remember** | Knowledge | Layer 1/2/3 memory system review, distillation & dedup archiving | organize memory, archive memory | None |
 
 ---
 
-## 30 个技能详细功能与使用指南
+## Detailed Guide (30 Skills)
 
-### 一、深度写作与自媒体矩阵 (Content Creation & Media)
+### 1. Content Creation & Self-Media
 
-#### 1. de-ai-writing (文本去 AI 味与活人声纹校准)
-- **功能特性**：作为全库反 AI 腔调的**唯一真源**。内置 36 种机器行文模式检测（包括虚空升华、非必要对称排比、以 -ing 结尾的肤浅分析、公文腔连词）、3 层禁用词表（Tier 1/2/3 绝对禁用与置换）以及 5 步活人重写流程。
-- **触发意图**：去AI味、消除机器感、把这段话改得像真人写的、去除公文腔。
-- **调用方式**：
+#### 1. de-ai-writing (AI-Tone Removal & Human-Voice Calibration)
+- **Features**: The library's **single source of truth** for anti-AI-tone. 36 machine-writing pattern detectors (hollow sublimation, unnecessary symmetrical parallelism, -ing superficial analysis, officialese connectors), 3-tier banned-word lists (Tier 1/2/3 absolute bans & replacements), and a 5-step human-rewrite flow.
+- **Triggers**: remove AI tone, make this sound human, remove officialese.
+- **Usage**:
   ```
-  /de-ai <待修改文本> [--strength=light|medium|heavy]
+  /de-ai <text> [--strength=light|medium|heavy]
   ```
-- **核心产出**：去 AI 味前后的对比文本、修改项溯源清单、声纹自然度自检分。
+- **Output**: Before/after comparison, traced modification list, human-voice naturalness self-check score.
 
-#### 2. wechat-article-writer (自媒体与微信公众号爆款长文创作流)
-- **功能特性**：集成「痛点驱动选题法」、「熊叔三段式框架」（01/02/03 结构分段）、4 种高转化开头与 3 种强收尾模式。严格执行微信官方「低创作度规避标准」，在输出前进行信息增量、原创度、内容密度与 AI 参与度 4 维严审（满分 20 分，<12 分自动打回）。
-- **触发意图**：写公众号文章、自媒体长文、深度商业故事、爆款推文。
-- **调用方式**：
+#### 2. wechat-article-writer (WeChat & Self-Media Long-Form Creation Flow)
+- **Features**: Pain-point-driven topic selection, the "three-section framework" (01/02/03 structure), 4 high-conversion openings and 3 strong closings. Enforces WeChat's low-creativity avoidance standards with a 4-dimension pre-publish audit (information gain, originality, content density, AI involvement; max 20 points, auto-reject below 12).
+- **Triggers**: write a WeChat article, self-media long form, in-depth business story.
+- **Usage**:
   ```
-  写公众号文章：[主题/痛点素材] --platform=wechat --target-words=2500
+  Write a WeChat article: [topic/pain-point material] --platform=wechat --target-words=2500
   ```
-- **核心产出**：3 组备选爆款标题、完整可发布长文正文、情绪起伏地图、预埋金句清单、低创作度合规评分表。
+- **Output**: 3 candidate viral titles, full publish-ready body, emotion map, embedded golden-quote list, compliance scorecard.
 
-#### 3. weitoutiao-creator (微头条短文案 6 步爆款生成器)
-- **功能特性**：专为 300 字以内高互动短内容设计。提供 5 种成熟写作风格（故事叙述、悬念引导、数据事实、情感共鸣、直接对话）和 10 种经典结构框架（如「惊人事实-数据-分析-互动」）。采用交互式 6 步 SOP，每一步均需用户确认后推进。
-- **触发意图**：微头条、头条短文案、社交平台短帖、高互动文案。
-- **调用方式**：
+#### 3. weitoutiao-creator (300-Character Micro-Post Viral Generator)
+- **Features**: Designed for sub-300-character high-engagement short content. 5 proven writing styles (narrative, suspense, data-driven, emotional resonance, direct address) and 10 classic structures (e.g., "shocking fact - data - analysis - interaction"). Interactive 6-step SOP with user confirmation at each step.
+- **Triggers**: micro-post, Toutiao short copy, social short post.
+- **Usage**:
   ```
-  生成微头条：[领域标签/核心观点]
+  Generate a micro-post: [domain tag / core viewpoint]
   ```
-- **核心产出**：15-25 字吸睛标题、300 字以内正文、评论区互动引导钩子。
+- **Output**: 15-25 character hook title, sub-300-character body, comment-section engagement hooks.
 
-#### 4. snowflake-novel-writer (雪花写作法 10 步精细长篇创作)
-- **功能特性**：基于经典雪花写作法（Snowflake Method），从「一句话概括」逐层展开为「结构骨架 -> 主题反主题 -> 人物弧线 -> 关系网与秘密 -> 一页大纲 -> 场景清单 -> 叙述声音 -> 样章与全文」。内置小说专用的「去 AI 味三遍法」与反俗套检查清单。
-- **触发意图**：写长篇小说、网文构思、雪花法大纲、设定人物弧光、小说样章。
-- **调用方式**：
+#### 4. snowflake-novel-writer (Snowflake Method 10-Step Long-Form Fiction)
+- **Features**: Classic Snowflake Method expansion from "one-sentence summary" through "structure skeleton -> theme/anti-theme -> character arcs -> relationship web & secrets -> one-page synopsis -> scene list -> narrative voice -> sample chapter & full draft". Includes fiction-specific 3-pass AI-tone removal and anti-cliche checklists.
+- **Triggers**: write a long novel, web-fiction plotting, snowflake outline.
+- **Usage**:
   ```
-  雪花写小说：[题材与核心设定]
+  Snowflake novel: [genre & core premise]
   ```
-- **核心产出**：故事核心命题、人物三层标签档案（表层/深层/反差）、场景细化清单、1500-2500 字样章及全文正文。
+- **Output**: Core premise, three-layer character profiles (surface/depth/contrast), refined scene list, 1500-2500 word sample chapter & full text.
 
-#### 5. novel-writing (LOCK 系统叙事小说创作骨架)
-- **功能特性**：基于 James Scott Bell 的 LOCK 系统（Lead 主角、Objective 目标、Conflict 冲突、Knockout 结局）与经典三幕两门（Two Doorways of No Return）结构。侧重快速搭建高张力的叙事主线与情节大纲。
-- **触发意图**：英文故事创作、三幕式大纲、LOCK 系统构思、短篇叙事骨架。
-- **调用方式**：
+#### 5. novel-writing (LOCK-System Narrative Skeleton)
+- **Features**: James Scott Bell's LOCK system (Lead, Objective, Conflict, Knockout) plus the classic three-act structure with two Doorways of No Return. Focused on rapidly building high-tension narrative mains and plot outlines.
+- **Triggers**: English fiction, three-act outline, LOCK plotting.
+- **Usage**:
   ```
-  /novel-writing [故事概念/主角设定]
+  /novel-writing [story concept / protagonist setup]
   ```
-- **核心产出**：LOCK 四要素分析表、三幕式 8 节点剧情线、核心转折点设计。
+- **Output**: LOCK four-element analysis, three-act 8-beat plotline, core turning-point design.
 
-#### 6. article-deconstructor (爆款文章 10 维度深度拆解器)
-- **功能特性**：对标业界顶尖文章，从选题价值、标题公式、Hook 钩子、论证逻辑、案例密度、情绪曲线、刺痛句式、行文节奏、金句提炼及可复用模板 10 个维度进行全景逆向解构。
-- **触发意图**：拆解文章、分析爆款逻辑、提取写作套路、文章结构逆向工程。
-- **调用方式**：
+#### 6. article-deconstructor (10-Dimension Viral-Article Deconstructor)
+- **Features**: Full-spectrum reverse engineering of top articles across 10 dimensions: topic value, title formulas, hooks, argument logic, case density, emotion curves, stinging sentence patterns, pacing, golden quotes, and reusable templates.
+- **Triggers**: deconstruct this article, analyze viral logic, extract writing templates.
+- **Usage**:
   ```
-  拆解这篇文章：[文章链接或正文全文]
+  Deconstruct this article: [article URL or full text]
   ```
-- **核心产出**：10 维解构报告图表、作者论证骨架图、可直接套用的空白结构模板。
+- **Output**: 10-dimension report charts, author argument skeleton, ready-to-fill blank structure templates.
 
-#### 7. black-humor-writing (单立人黑色幽默五步创作法)
-- **功能特性**：基于单立人脱口秀与讽刺文学创作逻辑，采用「锁定严肃主题 -> 明确讽刺态度 -> 铺垫常规预期 -> 植入荒诞事实打破预期 -> 逻辑自洽地放大冲突」五步流水线，制造高质量荒谬感与喜剧张力。
-- **触发意图**：黑色幽默、讽刺段子、脱口秀剧本、荒诞短文、反讽文案。
-- **调用方式**：
+#### 7. black-humor-writing (Five-Step Black-Humor Method)
+- **Features**: Based on stand-up comedy and satirical literature logic: lock a serious topic -> define the satirical stance -> set up normal expectations -> plant absurd facts to break them -> amplify conflict with self-consistent logic.
+- **Triggers**: black humor, satirical jokes, stand-up scripts, ironic copy.
+- **Usage**:
   ```
-  写黑色幽默段子：[社会现象/吐槽主题]
+  Write a black-humor joke: [social phenomenon / rant topic]
   ```
-- **核心产出**：段子铺垫与包袱（Setup & Punchline）结构表、荒诞逻辑推演链、成稿文本。
+- **Output**: Setup & punchline structure table, absurd-logic derivation chain, finished draft.
 
 ---
 
-### 二、多媒体工程与音视频合成 (Multimedia & Audio/Video Engineering)
+### 2. Multimedia & Audio/Video Engineering
 
-#### 8. video-minutes (智能视频纪要生成与 @tags 任务分发引擎)
-- **功能特性**：集成 `faster-whisper` 高性能转录（支持 int8 量化与 VAD 过滤，转录速度提升 2-4 倍）。具备 7 种视频类型自动分类算法（会议、课程、访谈、演讲、播客、教程、录屏），并支持在纪要中自动提取 `@dev`、`@design`、`@article`、`@reminder` 等任务标签。
-- **触发意图**：视频总结、视频转文字、会议录像整理、提取网课笔记、生成字幕。
-- **CLI 调用方式**：
+#### 8. video-minutes (Intelligent Video Minutes & @tags Task Dispatch)
+- **Features**: `faster-whisper` high-performance transcription (int8 quantization + VAD filtering, 2-4x faster). Automatic 7-type video classification (meeting, lecture, interview, talk, podcast, tutorial, screen recording) and automatic task-tag extraction (`@dev`, `@design`, `@article`, `@reminder`).
+- **Triggers**: video summary, video-to-text, meeting recording notes, subtitles.
+- **CLI Usage**:
   ```bash
-  # 处理本地会议视频并生成 Markdown 纪要
+  # Process a local meeting video into Markdown minutes
   python3 video-minutes/scripts/generate_minutes.py meeting.mp4 --type meeting --language zh
 
-  # 批量扫描并处理 Zoom/录屏目录
+  # Batch-scan a Zoom/screen-recording directory
   python3 video-minutes/scripts/scan-and-process.py ~/Recordings/ --since-hours 24
   ```
-- **核心产出**：结构化视频纪要（Markdown / Obsidian 双链 / Notion 格式）、时间戳大纲、决议清单、待办 TODO 列表。
+- **Output**: Structured minutes (Markdown / Obsidian links / Notion formats), timestamped outline, decisions list, TODO list.
 
-#### 9. video-dubbing (全流程视频翻译、AI 语音克隆配音与字幕压制)
-- **功能特性**：完整的端到端视频多语言转译流水线：抽音轨 (16kHz) -> Whisper ASR -> 逐句严密翻译 -> MLX-TTS 语音生成（基于第一句维持音色一致性）-> 智能分段变速对齐 (0.88-1.20x 保持原音画时序) -> FFmpeg 音视频合流与硬字幕压制。
-- **触发意图**：视频翻译、视频自动配音、外语视频汉化、双语字幕压制。
-- **CLI 调用方式**：
+#### 9. video-dubbing (Full-Pipeline Video Translation, AI Voice Cloning & Subtitle Burning)
+- **Features**: End-to-end video translation pipeline: audio extraction (16kHz) -> Whisper ASR -> sentence-level translation -> MLX-TTS voice generation (voice consistency anchored to the first sentence) -> segment-scaled alignment (0.88-1.20x preserving original timing) -> FFmpeg muxing & hard-subtitle burning.
+- **Triggers**: video translation, auto dubbing, foreign-video localization, bilingual subtitles.
+- **CLI Usage**:
   ```bash
-  # 1. 抽取音频并获取精确时间戳 SRT
+  # 1. Extract audio and get precise SRT timestamps
   ffmpeg -y -i input.mp4 -ar 16000 -ac 1 audio16k.wav
   whisper audio16k.wav --model large-v3-turbo --output_format srt
 
-  # 2. 生成对齐音频并压制硬字幕
+  # 2. Generate aligned audio and burn hard subtitles
   python3 video-dubbing/scripts/dub_segments.py audio16k.srt translated.txt dubbing.wav subtitle_synced.srt --lang zh
   python3 video-dubbing/scripts/burn_subtitles.py output_temp.mp4 subtitle_synced.srt output_final.mp4
   ```
-- **核心产出**：`output_final.mp4`（带对齐新音轨与烧录硬字幕的视频文件）、`subtitle_synced.srt`。
+- **Output**: `output_final.mp4` (with new aligned audio track & burned subtitles), `subtitle_synced.srt`.
 
-#### 10. mlx-tts (Apple Silicon 专用本地极速语音合成)
-- **功能特性**：专为 macOS M 系列芯片优化的本地 TTS 引擎，基于 MLX 框架驱动 Qwen3-TTS / CosyVoice 模型。支持零样本文色克隆（Voice Cloning）、跨语种合成与 Prompt 情感控制，脱离云端 API 实现毫秒级离线渲染。
-- **触发意图**：本地语音合成、文本转语音、Qwen3-TTS、MLX 语音生成、声音克隆。
-- **CLI 调用方式**：
+#### 10. mlx-tts (Apple Silicon Local Low-Latency Speech Synthesis)
+- **Features**: Local TTS engine optimized for macOS M-series chips, driving Qwen3-TTS / CosyVoice models on the MLX framework. Zero-shot voice cloning, cross-lingual synthesis, and prompt-based emotion control — millisecond offline rendering without cloud APIs.
+- **Triggers**: local TTS, text-to-speech, Qwen3-TTS, voice cloning.
+- **CLI Usage**:
   ```bash
-  # 基本文本朗读
-  mlx_audio.tts --model mlx-community/Qwen3-TTS-12B-Instruct --text "欢迎使用开源 Agent 技能库。" --output speech.wav
+  # Basic text reading
+  mlx_audio.tts --model mlx-community/Qwen3-TTS-12B-Instruct --text "Welcome to the open-source agent skill library." --output speech.wav
 
-  # 音色参考克隆合成
-  mlx_audio.tts --ref_audio speaker_sample.wav --ref_text "参考音频文本" --text "克隆生成的目标语音" --output cloned.wav
+  # Reference-audio voice cloning
+  mlx_audio.tts --ref_audio speaker_sample.wav --ref_text "reference audio text" --text "target speech" --output cloned.wav
   ```
-- **核心产出**：高保真 WAV 音频文件、音色设计 Prompt 配置文件。
+- **Output**: High-fidelity WAV audio, voice-design prompt config files.
 
-#### 11. image-design (摄影学五维 AI 绘图提示词生成器)
-- **功能特性**：基于真实摄影工业标准，从「主体动态与材质 (Subject)」、「经典画幅构图 (Composition)」、「物理光线逻辑 (Lighting)」、「相机焦段与光圈视角 (Lens & Angle)」、「胶片颗粒与色彩科学 (Film Tone & Color)」五维解构需求，生成 Midjourney v6 / Stable Diffusion 工业级 Prompt。
-- **触发意图**：画图提示词、Midjourney Prompt 生成、摄影级生图描述、Stable Diffusion 调优。
-- **调用方式**：
+#### 11. image-design (Five-Dimension Photography AI Prompt Generator)
+- **Features**: Based on real photography industry standards, deconstructs requirements across five dimensions — Subject dynamics & materials, Composition, physical Lighting logic, Lens & Angle, and Film Tone & Color — producing Midjourney v6 / Stable Diffusion industrial-grade prompts.
+- **Triggers**: image prompts, Midjourney prompt, photography-grade image description.
+- **Usage**:
   ```
-  设计摄影生图提示词：[场景概念/主体描述] --aspect-ratio=16:9 --style=cinematic
+  Design photography prompts: [scene concept / subject] --aspect-ratio=16:9 --style=cinematic
   ```
-- **核心产出**：中英文双语 Prompt、负向提示词 (Negative Prompt)、相机参数推荐清单（焦段/光圈/ISO/胶卷型号）。
+- **Output**: Bilingual (EN/ZH) prompts, negative prompts, camera-parameter recommendations (focal length / aperture / ISO / film stock).
 
-#### 12. mckinsey-cover (麦肯锡与顶级咨询风研报封面生成器)
-- **功能特性**：基于 Adrian Punk 原创设计方法论，针对商业白皮书、战略研报与咨询 PPT，生成具备顶级机构质感（极简几何分区、瑞士平面排版网格、非饱和沉稳商务配色、隐喻性抽象 3D 图形）的视觉生成指令。
-- **触发意图**：麦肯锡封面、咨询研报封面、商业计划书配图、高端 PPT 封面。
-- **调用方式**：
+#### 12. mckinsey-cover (McKinsey & Top-Tier Consulting Cover Generator)
+- **Features**: Based on Adrian Punk's original design methodology, generates visual instructions with top-tier firm texture (minimal geometric partitions, Swiss typographic grids, desaturated business palettes, metaphorical abstract 3D shapes) for whitepapers, strategy reports, and consulting decks.
+- **Triggers**: McKinsey cover, consulting report cover, pitch-deck artwork.
+- **Usage**:
   ```
-  /mckinsey-cover [报告主题/行业领域]
+  /mckinsey-cover [report topic / industry]
   ```
-- **核心产出**：封面排版结构图（ASCII Grid）、Midjourney/DALL-E 3 专用英文生图 Prompt、配色色值方案（HEX/CMYK）。
+- **Output**: Cover layout structure (ASCII grid), Midjourney/DALL-E 3 English image prompts, color schemes (HEX/CMYK).
 
-#### 13. infocard (高清自适应现代信息卡片渲染引擎)
-- **功能特性**：根据输入文本或 URL 内容的信息密度与情绪，自适应匹配最佳排版骨架（杂志风 Editorial、看板 Dashboard、暗黑 Slate、国风 Guofeng、海洋 Ocean 等 10+ 款主题），直接通过本地 Node.js + Playwright/Canvas 渲染并输出高分辨率 PNG 图片。
-- **触发意图**：生成信息卡片、文章转长图、卡片总结、可视化摘要图片。
-- **调用方式**：
+#### 13. infocard (High-Resolution Adaptive Info-Card Rendering Engine)
+- **Features**: Adaptively matches the best layout skeleton based on content density and emotion of input text or URL (Editorial, Dashboard, Slate, Guofeng, Ocean and 10+ themes), rendering high-resolution PNGs locally via Node.js + Playwright/Canvas.
+- **Triggers**: generate info cards, article-to-image, visual summaries.
+- **Usage**:
   ```bash
-  # 从 URL 提取并生成 Slate 主题卡片
+  # Extract from URL into a Slate-theme card
   /infocard https://example.com/article --theme=slate
 
-  # 从纯文本生成双语对照卡片
-  /infocard "输入你的核心文本" --theme=editorial --lang=zh
+  # Generate a bilingual card from plain text
+  /infocard "your core text" --theme=editorial --lang=zh
   ```
-- **核心产出**：保存至 `~/Downloads/infocard-img/` 的高清 PNG 渲染图片文件。
+- **Output**: High-resolution PNG files saved to `~/Downloads/infocard-img/`.
 
 ---
 
-#### 14. spec-image (Spec-driven Prompting 工程化出图规格引擎)
-- **功能特性**：将出图需求解析为工程规格说明而非抽卡玄学。五路任务路由（文生图 / 局部编辑 / 多图合成 / 透明抠图 / 一致性系列）、四段式结构化 Prompt（Scene / Subject / Details / Constraints）、系统参数与语义提示词严格解耦、编辑任务"改动与约束分离"保护契约、单变量渐进迭代协议，以及交付前自检清单（画面文字双引号 + 频次约束、负向约束覆盖、受保护属性逐条核对）。
-- **触发意图**：工程化出图、生成海报/Logo/UI 原型/信息图、透明底抠图、图像编辑、多图合成、角色一致性系列图。
-- **调用方式**：
+#### 14. spec-image (Spec-driven Prompting Engineering Image Engine)
+- **Features**: Parses image requirements into engineering specifications rather than gacha gambling. Five-way task routing (text-to-image / local edit / multi-image composition / transparent cutout / consistency series), four-section structured prompts (Scene / Subject / Details / Constraints), strict system-parameter vs. semantic-prompt decoupling, "change vs. preserve" edit-protection contracts, single-variable progressive iteration protocol, and a pre-delivery checklist (in-image text quoting + frequency constraints, negative-constraint coverage, protected-attribute verification).
+- **Triggers**: engineering imaging, posters/logos/UI mockups/infographics, transparent cutouts, image editing, multi-image composition, character-consistency series.
+- **Usage**:
   ```bash
-  # 文生图：商业路演单页（信息密集场景自动建议升 quality）
-  /spec-image 一张 Series A 路演幻灯片：TAM/SAM/SOM 同心圆图 + 增长柱状图 --ratio=16:9
+  # Text-to-image: a Series A pitch slide (information-dense scenes auto-suggest quality bump)
+  /spec-image a Series A pitch slide: TAM/SAM/SOM concentric circles + growth bar chart --ratio=16:9
 
-  # 编辑模式：仅替换指定物体，其余严格保护
-  /spec-image 把白椅换成木椅 --edit=room.jpg
+  # Edit mode: replace only the specified object, everything else strictly preserved
+  /spec-image replace the white chairs with wooden chairs --edit=room.jpg
 
-  # 透明底素材提取
-  /spec-image 提取商品并输出透明底 PNG --edit=product.jpg --transparent
+  # Transparent-background asset extraction
+  /spec-image extract the product and output a transparent PNG --edit=product.jpg --transparent
   ```
-- **核心产出**：符合规格说明的生成/编辑图像、可版本化复用的结构化 Prompt 规格书、自检清单核对结果。内置 12 类商业级工作流模板（胶片人像、广告排版、透明 Logo、四格条漫、UI 原型、教学图表、路演单页、虚拟换装、多图合成、商品抠图、草图转写实、单物替换）。
+- **Output**: Spec-compliant generated/edited images, versionable structured prompt specifications, checklist verification results. 12 commercial workflow templates built in (film portraits, ad typography, transparent logos, 4-panel comics, UI mockups, teaching diagrams, pitch slides, virtual try-on, multi-image composition, product cutouts, sketch-to-photo, single-object replacement).
 
 ---
 
-### 三、代码工程与研发安全 (Code Engineering & DevSecOps)
+### 3. Code Engineering & DevSecOps
 
-#### 15. agent-coding-style (Coding Agent 确定性行为规范)
-- **功能特性**：将 Coding Agent 的回复格式、搜索策略、精准编辑、Git 安全、任务规划、代码审阅和前端生成规则统一为 43 条确定性约束，减少过度修改、无验证交付、危险 Git 操作和格式漂移。
-- **触发意图**：Agent 编码规范、确定性代码修改、统一 Coding Agent 行为、提交前操作约束。
-- **调用方式**：
+#### 15. agent-coding-style (Deterministic Coding Agent Behavior Rules)
+- **Features**: Unifies reply formatting, search strategy, precision editing, Git safety, task planning, code review, and frontend generation rules into 43 deterministic constraints, reducing over-modification, unverified delivery, dangerous Git operations, and format drift.
+- **Triggers**: agent coding rules, deterministic code changes, pre-commit constraints.
+- **Usage**:
   ```
-  按 agent-coding-style 规范完成以下代码任务：[任务描述]
+  Complete the following code task per agent-coding-style: [task description]
   ```
-- **核心产出**：边界明确的修改方案、最小代码变更、验证结果和可审计的 Git 操作说明。
+- **Output**: Clearly bounded change plans, minimal diffs, verification results, auditable Git operation notes.
 
-#### 16. claude-simplify (三 Agent 并行代码审查与精简流水线)
-- **功能特性**：在 Git Commit 或 PR 提交前触发。基于分支差异（`git diff`），并行调度三个独立审计角色：
-  - **Reuse Reviewer**：扫描是否重复造轮子、是否存在项目中已有的工具函数未被复用；
-  - **Quality Reviewer**：检查代码异味、圈复杂度过高、深层嵌套、不合规范的命名与硬编码；
-  - **Efficiency Reviewer**：审查内存泄漏、不必要的大对象拷贝、异步死锁与慢查询。
-- **触发意图**：`/simplify`、代码审查、提交前检查、代码重构、代码精简。
-- **调用方式**：
+#### 16. claude-simplify (Three-Agent Parallel Code Review & Simplification Pipeline)
+- **Features**: Triggered before Git commit or PR submission. Based on branch diff (`git diff`), dispatches three independent audit roles in parallel:
+  - **Reuse Reviewer**: scans for reinvented wheels and existing utility functions not being reused;
+  - **Quality Reviewer**: checks code smells, high cyclomatic complexity, deep nesting, naming violations, hardcoding;
+  - **Efficiency Reviewer**: reviews memory leaks, unnecessary large-object copies, async deadlocks, slow queries.
+- **Triggers**: `/simplify`, code review, pre-commit checks, refactoring.
+- **Usage**:
   ```bash
   /simplify [commit/branch/HEAD~1]
   ```
-- **核心产出**：三维度代码审查报告、精确到文件和行号的修改建议、精简前后的代码对比补丁。
+- **Output**: Three-dimension review report, file-and-line precise suggestions, before/after code comparison patches.
 
-#### 17. clean-code (《Clean Code》全书 17 章知识体系与重构指南)
-- **功能特性**：将 Robert C. Martin (Uncle Bob)《代码整洁之道》全书 17 章核心原则（有意义的命名、函数单一职责与单一抽象层、注释准则、对象与数据结构、异常处理与消灭 null、边界隔离、TDD 三定律、并发防御、Smells and Heuristics 代码异味全集）进行系统化蒸馏，并提供现代语言（TypeScript, Python, Go, Rust, C++）的现代化代码映射。
-- **触发意图**：Clean Code、代码整洁规范、代码坏味道检查、重构原则咨询。
-- **调用方式**：
+#### 17. clean-code ("Clean Code" 17-Chapter Knowledge System & Refactoring Guide)
+- **Features**: Systematic distillation of Robert C. Martin's "Clean Code" core principles across all 17 chapters (meaningful naming, single-responsibility functions & single abstraction layer, comment rules, objects & data structures, error handling & eliminating null, boundary isolation, TDD three laws, concurrency defense, the full Smells & Heuristics catalog), with modern-language mappings (TypeScript, Python, Go, Rust, C++).
+- **Triggers**: Clean Code, clean-coding standards, code-smell checks, refactoring principles.
+- **Usage**:
   ```
-  按照 Clean Code 审查并重构以下代码：[代码片段]
+  Review and refactor the following code per Clean Code: [code snippet]
   ```
-- **核心产出**：代码异味诊断清单（带 Uncle Bob 原书规则编号如 `F1`, `G14`）、重构后的整洁代码、设计原则说明。
+- **Output**: Code-smell diagnosis list (with original rule IDs like `F1`, `G14`), refactored clean code, design-principle explanations.
 
-#### 18. skill-security-check (Agent Skill 11 项静态漏洞与安全审计器)
-- **功能特性**：在安装、导入或运行第三方 Agent Skill 之前执行静态安全扫描。覆盖 11 类核心威胁（提示词注入、任意代码执行、危险 shell 命令、敏感路径越权访问、环境变量与 Token 窃取、网络外发挂马等），输出严格的风险评级（P0 阻断 / P1 警告 / P2 安全）。
-- **触发意图**：检查技能安全性、审查 Skill、扫描 SKILL.md、技能安全审计。
-- **CLI 调用方式**：
+#### 18. skill-security-check (11-Check Static Vulnerability & Security Auditor)
+- **Features**: Static security scanning before installing, importing, or running third-party Agent Skills. Covers 11 core threat classes (prompt injection, arbitrary code execution, dangerous shell commands, sensitive-path access escalation, environment variable & token theft, malicious network exfiltration) with strict risk ratings (P0 block / P1 warn / P2 safe).
+- **Triggers**: check skill safety, audit a skill, scan SKILL.md.
+- **CLI Usage**:
   ```bash
   node skill-security-check/scripts/security-check.js /path/to/skill-folder
   ```
-- **核心产出**：静态代码与 Markdown 审计报告、漏洞定位（文件与行号）、安全风险评分（P0/P1/P2）。
+- **Output**: Static code & Markdown audit report, vulnerability locations (file & line), P0/P1/P2 risk scores.
 
-#### 19. github-analyzer (GitHub 仓库极速 5 维解构报告生成器)
-- **功能特性**：针对用户提供的 GitHub 仓库链接，自动抓取 `README.md`、仓库元数据、目录结构与依赖包，在 60 秒内输出五章节结构化分析研报（是什么、核心痛点、关键特性、3 分钟快速上手指南、架构与实现亮点）。
-- **触发意图**：分析 GitHub 项目、帮我看下这个仓库、analyze repo、这个项目是干啥的。
-- **调用方式**：
+#### 19. github-analyzer (Fast 5-Dimension GitHub Repo Deconstruction Reports)
+- **Features**: Given a GitHub repo link, automatically fetches `README.md`, repo metadata, directory structure, and dependencies, producing a five-chapter structured analysis report within 60 seconds (what it is, core pain points, key features, 3-minute quick start, architecture & implementation highlights).
+- **Triggers**: analyze this GitHub project, review this repo.
+- **Usage**:
   ```
-  分析这个开源项目：https://github.com/owner/repo
+  Analyze this open-source project: https://github.com/owner/repo
   ```
-- **核心产出**：标准 Markdown 格式的项目解析研报、技术栈雷达、适用场景评估。
+- **Output**: Standard Markdown project analysis report, tech-stack radar, applicability assessment.
 
-#### 20. design-md-extractor (Web 视觉设计系统逆向提取器)
-- **功能特性**：通过读取目标网页的 DOM、计算样式（Computed Styles）与视觉截屏，逆向推导并生成符合 Google Labs 规范的 `DESIGN.md` 设计规范文件，提取包含色彩语义系统（Tokens）、字体层级、排版间距、阴影网格与组件样式的设计系统文档。
-- **触发意图**：提取网站设计规范、生成 DESIGN.md、分析页面 UI 风格、提取设计 Token。
-- **调用方式**：
+#### 20. design-md-extractor (Web Visual Design-System Reverse Extractor)
+- **Features**: Reads the target page's DOM, computed styles, and visual screenshots to reverse-derive a `DESIGN.md` spec conforming to Google Labs conventions — extracting color semantic tokens, type hierarchy, spacing scales, shadow grids, and component styles.
+- **Triggers**: extract website design specs, generate DESIGN.md, extract design tokens.
+- **Usage**:
   ```
-  从这个网站提取设计系统：https://example.com/
+  Extract the design system from this website: https://example.com/
   ```
-- **核心产出**：标准 `DESIGN.md` 文档、CSS Variables 定义代码块、Tailwind 配色扩展配置。
+- **Output**: Standard `DESIGN.md` document, CSS variable definition blocks, Tailwind color extension config.
 
-#### 21. jira-server-pat-cli (Jira Server/Data Center 通用管理 CLI)
-- **功能特性**：提供纯 Python 标准库 Jira REST CLI，支持 PAT、Cookie、Basic Auth、组织 CA 和 context path。所有 issue type、custom field、transition、priority、component、version 与用户标识均从目标实例动态发现，避免固定 ID 和环境隐私泄露。用户提供的 PAT 可一次性持久化到 `~/.config/jira-cli/config.json`（目录 0700 / 文件 0600，合并写入不覆盖其他字段），后续调用自动读取，无需重复提供。
-- **触发意图**：Jira CLI、PAT 管理 Jira、JQL 搜索、批量 issue 操作、内部 CA Jira 自动化。
-- **CLI 调用方式**：
+#### 21. jira-server-pat-cli (Generic Jira Server/Data Center Management CLI)
+- **Features**: Pure Python stdlib Jira REST CLI supporting PAT, Cookie, Basic Auth, organization CAs, and context paths. All issue types, custom fields, transitions, priorities, components, versions, and user identities are dynamically discovered from the target instance — no hardcoded IDs, no environment privacy leaks. A user-provided PAT can be persisted once to `~/.config/jira-cli/config.json` (directory 0700 / file 0600, merge-write without overwriting other fields); subsequent calls read it automatically with no repeated prompting.
+- **Triggers**: Jira CLI, PAT management, JQL search, bulk issue operations, internal-CA Jira automation.
+- **CLI Usage**:
   ```bash
   export JIRA_BASE_URL="https://jira.example.com/jira"
   export JIRA_PAT="<secret>"
   python3 jira-server-pat-cli/scripts/jira_cli.py whoami
   python3 jira-server-pat-cli/scripts/jira_cli.py search "project = PROJ ORDER BY updated DESC" --limit 100
   ```
-- **核心产出**：实例与权限探测结果、JQL JSON 数据、issue CRUD、transition、评论、工时、附件、链接、watcher 和 vote 操作结果；写操作支持 dry-run，破坏性及 raw REST 写操作要求 `--yes`。
+- **Output**: Instance & permission probe results, JQL JSON data, issue CRUD, transitions, comments, worklogs, attachments, links, watchers, votes; write operations support dry-run, destructive and raw REST writes require `--yes`.
 
-#### 22. llm-aiops (大模型 AIOps 运维与根因定位研究参考库)
-- **功能特性**：汇集 78+ 篇国际顶会及工业界前沿论文精华的 LLM for AIOps 知识库。覆盖大模型在日志异常检测、时序指标告警收敛、微服务调用链分布式追踪、根因定位（RCA）、自动故障修复（Auto-Remediation）与安全合规运维领域的成熟落地模式与架构方案。
-- **触发意图**：LLM AIOps、智能运维、大模型故障诊断、根因分析算法、日志大模型。
-- **调用方式**：
+#### 22. llm-aiops (LLM AIOps & Root-Cause-Analysis Research Library)
+- **Features**: An LLM-for-AIOps knowledge base distilling 78+ top-tier conference and industry papers. Covers mature deployment patterns and architectures for log anomaly detection, time-series alert convergence, microservice distributed tracing, root-cause analysis (RCA), auto-remediation, and security-compliant operations.
+- **Triggers**: LLM AIOps, intelligent operations, LLM fault diagnosis, RCA algorithms.
+- **Usage**:
   ```
-  AIOps 咨询：[故障场景/日志异常排查思路]
+  AIOps consultation: [failure scenario / log anomaly troubleshooting approach]
   ```
-- **核心产出**：AIOps 算法选型矩阵、微服务故障诊断 Agent 拓扑设计图、学术参考文献引用。
+- **Output**: AIOps algorithm selection matrix, microservice fault-diagnosis agent topology diagrams, academic references.
 
-#### 23. prompt-enhancer (弱提示词 -> 八段式生产级强指令增强器)
-- **功能特性**：将"一句话草稿"增强为覆盖八段式骨架（角色+目标 / 上下文 / 复述对齐 / 先思考 / 执行要求 / 明确不要 / 自我批评 / 输出与验收）的生产级强指令。内置 6 套领域模板（通用开发、需求理解与分析、技术方案/架构设计、仓库分析转高层方案图、文档写作、代码审查/重构），配套 8 条指导思想、分级澄清闸门与防虚构红线，将"不清楚就问"落实为可执行的两级澄清策略。
-- **触发意图**：增强提示词、强化 prompt、优化一段任务描述、改写成生产级强指令、让它更稳更准少返工。
-- **调用方式**：
+#### 23. prompt-enhancer (Weak Prompt -> Eight-Section Production-Grade Instruction Enhancer)
+- **Features**: Enhances "one-line drafts" into production-grade instructions covering an eight-section skeleton (Role+Goal / Context / Restate-Align / Think-First / Execution Requirements / Explicit Exclusions / Self-Critique / Output & Acceptance). 6 domain templates built in (general dev, requirement analysis, technical architecture, repo-analysis-to-architecture-diagram, documentation writing, code review/refactoring), plus 8 guiding principles, tiered clarification gates, and anti-fabrication red lines that operationalize "ask when unclear" into a two-level clarification strategy.
+- **Triggers**: enhance prompt, strengthen prompt, rewrite as production-grade instruction.
+- **Usage**:
   ```
-  增强提示词：<原始提示词> [补充：受众/领域/我满意的例子/输出语言]
+  Enhance this prompt: <raw prompt> [supplements: audience / domain / examples I like / output language]
   ```
-- **核心产出**：可粘贴的强指令全文 + 增强对照表（原稿薄弱点 -> 增强处理）+ 用法说明（占位符与可裁剪闸门）。
-
----
-
-### 四、认知学习与教育实验室 (Cognitive Learning & Education)
-
-#### 24. grasp (十维认知框架 x 费曼加速学习协议)
-- **功能特性**：基于「十维认知模型」（名称、类别、定义、特征、结构、功能、运行条件、历史演进、未来趋势、潜在风险）与费曼教学法。提供 7 个交互式学习阶段（锚定、探索、结构化、费曼输出、主动回忆、跨领域迁移、复习），构建深层概念理解。
-- **触发意图**：`/grasp <主题>`、深度学习一个概念、彻底搞懂某技术、概念拆解。
-- **调用方式**：
-  ```
-  /grasp Transformer架构 [--phase=1]
-  ```
-- **核心产出**：十维概念雷达图、概念架构 ASCII 关系图、主动回忆自测题库。
-
-#### 25. teach-eli5 (Matt Pocock 教学法小白友好交互课件引擎)
-- **功能特性**：融合 Matt Pocock `teach` 教学方法论（MISSION 学习目标锚定、最近发展区 ZPD 选材、术语表 glossary 与学习记录 ADR 沉淀、资产 assets 复用）与 ELI5（Explain Like I'm 5）小白约束。将复杂主题拆解为「图多、字少、生活类比先行」的独立自包含精美 HTML 教学页。
-- **触发意图**：`/eli5 <主题>`、用大白话讲明白、给外行解释技术、做个看图就懂的教学页。
-- **调用方式**：
-  ```
-  /eli5 量子纠缠 --mission="给中学生解释清楚原理"
-  ```
-- **核心产出**：`./lessons/0001-<slug>.html`（自包含可打印 HTML 课件，内联 SVG 机制图与类比卡片）、`references/glossary.md`、`learning-records/`。
-
-#### 26. curriculum-design (OBE 成果导向与布鲁姆认知模型课程设计系统)
-- **功能特性**：基于 OBE（Outcome-Based Education）产出导向教育理念与布鲁姆教育目标六层认知分类学（记忆、理解、应用、分析、评价、创造），生成符合高等院校与专业培训标准的教学大纲、教学日历与单课结构化教案。
-- **触发意图**：课程大纲设计、编写教案、教学设计、OBE 教学方案、培训课程规划。
-- **调用方式**：
-  ```
-  设计课程大纲：[课程名称] --target-audience=[受众背景] --duration=[课时]
-  ```
-- **核心产出**：课程教学目标矩阵（含布鲁姆层级对应）、学时分配表、期末考核评价权重表、分课时标准教案文档。
-
-#### 27. edulab (中高考数学可视化解题实验室)
-- **功能特性**：面向初高中数学几何与函数题目的专业可视化求解与动态演示工具。支持：
-  - **3D 立体几何**：通过 Python SymPy 空间向量自动建系求解，输出 Three.js 交互式 3D 解题页面（可旋转视角、显示垂线投影与法向量）；
-  - **2D 函数与解析几何**：输出带参数滑块控制的 2D 交互图表，动态展现参数变化对图像交点、极值点与单调区间的影响。
-- **触发意图**：`/edulab`、数学题可视化、立体几何建系、函数图像动态演示。
-- **调用方式**：
-  ```
-  /edulab [题目文本/几何条件] --mode=3d-geometry
-  ```
-- **核心产出**：Python 向量代数严密演算推导过程、自包含交互式 HTML 可视化演示网页。
+- **Output**: Paste-ready instruction text + enhancement comparison table (weakness -> treatment) + usage notes (placeholders and trimmable gates).
 
 ---
 
-### 五、知识库与记忆管理 (Knowledge Base & Memory Management)
+### 4. Cognitive Learning & Education Lab
 
-#### 28. obsidian-kb-builder (Karpathy LLM-Wiki 本地双链 Obsidian 知识库)
-- **功能特性**：遵循 Andrej Karpathy LLM-Wiki 架构模式。支持输入本地文件、文档目录或网络 URL，自动化抽取核心实体与关系，生成符合严格 Wiki-Schema 规范的本地 Markdown 双链笔记库（`[[双链]]` 互联），并支持导出结构化图数据供图计算分析。
-- **触发意图**：搭建知识库、构建 Obsidian vault、文档双链化、导出知识图谱。
-- **CLI 调用方式**：
+#### 24. grasp (Ten-Dimension Cognitive Framework x Feynman Accelerated Learning)
+- **Features**: Based on the ten-dimension cognitive model (name, category, definition, features, structure, function, operating conditions, history, trends, risks) and the Feynman technique. Seven interactive learning stages (anchoring, exploration, structuring, Feynman output, active recall, cross-domain transfer, review) build deep conceptual understanding.
+- **Triggers**: `/grasp <topic>`, deeply learn a concept, fully understand a technology.
+- **Usage**:
+  ```
+  /grasp Transformer architecture [--phase=1]
+  ```
+- **Output**: Ten-dimension concept radar, ASCII concept-architecture relation diagram, active-recall self-test bank.
+
+#### 25. teach-eli5 (Matt Pocock Method Beginner-Friendly Interactive Courseware Engine)
+- **Features**: Fuses Matt Pocock's `teach` methodology (MISSION learning-goal anchoring, ZPD material selection, glossary & learning-record ADR persistence, assets reuse) with ELI5 constraints. Breaks complex topics into self-contained, polished HTML lesson pages that are image-heavy, text-light, and analogy-first.
+- **Triggers**: `/eli5 <topic>`, explain in plain language, make a picture-friendly lesson page.
+- **Usage**:
+  ```
+  /eli5 quantum entanglement --mission="explain the principle to a high-school student"
+  ```
+- **Output**: `./lessons/0001-<slug>.html` (self-contained printable HTML courseware with inline SVG diagrams & analogy cards), `references/glossary.md`, `learning-records/`.
+
+#### 26. curriculum-design (OBE + Bloom Taxonomy Curriculum Design System)
+- **Features**: Based on Outcome-Based Education and Bloom's six-level taxonomy (remember, understand, apply, analyze, evaluate, create), generates university- and professional-training-standard syllabi, teaching calendars, and per-lesson structured plans.
+- **Triggers**: curriculum design, lesson planning, OBE teaching plans, training courses.
+- **Usage**:
+  ```
+  Design a curriculum: [course name] --target-audience=[audience] --duration=[hours]
+  ```
+- **Output**: Course objective matrix (with Bloom levels), hour allocation tables, final-assessment weighting tables, per-lesson plan documents.
+
+#### 27. edulab (Middle/High-School Math Visual Problem-Solving Lab)
+- **Features**: Professional visualization and dynamic demonstration for middle/high-school geometry and function problems. Supports:
+  - **3D solid geometry**: automatic coordinate-system setup and solving via Python SymPy spatial vectors, outputting Three.js interactive 3D solution pages (rotatable views, perpendicular projections, normal vectors);
+  - **2D functions & analytic geometry**: parameter-slider-controlled interactive 2D charts dynamically showing how parameter changes affect intersections, extrema, and monotonic intervals.
+- **Triggers**: `/edulab`, math visualization, solid-geometry setup, dynamic function plots.
+- **Usage**:
+  ```
+  /edulab [problem text / geometric conditions] --mode=3d-geometry
+  ```
+- **Output**: Rigorous Python vector-algebra derivations, self-contained interactive HTML demonstration pages.
+
+---
+
+### 5. Knowledge Base & Memory Management
+
+#### 28. obsidian-kb-builder (Karpathy LLM-Wiki Local Bidirectional-Link Obsidian KB)
+- **Features**: Follows Andrej Karpathy's LLM-Wiki architecture pattern. Accepts local files, document directories, or web URLs; automatically extracts core entities and relations; generates a local Markdown bidirectional-link note library (`[[links]]`) conforming to a strict Wiki-Schema; exports structured graph data for graph analytics.
+- **Triggers**: build a knowledge base, construct an Obsidian vault, document linking, export knowledge graphs.
+- **CLI Usage**:
   ```bash
-  # 从指定目录扫描并构建知识库图谱
+  # Scan a directory and build the knowledge-base graph
   python3 obsidian-kb-builder/scripts/build_kb.py --input ~/Documents/Papers/ --vault ~/Documents/MyVault/
   ```
-- **核心产出**：Obsidian Vault 笔记集合（含 YAML Frontmatter、双链与标签）、`graph_data.json` 知识图谱结构数据。
+- **Output**: Obsidian vault note collection (YAML frontmatter, bidirectional links, tags), `graph_data.json` knowledge-graph data.
 
-#### 29. pdf2md (基于 OpenDataLoader 的高精度 PDF 转 Markdown 引擎)
-- **功能特性**：基于 OpenDataLoader-PDF 混合解析技术。专为学术论文、技术研报、财务报表等复杂版式 PDF 设计，能够高精度识别 LaTeX 数学公式、复杂跨页表格结构、代码块、双栏排版与内嵌图片，输出极度干净的 Markdown 格式文本。
-- **触发意图**：PDF 转 Markdown、提取 PDF 论文、解析 PDF 表格公式。
-- **CLI 调用方式**：
+#### 29. pdf2md (OpenDataLoader-Based High-Fidelity PDF-to-Markdown Engine)
+- **Features**: Built on OpenDataLoader-PDF hybrid parsing. Designed for complex-layout PDFs — academic papers, technical reports, financial statements — with high-precision recognition of LaTeX formulas, complex cross-page tables, code blocks, two-column layouts, and embedded images, outputting extremely clean Markdown.
+- **Triggers**: PDF to Markdown, extract papers, parse PDF tables & formulas.
+- **CLI Usage**:
   ```bash
   python3 pdf2md/scripts/pdf2md.py input_paper.pdf --output output.md --extract-images
   ```
-- **核心产出**：高精度 `output.md` 文档、提取的插图文件夹 `images/`。
+- **Output**: High-fidelity `output.md`, extracted illustration folder `images/`.
 
-#### 30. claude-remember (多层级 AI Agent 长期记忆审查与归档工具)
-- **功能特性**：规范管理 Agent 的三层记忆架构（Layer 1 云端全局记忆、Layer 2 用户级持久化规范 `~/.claude/MEMORY.md`、Layer 3 项目级日常工作日志 `YYYY-MM-DD.md` 与精炼记忆 `MEMORY.md`）。提供记忆冗余检测、矛盾解决与超过 30 天日志的蒸馏归档能力。
-- **触发意图**：整理记忆、审查记忆文件、记忆去重与归档、更新长期记忆。
-- **调用方式**：
+#### 30. claude-remember (Multi-Layer Agent Long-Term Memory Review & Archiving)
+- **Features**: Manages the agent's three-layer memory architecture (Layer 1 cloud global memory, Layer 2 user-level persistent rules in `~/.claude/MEMORY.md`, Layer 3 project-level daily logs `YYYY-MM-DD.md` and distilled `MEMORY.md`). Provides memory redundancy detection, conflict resolution, and distillation/archiving of logs older than 30 days.
+- **Triggers**: organize memory, review memory files, dedupe & archive memory, update long-term memory.
+- **Usage**:
   ```
-  整理当前项目的长期记忆与工作日志
+  Organize the current project's long-term memory and work logs
   ```
-- **核心产出**：更新后的精炼 `MEMORY.md`、蒸馏清理后的历史归档记录。
+- **Output**: Updated distilled `MEMORY.md`, distilled & cleaned historical archive records.
 
 ---
 
-## 快速开始与环境安装
+## Quick Start & Environment Setup
 
-### 1. 安装 Skill 至本地 Agent 环境
+### 1. Install Skills into a Local Agent Environment
 
-本仓库的所有技能均遵循通用规范。你可以将整个仓库或特定技能软链 / 复制到你的全局或项目级技能目录下：
+All skills in this repository follow the common specification. You can symlink or copy the whole repo or specific skills into your global or project-level skill directory:
 
 ```bash
-# 克隆仓库
-git clone https://github.com/your-username/agent-skills.git ~/workspace/agent-skills
+# Clone the repository
+git clone https://github.com/renky1025/agent-skills.git ~/workspace/agent-skills
 
-# 方式 A：安装特定技能到全局 skills 目录 (推荐)
+# Option A: install specific skills into the global skills directory (recommended)
 mkdir -p ~/.claude/skills
 cp -r ~/workspace/agent-skills/de-ai-writing ~/.claude/skills/
 cp -r ~/workspace/agent-skills/infocard ~/.claude/skills/
 
-# 方式 B：全量批量软链接
+# Option B: bulk-symlink everything
 for dir in ~/workspace/agent-skills/*/; do
   skill_name=$(basename "$dir")
   if [ -f "$dir/SKILL.md" ]; then
@@ -453,48 +460,48 @@ for dir in ~/workspace/agent-skills/*/; do
 done
 ```
 
-### 2. 常用运行时环境依赖配置
+### 2. Runtime Dependency Setup
 
-部分多媒体与数据处理类技能依赖特定的底层 CLI 工具与 Python 库，推荐根据需要快速安装：
+Some multimedia and data-processing skills depend on specific CLI tools and Python libraries; install as needed:
 
 ```bash
-# 1. 音视频处理依赖 (macOS / Ubuntu)
+# 1. Audio/video processing dependencies (macOS / Ubuntu)
 brew install ffmpeg uv           # macOS
 sudo apt install ffmpeg          # Ubuntu
 
-# 2. 本地 TTS 极速引擎 (Apple Silicon macOS)
+# 2. Local TTS engine (Apple Silicon macOS)
 uv tool install --force "mlx-audio" --prerelease=allow
 
-# 3. 高精度 PDF 解析依赖
+# 3. High-precision PDF parsing
 pip install "opendataloader-pdf[hybrid]"
 
-# 4. 视频转录与纪要依赖
+# 4. Video transcription & minutes
 pip install faster-whisper moviepy pyyaml requests
 ```
 
 ---
 
-## 技能开发规范与贡献指南
+## Skill Development Standards & Contribution Guide
 
-我们欢迎社区贡献新的生产级 Agent Skill！提交 PR 前请确保满足以下规范：
+Community contributions of new production-grade Agent Skills are welcome! Before submitting a PR, please ensure:
 
-1. **目录结构**：
+1. **Directory structure**:
    ```
    my-new-skill/
-   +-- SKILL.md                 # 必需：完整行为规范与契约文档
-   +-- scripts/                 # 可选：Python/Node.js/Shell 执行脚本
-   +-- references/              # 可选：模块化参考资料与 Schema 定义
-   +-- assets/                  # 可选：静态模板、组件与样式表
+   +-- SKILL.md                 # Required: full behavior spec & contract document
+   +-- scripts/                 # Optional: Python/Node.js/Shell scripts
+   +-- references/              # Optional: modular reference material & schemas
+   +-- assets/                  # Optional: static templates, components, stylesheets
    ```
-2. **SKILL.md 必备结构**：
-   - **YAML Frontmatter**：包含 `name`, `description`, `version`, `argument-hint` 等元数据。
-   - **Outcome Contract**：明确定义产出内容（Outcome）、完成判定（Done When）与验证凭证（Evidence）。
-   - **Hard Rules**：列出绝对禁止的负向行为与执行硬边界。
-   - **去 AI 味与纯 ASCII 约束**：生成内容严禁使用易引起乱码的 Unicode 字符，必须使用纯 ASCII 符号替代。
-3. **安全审查通过**：新增技能必须通过 `skill-security-check` 的静态安全审计（无 P0/P1 风险项）。
+2. **Required SKILL.md structure**:
+   - **YAML Frontmatter**: `name`, `description`, `version`, `argument-hint`, etc.
+   - **Outcome Contract**: explicitly defines the Outcome, Done-When criteria, and Evidence.
+   - **Hard Rules**: lists absolutely prohibited behaviors and hard execution boundaries.
+   - **Anti-AI-tone & pure-ASCII constraint**: generated content must never use corruption-prone Unicode characters; use pure-ASCII symbols instead.
+3. **Security review passed**: new skills must pass the `skill-security-check` static security audit (no P0/P1 findings).
 
 ---
 
-## 开源协议与声明
+## License
 
-本项目采用 [MIT License](LICENSE) 开源协议。所有技能均经过安全审查与实践工程验证，请放心在企业与个人生产环境中集成使用。
+This project is released under the [MIT License](LICENSE). All skills have passed security review and real-world engineering verification, and are safe to integrate into enterprise and personal production environments.
