@@ -102,7 +102,7 @@ skill-security-check/
 - [ ] **Step 1: 初始化TypeScript项目**
 
 ```bash
-cd /Users/kyren/workspace/agent-skills/skill-security-check
+cd skill-security-check
 npm init -y
 npm install typescript @types/node acorn acorn-walk tree-sitter node-fetch minimatch
 npm install --save-dev jest @types/jest ts-jest

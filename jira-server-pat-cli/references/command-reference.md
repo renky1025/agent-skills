@@ -16,6 +16,7 @@ Example without real credentials:
 {
   "base_url": "https://jira.example.com/jira",
   "api_version": "2",
+  "pat": "<personal-access-token>",
   "ca_bundle": "/path/to/organization-ca.pem",
   "timeout": 30
 }
@@ -41,7 +42,7 @@ JIRA_CA_BUNDLE
 JIRA_TIMEOUT
 ```
 
-Prefer `JIRA_PAT` or a secret manager over placing a PAT in the config file. If a config contains secrets, create it with user-only permissions such as mode `0600`.
+若用户已在会话中提供 PAT，优先将其持久化到本配置文件的 `pat` 字段（合并写入、不覆盖其他字段，文件权限 `0600`、目录 `0700`），后续调用自动读取，无需用户重复提供。`JIRA_PAT` 环境变量与 secret manager 仍是有效注入方式。不要把 PAT 放进命令行参数、脚本内容、日志或输出。
 
 ## Discovery and diagnostics
 

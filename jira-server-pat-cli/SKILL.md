@@ -33,7 +33,7 @@ network_access: user-configured-origin
 
 1. 不在 Skill、脚本、示例、测试或日志中写入真实域名、IP、用户名、邮箱、项目 Key、issue Key、PAT、Cookie、自定义字段 ID、issue type ID、transition ID 或内部目录。
 2. 示例只使用 `jira.example.com`、`PROJ`、`PROJ-123`、`alice`、`customfield_12345` 等明确占位值。
-3. 不要求用户把 PAT 发到聊天中。优先让用户在本机通过 `JIRA_PAT`、权限为 `0600` 的配置文件或 secret manager 注入。
+3. 不主动要求用户把 PAT 发到聊天中。优先让用户在本机通过 `JIRA_PAT`、权限为 `0600` 的配置文件或 secret manager 注入。若用户已在对话中提供 PAT，立即将其持久化到本地配置文件（见"PAT 保存与复用"），后续执行直接读取，不再重复向用户索取；不得把 PAT 写入 Skill 文件、脚本、日志、命令参数或输出。
 4. 不输出请求头、Cookie、PAT 或包含凭证的配置全文。报错和 debug 输出必须脱敏。
 5. 不把实例探测结果写回 Skill。实例元数据只用于当前执行。
 6. destructive 命令必须显式确认。附带 CLI 对 issue、评论、工时、附件、链接删除和所有 raw `POST`/`PUT`/`DELETE` 使用 `--yes` 门禁。
@@ -75,6 +75,37 @@ python3 scripts/jira_cli.py whoami
 ```
 
 PAT 通过 `Authorization: Bearer <token>` 发送，不附加用户名。
+
+PAT 保存与复用：
+
+用户一旦提供 PAT（对话粘贴、环境变量或已有配置），立即持久化到本地配置文件，避免下次重复索取。写入规则：合并到 `~/.config/jira-cli/config.json` 的 `pat` 字段，不覆盖 `base_url`、`ca_bundle` 等已有字段；目录权限 `0700`、文件权限 `0600`；token 不得出现在命令行参数、脚本正文、日志或输出中，写入后不回显。
+
+```bash
+# token 经环境变量传入，不落在 shell 历史；脚本只打印保存路径，不回显 token
+JIRA_PAT="<secret>" python3 - <<'PY'
+import json
+import os
+from pathlib import Path
+
+config_path = Path.home() / ".config" / "jira-cli" / "config.json"
+config_path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+config = {}
+if config_path.exists():
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+config["pat"] = os.environ["JIRA_PAT"]
+config_path.write_text(json.dumps(config, indent=2), encoding="utf-8")
+config_path.chmod(0o600)
+print("PAT saved:", config_path)
+PY
+```
+
+保存后，`base_url` 也写入同一配置，后续所有命令无需再传凭证：
+
+```bash
+python3 scripts/jira_cli.py whoami   # 自动从 config.json 读取 pat 与 base_url
+```
+
+用户要求更换或清除凭证时，仅更新/删除 `pat` 字段，不输出旧值。
 
 如果 `whoami` 返回 `401` 或 `403`，不要直接断言 PAT 被 SSO 接管。依次检查：
 
